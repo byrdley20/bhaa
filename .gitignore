@@ -8,3 +8,9 @@ target/
 *.project
 bin/
 *.orig
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
