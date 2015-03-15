@@ -1,7 +1,7 @@
 /*.classpath
 /*.project
 /*.settings
-/target
+*/target/*
 target/
 *.settings
 *.classpath
@@ -9,6 +9,9 @@ target/
 bin/
 *.orig
 *.class
+directory/
+*/directory/*
+/*derby.log
 
 # Package Files #
 *.jar
