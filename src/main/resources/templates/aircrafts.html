@@ -2,49 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Black Hills Aerial Adventures | Users</title>
+    <title>Black Hills Aerial Adventures | Aircrafts</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
 	<link rel="stylesheet" href="css/main.css" />
     <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
-    
-    <script type="text/javascript">
-  		//<![CDATA[
-  		           
-		var lengthValidation = [];
-		var passwordValidation = [];
-  		           
-    	$(function() {
-    		var id = $( "#id" ),
-        	userId = $( "#userId" ),
-        	firstName = $( "#firstName" ),
-        	lastName = $( "#lastName" ),
-        	rating = $( "#rating" ),
-        	username = $( "#username" ),
-        	password = $( "#password" ),
-        	password2 = $( "#password2" ),
-        	allFields = $( [] ).add( id ).add( userId ).add( firstName ).add( lastName).add( rating ).add( username ).add( password );
-    		
-    		createDialog("Save User", allFields);
-    		
-    		lengthValidation[lengthValidation.length] = createLengthValidationObject(userId, "'ID'", 1, 15);
-    		lengthValidation[lengthValidation.length] = createLengthValidationObject(firstName, "'First Name'", 1, 100);
-    		lengthValidation[lengthValidation.length] = createLengthValidationObject(lastName, "'Last Name'", 1, 100);
-    		lengthValidation[lengthValidation.length] = createLengthValidationObject(username, "'Username'", 1, 100);
-    		
-    		passwordValidation[passwordValidation.length] = createPasswordValidationObject(password, password2);
-    	});
-    	//]]>
-    </script>
 </head>
 <body>
 
-	<H1>Users</H1>
+	<H1>Aircrafts</H1>
+	
 	<div id="dialog-form" title="Create new">
 		<p class="validateTips"></p>
-		<form id="addEditForm" action="/users" method="post">
+		<form id="addEditForm" action="/aircrafts" method="post">
 			<fieldset>
 				<label for="name">ID</label>
 				<input type="text" name="userId" id="userId" value="5555" class="text ui-widget-content ui-corner-all"/>
@@ -56,17 +28,19 @@
 				<select id="rating" name="rating" class="ui-widget-content ui-corner-all">
 					<option th:each="rating : ${allRatings}" th:text="${rating.name}" th:value="${rating.id}">${rating.name}</option>
 				</select>
+				<!--<input type="text" name="rating" id="rating" value="Captain" class="text ui-widget-content ui-corner-all"/>-->
 				<label for="email">Username</label>
 				<input type="text" name="username" id="username" value="jsmith" class="text ui-widget-content ui-corner-all"/>
 				<label for="password">Password</label>
 				<input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all"/>
 				<input type="password" name="password2" id="password2" value="xxxxxxx" class="text ui-widget-content ui-corner-all"/>
 				<input type="text" name="id" id="id" class="hidden"/>
+				<!-- Allow form submission with keyboard without duplicating the dialog button -->
 				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 			</fieldset>
 		</form>
 	</div>
-
+	
 	<div class="users-header">
 		<span class="delete"></span>
 		<span class="edit"></span>
