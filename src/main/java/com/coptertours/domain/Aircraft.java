@@ -4,18 +4,29 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import com.google.gson.annotations.Expose;
+
 @Entity
-public class Aircraft {
+public class Aircraft extends BaseDomain {
 	@Id
 	@GeneratedValue
+	@Expose
 	private Long id;
+	@Expose
 	private String aircraftNumber;
+	@Expose
 	private String name;
+	@Expose
 	private int modelId;
+	@Expose
 	private String serialNum;
+	@Expose
 	private String imagePath;
+	@Expose
 	private String engine;
+	@Expose
 	private int showStarts;
+	@Expose
 	private int ordering;
 
 	public Long getId() {

@@ -8,19 +8,28 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.google.gson.annotations.Expose;
+
 @Entity
 @Table(name = "APP_USER")
-public class User {
+public class User extends BaseDomain {
 	@Id
 	@GeneratedValue
+	@Expose
 	private Long id;
+	@Expose
 	private String userId;
+	@Expose
 	private String firstName;
+	@Expose
 	private String lastName;
 	@ManyToOne(targetEntity = Rating.class, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
 	@JoinColumn(name = "RATING_ID")
+	@Expose
 	private Rating rating;
+	@Expose
 	private String username;
+	@Expose
 	private String password;
 
 	public Long getId() {
