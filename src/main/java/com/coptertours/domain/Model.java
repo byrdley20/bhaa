@@ -4,11 +4,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import com.google.gson.annotations.Expose;
+
 @Entity
-public class Model {
+public class Model extends BaseDomain {
 	@Id
 	@GeneratedValue
+	@Expose
 	private Long id;
+	@Expose
 	private String name;
 
 	public Long getId() {

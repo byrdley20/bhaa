@@ -1,59 +1,7 @@
-	/*
-	$('<div/>', {
-	    id: 'dialog-form',
-	    title: 'Create new'
-	}).appendTo('body');
-	$('<p/>', {
-		'class': 'validateTips'
-	}).appendTo('#dialog-form');
-	$('<form/>', {
-		id: 'addEditForm',
-		action: formAction,
-		method: 'post'
-	}).appendTo('#dialog-form');
-	$('<fieldset/>', {
-		id: 'addEditFieldset'
-	}).appendTo('#addEditForm');
-	$('<label/>', {
-		'for': 'name',
-		text: 'ID' //var
-	}).appendTo('#addEditFieldset');
-	
-	
-
-	<div id="dialog-form" title="Create new">
-	<p class="validateTips"></p>
-	<form id="addEditForm" action="/users" method="post">
-		<fieldset>
-			<label for="name">ID</label>
-			<input type="text" name="userId" id="userId" value="5555" class="text ui-widget-content ui-corner-all"/>
-			<label for="name">First Name</label>
-			<input type="text" name="firstName" id="firstName" value="Jane" class="text ui-widget-content ui-corner-all"/>
-			<label for="name">Last Name</label>
-			<input type="text" name="lastName" id="lastName" value="Smith" class="text ui-widget-content ui-corner-all"/>
-			<label for="email">Rating</label>
-			<select id="rating" name="rating" class="ui-widget-content ui-corner-all">
-				<option th:each="rating : ${allRatings}" th:text="${rating.name}" th:value="${rating.id}">${rating.name}</option>
-			</select>
-			<!--<input type="text" name="rating" id="rating" value="Captain" class="text ui-widget-content ui-corner-all"/>-->
-			<label for="email">Username</label>
-			<input type="text" name="username" id="username" value="jsmith" class="text ui-widget-content ui-corner-all"/>
-			<label for="password">Password</label>
-			<input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all"/>
-			<input type="password" name="password2" id="password2" value="xxxxxxx" class="text ui-widget-content ui-corner-all"/>
-			<input type="text" name="id" id="id" class="hidden"/>
-			<!-- Allow form submission with keyboard without duplicating the dialog button -->
-			<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
-		</fieldset>
-	</form>
-</div>
-*/
-
 var baseUrl = "http://localhost:9999";
-var dialog, allFields, form, tips;
+var dialog, allFields, form, tips, addUpdatePath, deletePath;
 
-function createDialog(saveButtonName, allFormFields){
-	allFields = allFormFields;
+function createDialog(saveButtonName){
 	
 	var buttonsOpts = {}
 	buttonsOpts[saveButtonName] = saveRecord;
@@ -121,43 +69,25 @@ function saveRecord() {
 				formData[v.name] = v.value;
 			}
 		});
-		var editUser = (formData["id"] > 0);
+		var editRecord = (formData["id"] > 0);
         $.ajax({
-            url: baseUrl+'/users',
+            url: baseUrl+addUpdatePath,
             type:'POST',
             data: JSON.stringify(formData),
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             success:function(resObj, status, fullResponse){
-            	var savedUser = JSON.parse(fullResponse.responseText);
-            	if(editUser){
-            		var editedRow = $(".id"+savedUser.id);
-            		editedRow.find('.userId').html(savedUser.userId);
-            		editedRow.find('.name').html(savedUser.firstName + ' ' + savedUser.lastName);
-            		editedRow.find('.rating').html(savedUser.rating.name);
-            		editedRow.find('.username').html(savedUser.username);
-            		editedRow.find('.id').html(savedUser.id);
-            		editedRow.find('.firstName').html(savedUser.firstName);
-            		editedRow.find('.lastName').html(savedUser.lastName);
+            	var savedRecord = JSON.parse(fullResponse.responseText);
+            	if(editRecord){
+            		writeEditRecord(savedRecord);
             	}
-            	else{				            	
-			    	$( ".users-rows" ).last().after( "<div class='users-rows id"+savedUser.id+"'>" +
-						    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedUser.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
-						    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedUser.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
-						    	"<span class='userId cell'>"+savedUser.userId+"</span> " +
-						    	"<span class='name cell'>"+savedUser.firstName+" "+savedUser.lastName+"</span> " +
-						    	"<span class='rating cell'>"+savedUser.rating.name+"</span> " +
-						    	"<span class='username cell'>"+savedUser.username+"</span> " +
-						    	"<span class='id cell hidden'>"+savedUser.id+"</span> " +
-						    	"<span class='firstName cell hidden'>"+savedUser.firstName+"</span> " +
-						    	"<span class='lastName cell hidden'>"+savedUser.lastName+"</span> " +
-						    	"<span class='ratingId cell hidden'>"+savedUser.rating.id+"</span> " +
-					    	"</div>" );
+            	else{
+            		writeCreatedRecord(savedRecord);
             	}
 		    	dialog.dialog( "close" );
             },
             error:function(res){
-            	alert("Error! Unable to add user");
+            	alert("Error! Unable to add record");
             }
        	});
 	}
@@ -200,18 +130,18 @@ function checkPasswordsMatch( p1, p2 ) {
 $(function() {
 	tips = $( ".validateTips" );	
 	
-	function deleteUser(id){
+	function deleteRecord(id){
         $.ajax({
-            url: baseUrl+'/users/'+id,
+            url: baseUrl+deletePath+'/'+id,
             type:'DELETE',
             success:function(response){
             },
             error:function(response){
-                alert("Error! Unable to delete user");
+                alert("Error! Unable to delete record");
             }
        	});	
 	}
-	$( "#create-user" ).button().on( "click", function() {
+	$( "#create-record" ).button().on( "click", function() {
 		clearFormValidation();
 		$('#addEditForm').trigger("reset");
 		dialog.dialog( "open" );
@@ -219,23 +149,14 @@ $(function() {
 	$(document).on("click", ".editLink", function(){
 		clearFormValidation();
 		$('#addEditForm').trigger("reset");
-		$('#addEditForm').find("option:selected").removeAttr("selected");
-		var editSpan = $(this).closest('span');
-		$('#addEditForm').find('#userId').val(editSpan.nextAll('span.userId').first().html());
-		$('#addEditForm').find('#firstName').val(editSpan.nextAll('span.firstName').first().html());
-		$('#addEditForm').find('#lastName').val(editSpan.nextAll('span.lastName').first().html());
-		var ratingIdSpan = editSpan.nextAll('span.ratingId');
-		var ratingOptionStr = "select option[value='"+ratingIdSpan.html()+"']";
-		$('#addEditForm').find(ratingOptionStr).prop('selected','selected');
-		$('#addEditForm').find('#username').val(editSpan.nextAll('span.username').first().html());
-		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
+		populateEditForm(this);
 		dialog.dialog( "open" );
 	});
 	$(document).on("click", ".deleteLink", function(){
-		var name = $(this).closest('span').nextAll('span.name').first().html();
-		if(window.confirm("Are you sure you want to delete '"+name+"'?")) {
-			$(this).closest('div.users-rows').remove();
-			deleteUser($(this).attr('data-id'));
+		var deleteName = findDeleteName(this);
+		if(window.confirm("Are you sure you want to delete '"+deleteName+"'?")) {
+			$(this).closest('div.records-rows').remove();
+			deleteRecord($(this).attr('data-id'));
 		}
 	});
 });

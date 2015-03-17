@@ -24,10 +24,13 @@
         	rating = $( "#rating" ),
         	username = $( "#username" ),
         	password = $( "#password" ),
-        	password2 = $( "#password2" ),
-        	allFields = $( [] ).add( id ).add( userId ).add( firstName ).add( lastName).add( rating ).add( username ).add( password );
+        	password2 = $( "#password2" );
     		
-    		createDialog("Save User", allFields);
+        	allFields = $( [] ).add( id ).add( userId ).add( firstName ).add( lastName).add( rating ).add( username ).add( password );
+        	addUpdatePath = "/users";
+        	deletePath = "/users";
+    		
+    		createDialog("Save User");
     		
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(userId, "'ID'", 1, 15);
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(firstName, "'First Name'", 1, 100);
@@ -36,6 +39,46 @@
     		
     		passwordValidation[passwordValidation.length] = createPasswordValidationObject(password, password2);
     	});
+    	
+    	function writeCreatedRecord(savedRecord){
+	    	$( ".records-rows" ).last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
+			    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
+			    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+			    	"<span class='userId cell'>"+savedRecord.userId+"</span> " +
+			    	"<span class='name cell'>"+savedRecord.firstName+" "+savedRecord.lastName+"</span> " +
+			    	"<span class='rating cell'>"+savedRecord.rating.name+"</span> " +
+			    	"<span class='username cell'>"+savedRecord.username+"</span> " +
+			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
+			    	"<span class='firstName cell hidden'>"+savedRecord.firstName+"</span> " +
+			    	"<span class='lastName cell hidden'>"+savedRecord.lastName+"</span> " +
+			    	"<span class='ratingId cell hidden'>"+savedRecord.rating.id+"</span> " +
+		    	"</div>" );    		
+    	}
+    	function writeEditRecord(savedRecord){
+    		var editedRow = $(".id"+savedRecord.id);
+    		editedRow.find('.userId').html(savedRecord.userId);
+    		editedRow.find('.name').html(savedRecord.firstName + ' ' + savedRecord.lastName);
+    		editedRow.find('.rating').html(savedRecord.rating.name);
+    		editedRow.find('.username').html(savedRecord.username);
+    		editedRow.find('.id').html(savedRecord.id);
+    		editedRow.find('.firstName').html(savedRecord.firstName);
+    		editedRow.find('.lastName').html(savedRecord.lastName);
+    	}
+    	function populateEditForm(editLink){
+    		$('#addEditForm').find("option:selected").removeAttr("selected");
+    		var editSpan = $(editLink).closest('span');
+    		$('#addEditForm').find('#userId').val(editSpan.nextAll('span.userId').first().html());
+    		$('#addEditForm').find('#firstName').val(editSpan.nextAll('span.firstName').first().html());
+    		$('#addEditForm').find('#lastName').val(editSpan.nextAll('span.lastName').first().html());
+    		var ratingIdSpan = editSpan.nextAll('span.ratingId');
+    		var ratingOptionStr = "select option[value='"+ratingIdSpan.html()+"']";
+    		$('#addEditForm').find(ratingOptionStr).prop('selected','selected');
+    		$('#addEditForm').find('#username').val(editSpan.nextAll('span.username').first().html());
+    		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
+    	}
+    	function findDeleteName(deleteLink){
+    		return $(deleteLink).closest('span').nextAll('span.name').first().html();
+    	}
     	//]]>
     </script>
 </head>
@@ -75,7 +118,7 @@
 	    <span class="rating">Rating</span>
 	    <span class="username">Username</span>
 	</div>
-	<div class="users-rows" th:each="u : ${users}" th:classappend="|id${u.id}">
+	<div class="records-rows" th:each="u : ${users}" th:classappend="|id${u.id}">
 		<span class="edit"><a href="#" class="editLink" th:attr="data-id=${u.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
 		<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${u.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
 		<span class="userId cell" th:text="${u.userId}">ID</span>
@@ -88,6 +131,11 @@
 		<span class="ratingId cell hidden" th:text="${u.rating.id}">Hidden Rating Id</span>
 	</div>
 	<br/>
-	<button id="create-user">Create new user</button>
+	<button id="create-record">Create new user</button>
+	
+	<div class="ratings-rows" th:each="r : ${allRatings}">
+		<div th:text="${r.toJson()}"></div>
+	</div>
+	
 </body>
 </html>
