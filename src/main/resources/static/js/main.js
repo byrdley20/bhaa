@@ -54,17 +54,8 @@ function saveRecord() {
 	
 	if(valid) {
 		$.each(allFields, function(i, v){
-			if(v.name == 'rating'){
-				$.ajax({
-		            url: baseUrl+'/ratings/'+v.value,
-		            type:'GET',
-		            async: false,
-		            dataType: 'json',
-		            contentType: "application/json; charset=utf-8",
-		            success:function(ratingResponse){
-		            	formData[v.name]=ratingResponse;
-		            }
-				});
+			if(v.nodeName == "SELECT") {
+				setSelectValue(formData, v);
 			} else {
 				formData[v.name] = v.value;
 			}
@@ -128,7 +119,9 @@ function checkPasswordsMatch( p1, p2 ) {
 }
 
 $(function() {
-	tips = $( ".validateTips" );	
+	tips = $( ".validateTips" );
+	
+	buildOptions();
 	
 	function deleteRecord(id){
         $.ajax({
