@@ -61,10 +61,10 @@
 	    	$( ".records-rows" ).last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
 			    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
 			    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
-			    	"<span class='userId cell'>"+savedRecord.userId+"</span> " +
-			    	"<span class='name cell'>"+savedRecord.firstName+" "+savedRecord.lastName+"</span> " +
-			    	"<span class='rating cell'>"+savedRecord.rating.name+"</span> " +
-			    	"<span class='username cell'>"+savedRecord.username+"</span> " +
+			    	"<span class='userId dataCell'>"+savedRecord.userId+"</span> " +
+			    	"<span class='name dataCell'>"+savedRecord.firstName+" "+savedRecord.lastName+"</span> " +
+			    	"<span class='rating dataCell'>"+savedRecord.rating.name+"</span> " +
+			    	"<span class='username dataCell'>"+savedRecord.username+"</span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 			    	"<span class='firstName cell hidden'>"+savedRecord.firstName+"</span> " +
 			    	"<span class='lastName cell hidden'>"+savedRecord.lastName+"</span> " +
@@ -101,8 +101,10 @@
 </head>
 <body>
 
+	<div th:replace="includes/header :: header">...</div>
+
 	<H1>Users</H1>
-	<div id="dialog-form" title="Create new">
+	<div id="dialog-form" title="Create New User">
 		<p class="validateTips"></p>
 		<form id="addEditForm" action="/users" method="post">
 			<fieldset>
@@ -127,21 +129,21 @@
 		</form>
 	</div>
 
-	<div class="users-header">
-		<span class="delete"></span>
+	<div class="records-header">
 		<span class="edit"></span>
-	    <span class="userId">ID</span>
-	    <span class="name">Name</span>
-	    <span class="rating">Rating</span>
-	    <span class="username">Username</span>
+		<span class="delete"></span>
+	    <span class="headerCell dataCell">ID</span>
+	    <span class="headerCell dataCell">Name</span>
+	    <span class="headerCell dataCell">Rating</span>
+	    <span class="headerCell dataCell">Username</span>
 	</div>
 	<div class="records-rows" th:each="u : ${users}" th:classappend="|id${u.id}">
 		<span class="edit"><a href="#" class="editLink" th:attr="data-id=${u.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
 		<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${u.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
-		<span class="userId cell" th:text="${u.userId}">ID</span>
-		<span class="name cell" th:text="${u.displayName}">Name</span>
-		<span class="rating cell" th:text="${u.rating.name}">Rating</span>
-		<span class="username cell" th:text="${u.username}">UserName</span>
+		<span class="userId dataCell" th:text="${u.userId}">ID</span>
+		<span class="name dataCell" th:text="${u.displayName}">Name</span>
+		<span class="rating dataCell" th:text="${u.rating.name}">Rating</span>
+		<span class="username dataCell" th:text="${u.username}">UserName</span>
 		<span class="id cell hidden" th:text="${u.id}">Hidden PK ID</span>
 		<span class="firstName cell hidden" th:text="${u.firstName}">Hidden First Name</span>
 		<span class="lastName cell hidden" th:text="${u.lastName}">Hidden Last Name</span>
@@ -149,10 +151,5 @@
 	</div>
 	<br/>
 	<button id="create-record">Create new user</button>
-	
-	<div class="ratings-rows" th:each="r : ${allRatings}">
-		<div th:text="${r.toJson()}"></div>
-	</div>
-	
 </body>
 </html>

@@ -3,19 +3,13 @@
     display: inline-block;
     width: 20px;
 }
-.userId,
-.name,
-.rating,
-.username {
+.dataCell {
     display: inline-block;
     margin-right: 10px;
     width: 150px;
 }
 
-.users-header .userId,
-.users-header .name,
-.users-header .rating,
-.users-header .username {
+.records-header .headerCell {
     color: dodgerblue;
 }
 body { font-size: 100%; }

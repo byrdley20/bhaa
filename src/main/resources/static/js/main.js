@@ -11,7 +11,6 @@ function createDialog(saveButtonName){
 	
 	dialog = $( "#dialog-form" ).dialog({
     	autoOpen: false,
-    	height: 680,
     	width: 350,
     	modal: true,
     	buttons : buttonsOpts,
@@ -56,6 +55,12 @@ function saveRecord() {
 		$.each(allFields, function(i, v){
 			if(v.nodeName == "SELECT") {
 				setSelectValue(formData, v);
+			} else if (v.type == "checkbox") {
+				if(v.checked) {
+					formData[v.name] = true;
+				} else {
+					formData[v.name] = false;
+				}
 			} else {
 				formData[v.name] = v.value;
 			}
@@ -117,6 +122,12 @@ function checkPasswordsMatch( p1, p2 ) {
 	updateTips( "The passwords do not match" );
 	return false;
 }
+function getNewCheckboxValue(booleanValue) {
+	if(booleanValue) {
+		return 'checked';
+	}
+	return '';
+}
 
 $(function() {
 	tips = $( ".validateTips" );
@@ -130,7 +141,9 @@ $(function() {
             success:function(response){
             },
             error:function(response){
-                alert("Error! Unable to delete record");
+            	// show the record again, since it couldn't be deleted
+            	$('div.records-rows.id'+id).toggle();
+            	alert('The record could not be deleted. This is likely because this record is being used by another element (ie. User, Aircraft, etc).')
             }
        	});	
 	}
@@ -148,8 +161,8 @@ $(function() {
 	$(document).on("click", ".deleteLink", function(){
 		var deleteName = findDeleteName(this);
 		if(window.confirm("Are you sure you want to delete '"+deleteName+"'?")) {
-			$(this).closest('div.records-rows').remove();
 			deleteRecord($(this).attr('data-id'));
+			$(this).closest('div.records-rows').toggle();
 		}
 	});
 });

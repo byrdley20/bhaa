@@ -9,59 +9,151 @@
     <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
+    <script th:inline="javascript">
+    	/*<![CDATA[*/
+
+		var models = {};
+    	           
+		function buildOptions(){
+			var allModels = /*[[${allModels}]]*/;
+			for(var i=0; i < allModels.length; i++) {
+				var model = allModels[i];
+				models[model.id] = model;
+			}			
+		}
+		/*]]>*/
+    </script>
+    <script type="text/javascript">
+  		//<![CDATA[
+  		           
+		var lengthValidation = [];
+		var passwordValidation = [];
+		
+    	$(function() {
+    		var id = $( "#id" ),
+    		aircraftNumber = $( "#aircraftNumber" ),
+        	name = $( "#name" ),
+        	model = $( "#model" ),
+        	serialNum = $( "#serialNum" ),
+        	imagePath = $( "#imagePath" ),
+    		showStarts = $( "#showStarts" );
+    		ordering = $( "#ordering" );
+    		
+        	allFields = $( [] ).add( id ).add( aircraftNumber ).add( name ).add( model ).add( serialNum ).add( imagePath ).add( showStarts ).add( ordering );
+        	addUpdatePath = "/aircrafts";
+        	deletePath = "/aircrafts";
+    		
+    		createDialog("Save Aircraft");
+    		
+    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(userId, "'ID'", 1, 15);
+    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(firstName, "'First Name'", 1, 100);
+    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(lastName, "'Last Name'", 1, 100);
+    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(username, "'Username'", 1, 100);
+    		
+    		//passwordValidation[passwordValidation.length] = createPasswordValidationObject(password, password2);
+    	});
+    	function setSelectValue(formData, element) {
+			if(element.name == 'model'){
+				formData[element.name] = models[element.value];
+			}
+    	}
+    	function writeCreatedRecord(savedRecord){
+	    	$( ".records-rows" ).last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
+			    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
+			    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+			    	"<span class='aircraftNumber dataCell'>"+savedRecord.aircraftNumber+"</span> " +
+			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
+			    	"<span class='model dataCell'>"+savedRecord.model.name+"</span> " +
+			    	"<span class='serialNum dataCell'>"+savedRecord.serialNum+"</span> " +
+			    	"<span class='imagePath dataCell'>"+savedRecord.imagePath+"</span> " +
+			    	"<span class='showStarts dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.showStarts)+" disabled='disabled'/></span> " +
+			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
+			    	"<span class='modelId cell hidden'>"+savedRecord.model.id+"</span> " +
+		    	"</div>" );    		
+    	}
+    	function writeEditRecord(savedRecord){
+    		var editedRow = $(".id"+savedRecord.id);
+    		editedRow.find('.aircraftNumber').html(savedRecord.aircraftNumber);
+    		editedRow.find('.name').html(savedRecord.name);
+    		editedRow.find('.model').html(savedRecord.model.name);
+    		editedRow.find('.serialNum').html(savedRecord.serialNum);
+    		editedRow.find('.imagePath').html(savedRecord.imagePath);
+    		editedRow.find('.showStarts input').prop('checked', savedRecord.showStarts);
+    		editedRow.find('.id').html(savedRecord.id);
+    	}
+    	function populateEditForm(editLink){
+    		$('#addEditForm').find("option:selected").removeAttr("selected");
+    		var editSpan = $(editLink).closest('span');
+    		$('#addEditForm').find('#aircraftNumber').val(editSpan.nextAll('span.aircraftNumber').first().html());
+    		$('#addEditForm').find('#name').val(editSpan.nextAll('span.name').first().html());
+    		var modelIdSpan = editSpan.nextAll('span.modelId');
+    		var modelOptionStr = "select option[value='"+modelIdSpan.html()+"']";
+    		$('#addEditForm').find(modelOptionStr).prop('selected','selected');
+    		$('#addEditForm').find('#serialNum').val(editSpan.nextAll('span.serialNum').first().html());
+    		$('#addEditForm').find('#imagePath').val(editSpan.nextAll('span.imagePath').first().html());
+    		var showStartsValue = editSpan.nextAll('span.showStarts').first().find("input").is(':checked');
+    		if(showStartsValue){
+        		$('#addEditForm').find('#showStarts').prop('checked', true);	
+    		}
+    		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
+    	}
+    	function findDeleteName(deleteLink){
+    		return $(deleteLink).closest('span').nextAll('span.name').first().html();
+    	}
+    	//]]>
+    </script>
 </head>
 <body>
 
+	<div th:replace="includes/header :: header">...</div>
+
 	<H1>Aircrafts</H1>
-	
-	<div id="dialog-form" title="Create new">
+	<div id="dialog-form" title="Create New Aircraft">
 		<p class="validateTips"></p>
 		<form id="addEditForm" action="/aircrafts" method="post">
 			<fieldset>
-				<label for="name">ID</label>
-				<input type="text" name="userId" id="userId" value="5555" class="text ui-widget-content ui-corner-all"/>
-				<label for="name">First Name</label>
-				<input type="text" name="firstName" id="firstName" value="Jane" class="text ui-widget-content ui-corner-all"/>
-				<label for="name">Last Name</label>
-				<input type="text" name="lastName" id="lastName" value="Smith" class="text ui-widget-content ui-corner-all"/>
-				<label for="email">Rating</label>
-				<select id="rating" name="rating" class="ui-widget-content ui-corner-all">
-					<option th:each="rating : ${allRatings}" th:text="${rating.name}" th:value="${rating.id}">${rating.name}</option>
+				<label for="aircraftNumber">Number</label>
+				<input type="text" name="aircraftNumber" id="aircraftNumber" value="47 G2-A1" class="text ui-widget-content ui-corner-all"/>
+				<label for="name">Name</label>
+				<input type="text" name="name" id="name" value="N121AH" class="text ui-widget-content ui-corner-all"/>
+				<label for="email">Model</label>
+				<select id="model" name="model" class="ui-widget-content ui-corner-all">
+					<option th:each="model : ${allModels}" th:text="${model.name}" th:value="${model.id}">${model.name}</option>
 				</select>
-				<!--<input type="text" name="rating" id="rating" value="Captain" class="text ui-widget-content ui-corner-all"/>-->
-				<label for="email">Username</label>
-				<input type="text" name="username" id="username" value="jsmith" class="text ui-widget-content ui-corner-all"/>
-				<label for="password">Password</label>
-				<input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all"/>
-				<input type="password" name="password2" id="password2" value="xxxxxxx" class="text ui-widget-content ui-corner-all"/>
+				<label for="serialNum">Serial Number</label>
+				<input type="text" name="serialNum" id="serialNum" value="12818" class="text ui-widget-content ui-corner-all"/>
+				<label for="imagePath">Image Path</label>
+				<input type="text" name="imagePath" id="imagePath" value="C:/Users/byrdj/Pictures/image.png" class="text ui-widget-content ui-corner-all"/>
+				<label for="showStarts">Show Starts</label>
+				<input type="checkbox" name="showStarts" id="showStarts"/>
 				<input type="text" name="id" id="id" class="hidden"/>
-				<!-- Allow form submission with keyboard without duplicating the dialog button -->
 				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 			</fieldset>
 		</form>
 	</div>
-	
-	<div class="users-header">
+	<div class="records-header">
 		<span class="delete"></span>
 		<span class="edit"></span>
-	    <span class="userId">ID</span>
-	    <span class="name">Name</span>
-	    <span class="rating">Rating</span>
-	    <span class="username">Username</span>
+	    <span class="headerCell dataCell">Number</span>
+	    <span class="headerCell dataCell">Name</span>
+	    <span class="headerCell dataCell">Model</span>
+	    <span class="headerCell dataCell">Serial Number</span>
+	    <span class="headerCell dataCell">Image Path</span>
+	    <span class="headerCell dataCell">Show Starts</span>
 	</div>
-	<div class="users-rows" th:each="u : ${users}" th:classappend="|id${u.id}">
-		<span class="edit"><a href="#" class="editLink" th:attr="data-id=${u.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-		<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${u.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
-		<span class="userId cell" th:text="${u.userId}">ID</span>
-		<span class="name cell" th:text="${u.displayName}">Name</span>
-		<span class="rating cell" th:text="${u.rating.name}">Rating</span>
-		<span class="username cell" th:text="${u.username}">UserName</span>
-		<span class="id cell hidden" th:text="${u.id}">Hidden PK ID</span>
-		<span class="firstName cell hidden" th:text="${u.firstName}">Hidden First Name</span>
-		<span class="lastName cell hidden" th:text="${u.lastName}">Hidden Last Name</span>
-		<span class="ratingId cell hidden" th:text="${u.rating.id}">Hidden Rating Id</span>
+	<div class="records-rows" th:each="a : ${aircrafts}" th:classappend="|id${a.id}">
+		<span class="edit"><a href="#" class="editLink" th:attr="data-id=${a.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
+		<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${a.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+		<span class="aircraftNumber dataCell" th:text="${a.aircraftNumber}">Number</span>
+		<span class="name dataCell" th:text="${a.name}">Name</span>
+		<span class="model dataCell" th:text="${a.model.name}">Model</span>
+		<span class="serialNum dataCell" th:text="${a.serialNum}">Serial Number</span>
+		<span class="imagePath dataCell" th:text="${a.imagePath}">Image Path</span>
+		<span class="showStarts dataCell"><input type="checkbox" th:value="${a.showStarts}" th:checked="${a.showStarts}" disabled="disabled"/></span>
+		<span class="id cell hidden" th:text="${a.id}">Hidden PK ID</span>
+		<span class="modelId cell hidden" th:text="${a.model.id}">Hidden Model Id</span>
 	</div>
 	<br/>
-	<button id="create-user">Create new user</button>
+	<button id="create-record">Create new aircraft</button>
 </body>
 </html>

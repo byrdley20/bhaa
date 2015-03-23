@@ -2,8 +2,11 @@ package com.coptertours.controller.rest;
 
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,9 +26,15 @@ public class RatingRestController {
 		return this.ratingRepository.findAll();
 	}
 
-	@RequestMapping(value = "/{ratingId}", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	Rating findOne(@PathVariable Long ratingId) {
-		return this.ratingRepository.findOne(ratingId);
+	Rating addRating(@RequestBody Rating rating,
+			final HttpServletResponse response) {
+		return this.ratingRepository.save(rating);
+	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	void deleteModel(@PathVariable Long id) {
+		this.ratingRepository.delete(id);
 	}
 }

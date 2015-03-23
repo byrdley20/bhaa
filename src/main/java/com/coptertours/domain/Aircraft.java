@@ -1,8 +1,11 @@
 package com.coptertours.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import com.google.gson.annotations.Expose;
 
@@ -16,8 +19,10 @@ public class Aircraft extends BaseDomain {
 	private String aircraftNumber;
 	@Expose
 	private String name;
+	@ManyToOne(targetEntity = Model.class, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
+	@JoinColumn(name = "MODEL_ID")
 	@Expose
-	private int modelId;
+	private Model model;
 	@Expose
 	private String serialNum;
 	@Expose
@@ -25,7 +30,7 @@ public class Aircraft extends BaseDomain {
 	@Expose
 	private String engine;
 	@Expose
-	private int showStarts;
+	private boolean showStarts;
 	@Expose
 	private int ordering;
 
@@ -41,8 +46,8 @@ public class Aircraft extends BaseDomain {
 		return name;
 	}
 
-	public int getModelId() {
-		return modelId;
+	public Model getModel() {
+		return model;
 	}
 
 	public String getSerialNum() {
@@ -57,7 +62,7 @@ public class Aircraft extends BaseDomain {
 		return engine;
 	}
 
-	public int getShowStarts() {
+	public boolean getShowStarts() {
 		return showStarts;
 	}
 
