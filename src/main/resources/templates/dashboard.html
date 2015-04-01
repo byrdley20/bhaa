@@ -14,13 +14,26 @@
 
     	//]]>
     </script>
+    <style>
+    	.col {
+    		float: left;
+    		width: 50%;
+    	}
+    </style>
 </head>
 <body>
 
 	<div th:replace="includes/header :: header">...</div>
 
-	<div class="dashboard-rows" th:each="a : ${aircrafts}">
-		
+	<div class="dashboard-grid">
+		<div class="col" th:each="a : ${aircrafts}" th:classappend="${aStat.odd}?'odd':'even'">
+			<span class="name" th:text="${a.name}">Name</span>:
+			<a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${a.id})}">Log</a>
+			|
+			<a href="aircraftStatus.html?id=1" th:href="@{aircraftStatus.html(id=${a.id})}">Status</a>
+			|
+			<a href="adCompliance.html?id=1" th:href="@{adCompliance.html(id=${a.id})}">AD Compliance</a>
+		</div>
 	</div>
 </body>
 </html>

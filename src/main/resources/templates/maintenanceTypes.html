@@ -12,8 +12,26 @@
     <script th:inline="javascript">
     	/*<![CDATA[*/
     	           
+    	var models = {};
+    	var maintenanceCategories = {};
+    	var actions = {};
+    	           
 		function buildOptions(){
-		
+			var allModels = /*[[${allModels}]]*/;
+			for(var i=0; i < allModels.length; i++) {
+				var model = allModels[i];
+				models[model.id] = model;
+			}
+			var allMaintenanceCategories = /*[[${maintenanceCategoryList}]]*/;
+			for(var i=0; i < allMaintenanceCategories.length; i++) {
+				var maintenanceCategory = allMaintenanceCategories[i];
+				maintenanceCategories[maintenanceCategory.key] = maintenanceCategory.value;
+			}
+			var allActions = /*[[${actionList}]]*/;
+			for(var i=0; i < allActions.length; i++) {
+				var action = allActions[i];
+				actions[action.key] = action.value;
+			}
 		}
 		/*]]>*/
     </script>
@@ -25,9 +43,16 @@
 		
     	$(function() {
     		var id = $( "#id" ),
-        	name = $( "#name" )
+        	name = $( "#name" ),
+        	maintenanceCategory = $( "#maintenanceCategory" ),
+        	model = $( "#model" ),
+        	timeBeforeAction = $( "#timeBeforeAction" ),
+        	manualNumber = $( "#manualNumber" ),
+        	partNumber = $( "#partNumber" ),
+        	serialNumber = $( "#serialNumber" ),
+        	action = $( "#action" )
     		
-        	allFields = $( [] ).add( id ).add( name );
+        	allFields = $( [] ).add( id ).add( name ).add( maintenanceCategory ).add( model ).add( timeBeforeAction ).add( manualNumber ).add( partNumber ).add( serialNumber ).add( action );
         	addUpdatePath = "/maintenanceTypes";
         	deletePath = "/maintenanceTypes";
     		
@@ -41,24 +66,67 @@
     		//passwordValidation[passwordValidation.length] = createPasswordValidationObject(password, password2);
     	});
     	function setSelectValue(formData, element) {
-
+			if(element.name == 'model'){
+				formData[element.name] = models[element.value];
+			} else if(element.name == 'maintenanceCategory'){
+				formData[element.name] = element.value;
+			} else if(element.name == 'action'){
+				formData[element.name] = element.value;
+			}
     	}
     	function writeCreatedRecord(savedRecord){
 	    	$( ".records-rows" ).last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
 			    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
 			    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
+			    	"<span class='maintenanceCategory dataCell'>"+maintenanceCategories[savedRecord.maintenanceCategory]+"</span> " +
+			    	//"<span class='model dataCell'>"+savedRecord.model.name+"</span> " +
+			    	"<span class='timeBeforeAction dataCell'>"+savedRecord.timeBeforeAction+"</span> " +
+			    	"<span class='manualNumber dataCell'>"+savedRecord.manualNumber+"</span> " +
+			    	"<span class='partNumber dataCell'>"+savedRecord.partNumber+"</span> " +
+			    	"<span class='serialNumber dataCell'>"+savedRecord.serialNumber+"</span> " +
+			    	"<span class='action dataCell'>"+actions[savedRecord.action]+"</span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
+			    	"<span class='modelId cell hidden'>"+savedRecord.model.id+"</span> " +
+			    	"<span class='maintenanceCategoryValue cell hidden'>"+savedRecord.maintenanceCategory+"</span> " +
+			    	"<span class='actionValue cell hidden'>"+savedRecord.action+"</span> " +
 		    	"</div>" );    		
     	}
     	function writeEditRecord(savedRecord){
     		var editedRow = $(".id"+savedRecord.id);
     		editedRow.find('.name').html(savedRecord.name);
+    		editedRow.find('.maintenanceCategory').html(maintenanceCategories[savedRecord.maintenanceCategory]);
+    		//editedRow.find('.model').html(savedRecord.model.name);
+    		editedRow.find('.timeBeforeAction').html(savedRecord.timeBeforeAction);
+    		editedRow.find('.manualNumber').html(savedRecord.manualNumber);
+    		editedRow.find('.partNumber').html(savedRecord.partNumber);
+    		editedRow.find('.serialNumber').html(savedRecord.serialNumber);
+    		editedRow.find('.action').html(actions[savedRecord.action]);
     		editedRow.find('.id').html(savedRecord.id);
     	}
     	function populateEditForm(editLink){
     		var editSpan = $(editLink).closest('span');
     		$('#addEditForm').find('#name').val(editSpan.nextAll('span.name').first().html());
+
+    		/*
+    		var modelIdSpan = editSpan.nextAll('span.modelId');
+    		var modelOptionStr = "select option[value='"+modelIdSpan.html()+"']";
+    		$('#addEditForm').find(modelOptionStr).prop('selected','selected');
+    		*/
+    		
+    		var maintenanceCategoryValueSpan = editSpan.nextAll('span.maintenanceCategoryValue');
+    		var maintenanceCategoryValueStr = "select option[value='"+maintenanceCategoryValueSpan.html()+"']";
+    		$('#addEditForm').find(maintenanceCategoryValueStr).prop('selected','selected');
+    		
+    		$('#addEditForm').find('#timeBeforeAction').val(editSpan.nextAll('span.timeBeforeAction').first().html());
+    		$('#addEditForm').find('#manualNumber').val(editSpan.nextAll('span.manualNumber').first().html());
+    		$('#addEditForm').find('#partNumber').val(editSpan.nextAll('span.partNumber').first().html());
+    		$('#addEditForm').find('#serialNumber').val(editSpan.nextAll('span.serialNumber').first().html());
+    		
+    		var actionValueSpan = editSpan.nextAll('span.actionValue');
+    		var actionValueStr = "select option[value='"+actionValueSpan.html()+"']";
+    		$('#addEditForm').find(actionValueStr).prop('selected','selected');
+    		
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
     	}
     	function findDeleteName(deleteLink){
@@ -66,33 +134,105 @@
     	}
     	//]]>
     </script>
+    <style>
+    	.model-row {margin-bottom:20px;}
+    </style>
 </head>
 <body>
 
 	<div th:replace="includes/header :: header">...</div>
 
 	<H1>Maintenance Types</H1>
-	<div id="dialog-form" title="Create New Maintenance Type">
+	<div id="dialog-form" title="New Maintenance Type">
 		<p class="validateTips"></p>
 		<form id="addEditForm" action="/maintenanceTypes" method="post">
 			<fieldset>
+				<label for="model">Model</label>
+				<select id="model" name="model" class="ui-widget-content ui-corner-all">
+					<option th:each="model : ${allModels}" th:text="${model.name}" th:value="${model.id}">${model.name}</option>
+				</select>
+				<label for="maintenanceCategory">Category</label>
+				<select id="maintenanceCategory" name="maintenanceCategory" class="ui-widget-content ui-corner-all">
+				  <option th:each="maintenanceCategory : ${T(com.coptertours.options.MaintenanceCategory).values()}" th:value="${maintenanceCategory}" th:text="${maintenanceCategory.name}"></option>
+				</select>
 				<label for="name">Name</label>
 				<input type="text" name="name" id="name" value="New Maintenance Type" class="text ui-widget-content ui-corner-all"/>
+				<label for="timeBeforeAction">TBO</label>
+				<input type="text" name="timeBeforeAction" id="timeBeforeAction" value="50" class="text ui-widget-content ui-corner-all"/>
+				<label for="manualNumber">Manual Number</label>
+				<input type="text" name="manualNumber" id="manualNumber" value="Manual-123" class="text ui-widget-content ui-corner-all"/>
+				<label for="partNumber">Part Number</label>
+				<input type="text" name="partNumber" id="partNumber" value="Part-123" class="text ui-widget-content ui-corner-all"/>
+				<label for="serialNumber">Serial Number</label>
+				<input type="text" name="serialNumber" id="serialNumber" value="Serial-123" class="text ui-widget-content ui-corner-all"/>
+				<label for="action">Action</label>
+				<select id="action" name="action" class="ui-widget-content ui-corner-all">
+				  <option th:each="action : ${T(com.coptertours.options.Action).values()}" th:value="${action}" th:text="${action.name}"></option>
+				</select>
+								
 				<input type="text" name="id" id="id" class="hidden"/>
 				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 			</fieldset>
 		</form>
 	</div>
+	<!--
 	<div class="records-header">
 		<span class="delete"></span>
 		<span class="edit"></span>
 	    <span class="headerCell dataCell">Name</span>
+	    <span class="headerCell dataCell">Maintenance Category</span>
+	    <span class="headerCell dataCell">Model</span>
+	    <span class="headerCell dataCell">TBO</span>
+	    <span class="headerCell dataCell">Manual Number</span>
+	    <span class="headerCell dataCell">Part Number</span>
+	    <span class="headerCell dataCell">Serial Number</span>
+	    <span class="headerCell dataCell">Action</span>
 	</div>
 	<div class="records-rows" th:each="m : ${maintenanceTypes}" th:classappend="|id${m.id}">
 		<span class="edit"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
 		<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
 		<span class="name dataCell" th:text="${m.name}">Name</span>
+		<span class="maintenanceCategory dataCell" th:text="${m.maintenanceCategory.name}">Maintenance Category</span>
+		<span class="model dataCell" th:text="${m.model.name}">Model</span>
+		<span class="timeBeforeAction dataCell" th:text="${m.timeBeforeAction}">TBO</span>
+		<span class="manualNumber dataCell" th:text="${m.manualNumber}">Manual Number</span>
+		<span class="partNumber dataCell" th:text="${m.partNumber}">Part Number</span>
+		<span class="serialNumber dataCell" th:text="${m.serialNumber}">Serial Number</span>
+		<span class="action dataCell" th:text="${m.action.name}">Action</span>
 		<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
+		<span class="modelId cell hidden" th:text="${m.model.id}">Hidden Model Id</span>
+		<span class="maintenanceCategoryValue cell hidden" th:text="${m.maintenanceCategory}">Hidden Maintenance Category</span>
+		<span class="actionValue cell hidden" th:text="${m.action}">Hidden Action</span>
+	</div>
+	-->
+	<div class="model-row" th:each="modelToMaintType : ${modelToMaintTypes}">
+		<span class="dataCell" th:text="${modelToMaintType.key}">Robinson 44</span>
+		<div class="category-row" th:each="maintCategoryToMaintTypes : ${modelToMaintType.value}">
+			<span class="dataCell" th:text="${maintCategoryToMaintTypes.key.name}">MONTH</span>
+			<div class="records-header">
+				<span class="delete"></span>
+				<span class="edit"></span>
+			    <span class="headerCell dataCell">Name</span>
+			    <span class="headerCell dataCell">TBO</span>
+			    <span class="headerCell dataCell">Manual Number</span>
+			    <span class="headerCell dataCell">Part Number</span>
+			    <span class="headerCell dataCell">Serial Number</span>
+			    <span class="headerCell dataCell">Action</span>
+			</div>
+			<div class="records-rows" th:each="m : ${maintCategoryToMaintTypes.value}">
+				<span class="edit"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
+				<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+				<span class="name dataCell" th:text="${m.name}">Name</span>
+				<span class="timeBeforeAction dataCell" th:text="${m.timeBeforeAction}">TBO</span>
+				<span class="manualNumber dataCell" th:text="${m.manualNumber}">Manual Number</span>
+				<span class="partNumber dataCell" th:text="${m.partNumber}">Part Number</span>
+				<span class="serialNumber dataCell" th:text="${m.serialNumber}">Serial Number</span>
+				<span class="action dataCell" th:text="${m.action.name}">Action</span>
+				<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
+				<span class="maintenanceCategoryValue cell hidden" th:text="${m.maintenanceCategory}">Hidden Maintenance Category</span>
+				<span class="actionValue cell hidden" th:text="${m.action}">Hidden Action</span>
+			</div>
+		</div>
 	</div>
 	<br/>
 	<button id="create-record">Create new maintenance type</button>

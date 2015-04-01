@@ -1,7 +1,6 @@
 package com.coptertours.controller.mvc;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +9,7 @@ import com.coptertours.repository.RatingRepository;
 import com.coptertours.repository.UserRepository;
 
 @Controller
-public class UserController {
+public class UserController extends BaseController {
 	@Autowired
 	UserRepository userRepository;
 	@Autowired
@@ -22,8 +21,4 @@ public class UserController {
 		model.addAttribute("allRatings", this.ratingRepository.findAll(sortByNameAsc()));
 		return "users";
 	}
-	
-	private Sort sortByNameAsc() {
-        return new Sort(Sort.Direction.ASC, "name");
-    }
 }

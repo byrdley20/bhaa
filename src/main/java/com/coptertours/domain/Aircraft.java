@@ -1,11 +1,14 @@
 package com.coptertours.domain;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.google.gson.annotations.Expose;
 
@@ -33,6 +36,15 @@ public class Aircraft extends BaseDomain {
 	private boolean showStarts;
 	@Expose
 	private int ordering;
+	@OneToMany(targetEntity = FlightLog.class, cascade = {
+			CascadeType.REFRESH, CascadeType.MERGE })
+	@JoinColumn(name = "AIRCRAFT_ID")
+	@Expose
+	private List<FlightLog> flightLogs;
+
+	public List<FlightLog> getFlightLogs() {
+		return flightLogs;
+	}
 
 	public Long getId() {
 		return id;

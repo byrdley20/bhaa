@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.coptertours.repository.LocationRepository;
 
 @Controller
-public class LocationController {
+public class LocationController extends BaseController {
 	@Autowired
 	LocationRepository locationRepository;
 
 	@RequestMapping("/locations.html")
 	String locations(Model model) {
-		model.addAttribute("locations", this.locationRepository.findAll());
+		model.addAttribute("locations", this.locationRepository.findAll(sortByNameAsc()));
 		return "locations";
 	}
 }

@@ -1,8 +1,11 @@
 package com.coptertours.domain;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import com.google.gson.annotations.Expose;
 
@@ -15,6 +18,9 @@ public class Model extends BaseDomain {
 	@Expose
 	private String name;
 
+	@Transient
+	private List<MaintenanceType> maintenanceTypes;
+
 	public Long getId() {
 		return id;
 	}
@@ -23,4 +29,11 @@ public class Model extends BaseDomain {
 		return name;
 	}
 
+	public List<MaintenanceType> getMaintenanceTypes() {
+		return maintenanceTypes;
+	}
+
+	public void setMaintenanceTypes(List<MaintenanceType> maintenanceTypes) {
+		this.maintenanceTypes = maintenanceTypes;
+	}
 }

@@ -116,7 +116,7 @@
 				<input type="text" name="aircraftNumber" id="aircraftNumber" value="47 G2-A1" class="text ui-widget-content ui-corner-all"/>
 				<label for="name">Name</label>
 				<input type="text" name="name" id="name" value="N121AH" class="text ui-widget-content ui-corner-all"/>
-				<label for="email">Model</label>
+				<label for="model">Model</label>
 				<select id="model" name="model" class="ui-widget-content ui-corner-all">
 					<option th:each="model : ${allModels}" th:text="${model.name}" th:value="${model.id}">${model.name}</option>
 				</select>

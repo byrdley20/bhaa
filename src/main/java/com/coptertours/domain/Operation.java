@@ -7,15 +7,13 @@ import javax.persistence.Id;
 import com.google.gson.annotations.Expose;
 
 @Entity
-public class Maintenance extends BaseDomain {
+public class Operation extends BaseDomain {
 	@Id
 	@GeneratedValue
 	@Expose
 	private Long id;
 	@Expose
 	private String name;
-	@Expose
-	private Long maintenanceTypeId;
 
 	public Long getId() {
 		return id;
@@ -23,10 +21,6 @@ public class Maintenance extends BaseDomain {
 
 	public String getName() {
 		return name;
-	}
-
-	public Long getMaintenanceTypeId() {
-		return maintenanceTypeId;
 	}
 
 }

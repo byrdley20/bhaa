@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Black Hills Aerial Adventures | Status</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
+	<link rel="stylesheet" href="css/main.css" />
+    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script th:inline="javascript">
+    	/*<![CDATA[*/
+    	           
+		function buildOptions(){
+		
+		}
+		/*]]>*/
+    </script>
+    <script type="text/javascript">
+  		//<![CDATA[
+
+    	//]]>
+    </script>
+    <style>
+    	.col {
+    		float: left;
+    		width: 50%;
+    	}
+    </style>
+</head>
+<body>
+
+	<div th:replace="includes/header :: header">...</div>
+
+	<div th:text="${aircraft.model.name}">Model Name</div>
+	<div th:text="${aircraft.aircraftNumber}">ID</div>
+	<div th:text="'S/N: ' + ${aircraft.serialNum}">Serial Number</div>
+	
+	<div class="records-header">
+	    <span class="headerCell dataCell">Item</span>
+	    <span class="headerCell dataCell">C/W</span>
+	    <span class="headerCell dataCell">TBO</span>
+	    <span class="headerCell dataCell">Hobbs Due</span>
+	    <span class="headerCell dataCell">Remaining Hours</span>
+	</div>
+	<div class="maint-rows" th:each="maintType : ${flightHourMaintTypes}">
+		<span class="dataCell" th:text="${maintType.name}">Item Name</span>
+		<span class="dataCell">599.9</span>
+		<span class="dataCell" th:text="${maintType.timeBeforeAction}">100.0</span>
+		<span class="dataCell">699.9</span>
+		<span class="dataCell">29.0</span>
+	</div>
+	
+</body>
+</html>

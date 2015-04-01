@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.coptertours.repository.AircraftRepository;
 
 @Controller
-public class DashboardController {
+public class DashboardController extends BaseController {
 	@Autowired
 	AircraftRepository aircraftRepository;
 

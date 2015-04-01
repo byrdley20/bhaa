@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.coptertours.repository.RatingRepository;
 
 @Controller
-public class RatingController {
+public class RatingController extends BaseController {
 	@Autowired
 	RatingRepository ratingRepository;
 
 	@RequestMapping("/ratings.html")
 	String ratings(Model model) {
-		model.addAttribute("ratings", this.ratingRepository.findAll());
+		model.addAttribute("ratings", this.ratingRepository.findAll(sortByNameAsc()));
 		return "ratings";
 	}
 }

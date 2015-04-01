@@ -64,6 +64,9 @@ function saveRecord() {
 			} else {
 				formData[v.name] = v.value;
 			}
+			if (typeof setExtraValues == 'function') { 
+				setExtraValues(formData); 
+			}
 		});
 		var editRecord = (formData["id"] > 0);
         $.ajax({
