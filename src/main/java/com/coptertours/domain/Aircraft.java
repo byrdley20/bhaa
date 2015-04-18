@@ -1,5 +1,6 @@
 package com.coptertours.domain;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -8,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.google.gson.annotations.Expose;
 
@@ -31,20 +32,27 @@ public class Aircraft extends BaseDomain {
 	@Expose
 	private String imagePath;
 	@Expose
-	private String engine;
-	@Expose
-	private boolean showStarts;
-	@Expose
 	private int ordering;
-	@OneToMany(targetEntity = FlightLog.class, cascade = {
-			CascadeType.REFRESH, CascadeType.MERGE })
-	@JoinColumn(name = "AIRCRAFT_ID")
 	@Expose
-	private List<FlightLog> flightLogs;
+	private BigDecimal hobbs;
+	@Expose
+	private BigDecimal hobbsOffset;
+	@Expose
+	private BigDecimal engineTotalTime;
+	@Expose
+	private BigDecimal engineTotalTimeOffset;
 
-	public List<FlightLog> getFlightLogs() {
-		return flightLogs;
-	}
+	@Transient
+	@Expose
+	private List<MaintenanceType> maintenanceTypes;
+
+	@Transient
+	@Expose
+	private List<MaintenanceType> flightHourMaintenanceTypes;
+
+	@Transient
+	@Expose
+	private List<MaintenanceType> monthMaintenanceTypes;
 
 	public Long getId() {
 		return id;
@@ -70,16 +78,56 @@ public class Aircraft extends BaseDomain {
 		return imagePath;
 	}
 
-	public String getEngine() {
-		return engine;
-	}
-
-	public boolean getShowStarts() {
-		return showStarts;
-	}
-
 	public int getOrdering() {
 		return ordering;
+	}
+
+	public BigDecimal getHobbs() {
+		return hobbs;
+	}
+
+	public BigDecimal getHobbsOffset() {
+		return hobbsOffset;
+	}
+
+	public BigDecimal getEngineTotalTime() {
+		return engineTotalTime;
+	}
+
+	public BigDecimal getEngineTotalTimeOffset() {
+		return engineTotalTimeOffset;
+	}
+
+	public List<MaintenanceType> getFlightHourMaintenanceTypes() {
+		return flightHourMaintenanceTypes;
+	}
+
+	public void setFlightHourMaintenanceTypes(List<MaintenanceType> flightHourMaintenanceTypes) {
+		this.flightHourMaintenanceTypes = flightHourMaintenanceTypes;
+	}
+
+	public List<MaintenanceType> getMonthMaintenanceTypes() {
+		return monthMaintenanceTypes;
+	}
+
+	public void setMonthMaintenanceTypes(List<MaintenanceType> monthMaintenanceTypes) {
+		this.monthMaintenanceTypes = monthMaintenanceTypes;
+	}
+
+	public List<MaintenanceType> getMaintenanceTypes() {
+		return maintenanceTypes;
+	}
+
+	public void setMaintenanceTypes(List<MaintenanceType> maintenanceTypes) {
+		this.maintenanceTypes = maintenanceTypes;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 
 }

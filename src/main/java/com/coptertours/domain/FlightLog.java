@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.annotations.Expose;
 
 @Entity
@@ -19,15 +20,16 @@ public class FlightLog extends BaseDomain {
 	@GeneratedValue
 	@Expose
 	private Long id;
-	// @ManyToOne(targetEntity = Aircraft.class, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
-	// @JoinColumn(name = "AIRCRAFT_ID")
-	// @Expose
-	// private Aircraft aircraft;
+	@ManyToOne(targetEntity = Aircraft.class, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
+	@JoinColumn(name = "AIRCRAFT_ID")
+	@Expose
+	private Aircraft aircraft;
 	@ManyToOne(targetEntity = User.class, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
 	@JoinColumn(name = "USER_ID")
 	@Expose
 	private User user;
 	@Expose
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy", timezone = "GMT-06:00")
 	private Date date;
 	@Expose
 	private int starts;
@@ -44,7 +46,11 @@ public class FlightLog extends BaseDomain {
 	@Expose
 	private Operation operation;
 
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEEE, MMMM dd, yyyy");
+	private static final SimpleDateFormat FLIGHT_LOG_DATE_FORMAT = new SimpleDateFormat("EEEE, MMMM dd, yyyy");
+
+	public String getFlightLogDateDisplay() {
+		return FLIGHT_LOG_DATE_FORMAT.format(getDate());
+	}
 
 	public String getDateDisplay() {
 		return DATE_FORMAT.format(getDate());
@@ -54,9 +60,9 @@ public class FlightLog extends BaseDomain {
 		return id;
 	}
 
-	// public Aircraft getAircraft() {
-	// return aircraft;
-	// }
+	public Aircraft getAircraft() {
+		return aircraft;
+	}
 
 	public User getUser() {
 		return user;

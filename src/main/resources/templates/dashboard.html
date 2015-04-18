@@ -11,28 +11,44 @@
     <script type="text/javascript" src="js/main.js"></script>
     <script th:inline="javascript">
     	/*<![CDATA[*/
-
+    	               	
     	//]]>
     </script>
     <style>
     	.col {
     		float: left;
-    		width: 50%;
+    		width: 33%;
+    		margin-bottom: 20px;
     	}
+    	.records-header .headerCell {
+    		float: left;
+    		width: 33%;
+		}
     </style>
 </head>
 <body>
 
 	<div th:replace="includes/header :: header">...</div>
-
+	<br/><br/>
 	<div class="dashboard-grid">
-		<div class="col" th:each="a : ${aircrafts}" th:classappend="${aStat.odd}?'odd':'even'">
+		<div class="col" th:each="a : ${aircrafts}" th:classappend="${aStat.odd}?'odd':'even'" th:with="currentHobbs=(${a.hobbs}+${a.hobbsOffset})">
 			<span class="name" th:text="${a.name}">Name</span>:
 			<a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${a.id})}">Log</a>
 			|
 			<a href="aircraftStatus.html?id=1" th:href="@{aircraftStatus.html(id=${a.id})}">Status</a>
 			|
 			<a href="adCompliance.html?id=1" th:href="@{adCompliance.html(id=${a.id})}">AD Compliance</a>
+			<div th:text="'Current Hobbs: ' + ${currentHobbs} + ' HR'">Current Hobbs</div>
+			<div class="records-header">
+				<span class="headerCell">Maintenance</span>
+	    		<span class="headerCell">Due</span>
+	    		<span class="headerCell">Remaining Time</span>
+	    	</div>
+			<div th:each="m : ${a.maintenanceTypes}" th:with="maintCategoryType=(${m.maintenanceCategory}), complyWithDate=(((${m.maintenanceLog}==null)or(${m.maintenanceLog.complyWithDate}==null))?'N/A':${m.maintenanceLog.complyWithDate}), complyWithHobbs=((${m.maintenanceLog}==null)?'0':${m.maintenanceLog.complyWithHobbs}), hobbsDue=((${maintCategoryType}==${T(com.coptertours.options.MaintenanceCategory).FLIGHT_HOURS})?(${complyWithHobbs}+${m.timeBeforeAction})), dueDate=(((${maintCategoryType}==${T(com.coptertours.options.MaintenanceCategory).MONTHS}) and (${m.maintenanceLog} != null) and (${m.maintenanceLog.complyWithDate} != null))?${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, m.timeBeforeAction), 'MM/dd/yy')}:'N/A')">
+				<div class="col" th:text="${m.name}">Maint Type Name</div>
+				<div class="col" th:text="((${hobbsDue}!=null)?${hobbsDue}:${dueDate})">Due</div>
+				<div class="col" th:text="((${hobbsDue}!=null)?(${hobbsDue}-${currentHobbs})+' hr':(((${dueDate} == null) or (${dueDate} == 'N/A'))?'N/A':${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)} + ' days'))">Remaining</div>
+			</div>
 		</div>
 	</div>
 </body>

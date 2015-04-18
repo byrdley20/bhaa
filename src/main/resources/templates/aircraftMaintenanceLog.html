@@ -1,0 +1,203 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Black Hills Aerial Adventures | Maintenance Types</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
+	<link rel="stylesheet" href="css/main.css" />
+    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script th:inline="javascript">
+    	/*<![CDATA[*/
+    	           
+    	var maintenanceCategories = {};
+    	var actions = {};
+    	var model = /*[[${model}]]*/;
+    	           
+		function buildOptions(){
+			var allMaintenanceCategories = /*[[${maintenanceCategoryList}]]*/;
+			for(var i=0; i < allMaintenanceCategories.length; i++) {
+				var maintenanceCategory = allMaintenanceCategories[i];
+				maintenanceCategories[maintenanceCategory.key] = maintenanceCategory.value;
+			}
+			var allActions = /*[[${actionList}]]*/;
+			for(var i=0; i < allActions.length; i++) {
+				var action = allActions[i];
+				actions[action.key] = action.value;
+			}
+		}
+		/*]]>*/
+    </script>
+    <script type="text/javascript">
+  		//<![CDATA[
+  		           
+		var lengthValidation = [];
+		var passwordValidation = [];
+		
+    	$(function() {
+    		var id = $( "#id" ),
+        	name = $( "#name" ),
+        	maintenanceCategory = $( "#maintenanceCategory" ),
+        	timeBeforeAction = $( "#timeBeforeAction" ),
+        	manualNumber = $( "#manualNumber" ),
+        	partNumber = $( "#partNumber" ),
+        	serialNumber = $( "#serialNumber" ),
+        	action = $( "#action" )
+    		
+        	allFields = $( [] ).add( id ).add( name ).add( maintenanceCategory ).add( timeBeforeAction ).add( manualNumber ).add( partNumber ).add( serialNumber ).add( action );
+        	addUpdatePath = "/maintenanceTypes";
+        	deletePath = "/maintenanceTypes";
+    		
+    		createDialog("Save Maintenance Type");
+    		
+    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(userId, "'ID'", 1, 15);
+    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(firstName, "'First Name'", 1, 100);
+    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(lastName, "'Last Name'", 1, 100);
+    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(username, "'Username'", 1, 100);
+    		
+    		//passwordValidation[passwordValidation.length] = createPasswordValidationObject(password, password2);
+    	});
+    	function setSelectValue(formData, element) {
+			if(element.name == 'maintenanceCategory'){
+				formData[element.name] = element.value;
+			} else if(element.name == 'action'){
+				formData[element.name] = element.value;
+			}
+    	}
+    	function setExtraValues(formData) {
+    		formData["model"] = model;
+    	}
+    	function writeCreatedRecord(savedRecord){
+    		var elementBefore;
+    		if($("."+savedRecord.maintenanceCategory).siblings(".records-rows").length){
+    			elementBefore = $("."+savedRecord.maintenanceCategory).siblings(".records-rows");
+    		} else {
+    			elementBefore = $("."+savedRecord.maintenanceCategory).siblings(".records-header");
+    		}
+    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
+			    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
+			    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
+			    	"<span class='timeBeforeAction dataCell'>"+savedRecord.timeBeforeAction+"</span> " +
+			    	"<span class='manualNumber dataCell'>"+savedRecord.manualNumber+"</span> " +
+			    	"<span class='partNumber dataCell'>"+savedRecord.partNumber+"</span> " +
+			    	"<span class='serialNumber dataCell'>"+savedRecord.serialNumber+"</span> " +
+			    	"<span class='action dataCell'>"+actions[savedRecord.action]+"</span> " +
+			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
+			    	"<span class='maintenanceCategoryValue cell hidden'>"+savedRecord.maintenanceCategory+"</span> " +
+			    	"<span class='actionValue cell hidden'>"+savedRecord.action+"</span> " +
+		    	"</div>" );    		
+    	}
+    	function writeEditRecord(savedRecord){
+    		var editedRow = $(".id"+savedRecord.id);
+    		var oldMaintenanceCategory = editedRow.find('.maintenanceCategoryValue').html();
+    		if(oldMaintenanceCategory != savedRecord.maintenanceCategory){
+    			editedRow.remove();
+    			writeCreatedRecord(savedRecord)
+    		} else {
+	    		editedRow.find('.name').html(savedRecord.name);
+	    		editedRow.find('.maintenanceCategory').html(maintenanceCategories[savedRecord.maintenanceCategory]);
+	    		editedRow.find('.timeBeforeAction').html(savedRecord.timeBeforeAction);
+	    		editedRow.find('.manualNumber').html(savedRecord.manualNumber);
+	    		editedRow.find('.partNumber').html(savedRecord.partNumber);
+	    		editedRow.find('.serialNumber').html(savedRecord.serialNumber);
+	    		editedRow.find('.action').html(actions[savedRecord.action]);
+	    		editedRow.find('.id').html(savedRecord.id);
+	    		editedRow.find('.maintenanceCategoryValue').html(savedRecord.maintenanceCategory);
+	    		editedRow.find('.actionValue').html(savedRecord.action);
+    		}
+    	}
+    	function populateEditForm(editLink){
+    		var editSpan = $(editLink).closest('span');
+    		$('#addEditForm').find('#name').val(editSpan.nextAll('span.name').first().html());
+    		
+    		var maintenanceCategoryValueSpan = editSpan.nextAll('span.maintenanceCategoryValue');
+    		var maintenanceCategoryValueStr = "select option[value='"+maintenanceCategoryValueSpan.html()+"']";
+    		$('#addEditForm').find(maintenanceCategoryValueStr).prop('selected','selected');
+    		
+    		$('#addEditForm').find('#timeBeforeAction').val(editSpan.nextAll('span.timeBeforeAction').first().html());
+    		$('#addEditForm').find('#manualNumber').val(editSpan.nextAll('span.manualNumber').first().html());
+    		$('#addEditForm').find('#partNumber').val(editSpan.nextAll('span.partNumber').first().html());
+    		$('#addEditForm').find('#serialNumber').val(editSpan.nextAll('span.serialNumber').first().html());
+    		
+    		var actionValueSpan = editSpan.nextAll('span.actionValue');
+    		var actionValueStr = "select option[value='"+actionValueSpan.html()+"']";
+    		$('#addEditForm').find(actionValueStr).prop('selected','selected');
+    		
+    		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
+    	}
+    	function findDeleteName(deleteLink){
+    		return $(deleteLink).closest('span').nextAll('span.name').first().html();
+    	}
+    	//]]>
+    </script>
+    <style>
+    	.model-row {margin-bottom:20px;}
+    </style>
+</head>
+<body>
+
+	<div th:replace="includes/header :: header">...</div>
+
+	<H1>Maintenance Types</H1>
+	<div id="dialog-form" title="New Maintenance Type">
+		<p class="validateTips"></p>
+		<form id="addEditForm" action="/maintenanceTypes" method="post">
+			<fieldset>
+				<label for="maintenanceCategory">Category</label>
+				<select id="maintenanceCategory" name="maintenanceCategory" class="ui-widget-content ui-corner-all">
+				  <option th:each="maintenanceCategory : ${T(com.coptertours.options.MaintenanceCategory).values()}" th:value="${maintenanceCategory}" th:text="${maintenanceCategory.name}"></option>
+				</select>
+				<label for="name">Name</label>
+				<input type="text" name="name" id="name" value="New Maintenance Type" class="text ui-widget-content ui-corner-all"/>
+				<label for="timeBeforeAction">TBO</label>
+				<input type="text" name="timeBeforeAction" id="timeBeforeAction" value="50" class="text ui-widget-content ui-corner-all"/>
+				<label for="manualNumber">Manual Number</label>
+				<input type="text" name="manualNumber" id="manualNumber" value="Manual-123" class="text ui-widget-content ui-corner-all"/>
+				<label for="partNumber">Part Number</label>
+				<input type="text" name="partNumber" id="partNumber" value="Part-123" class="text ui-widget-content ui-corner-all"/>
+				<label for="serialNumber">Serial Number</label>
+				<input type="text" name="serialNumber" id="serialNumber" value="Serial-123" class="text ui-widget-content ui-corner-all"/>
+				<label for="action">Action</label>
+				<select id="action" name="action" class="ui-widget-content ui-corner-all">
+				  <option th:each="action : ${T(com.coptertours.options.Action).values()}" th:value="${action}" th:text="${action.name}"></option>
+				</select>
+								
+				<input type="text" name="id" id="id" class="hidden"/>
+				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+			</fieldset>
+		</form>
+	</div>
+	<div class="dataCell" th:text="${model.name}">Robinson 44</div>
+	<div class="category-row" th:each="mctmt : ${maintCategoryToMaintTypes}">
+		<span class="dataCell" th:text="${mctmt.key.name}" th:classappend="|${mctmt.key}">MONTH</span>
+		<div class="records-header">
+			<span class="delete"></span>
+			<span class="edit"></span>
+		    <span class="headerCell dataCell">Name</span>
+		    <span class="headerCell dataCell">TBO</span>
+		    <span class="headerCell dataCell">Manual Number</span>
+		    <span class="headerCell dataCell">Part Number</span>
+		    <span class="headerCell dataCell">Serial Number</span>
+		    <span class="headerCell dataCell">Action</span>
+		</div>
+		<div class="records-rows" th:each="m : ${mctmt.value}" th:classappend="|id${m.id}">
+			<span class="edit"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
+			<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+			<span class="name dataCell" th:text="${m.name}">Name</span>
+			<span class="timeBeforeAction dataCell" th:text="${m.timeBeforeAction}">TBO</span>
+			<span class="manualNumber dataCell" th:text="${m.manualNumber}">Manual Number</span>
+			<span class="partNumber dataCell" th:text="${m.partNumber}">Part Number</span>
+			<span class="serialNumber dataCell" th:text="${m.serialNumber}">Serial Number</span>
+			<span class="action dataCell" th:text="${m.action.name}">Action</span>
+			<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
+			<span class="maintenanceCategoryValue cell hidden" th:text="${m.maintenanceCategory}">Hidden Maintenance Category</span>
+			<span class="actionValue cell hidden" th:text="${m.action}">Hidden Action</span>
+		</div>
+	</div>
+	<br/>
+	<button id="create-record">Create new maintenance type</button>
+</body>
+</html>

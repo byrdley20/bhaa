@@ -8,4 +8,6 @@ import com.coptertours.domain.Model;
 
 public interface ModelRepository extends JpaRepository<Model, Long> {
 	List<Model> findByName(String name);
+
+	Model findById(Long id);
 }

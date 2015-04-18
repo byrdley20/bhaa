@@ -25,9 +25,10 @@
 		
     	$(function() {
     		var id = $( "#id" ),
-        	name = $( "#name" )
+        	name = $( "#name" ),
+        	showStarts = $( "#showStarts" );
     		
-        	allFields = $( [] ).add( id ).add( name );
+        	allFields = $( [] ).add( id ).add( name ).add( showStarts );
         	addUpdatePath = "/models";
         	deletePath = "/models";
     		
@@ -48,17 +49,23 @@
 			    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
 			    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
+			    	"<span class='showStarts dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.showStarts)+" disabled='disabled'/></span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 		    	"</div>" );    		
     	}
     	function writeEditRecord(savedRecord){
     		var editedRow = $(".id"+savedRecord.id);
     		editedRow.find('.name').html(savedRecord.name);
+    		editedRow.find('.showStarts input').prop('checked', savedRecord.showStarts);
     		editedRow.find('.id').html(savedRecord.id);
     	}
     	function populateEditForm(editLink){
     		var editSpan = $(editLink).closest('span');
     		$('#addEditForm').find('#name').val(editSpan.nextAll('span.name').first().html());
+    		var showStartsValue = editSpan.nextAll('span.showStarts').first().find("input").is(':checked');
+    		if(showStartsValue){
+        		$('#addEditForm').find('#showStarts').prop('checked', true);	
+    		}
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
     	}
     	function findDeleteName(deleteLink){
@@ -78,6 +85,8 @@
 			<fieldset>
 				<label for="name">Name</label>
 				<input type="text" name="name" id="name" value="Bell 406" class="text ui-widget-content ui-corner-all"/>
+				<label for="showStarts">Track Starts</label>
+				<input type="checkbox" name="showStarts" id="showStarts"/>
 				<input type="text" name="id" id="id" class="hidden"/>
 				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 			</fieldset>
@@ -87,11 +96,13 @@
 		<span class="delete"></span>
 		<span class="edit"></span>
 	    <span class="headerCell dataCell">Name</span>
+	    <span class="headerCell dataCell">Track Starts</span>
 	</div>
 	<div class="records-rows" th:each="m : ${models}" th:classappend="|id${m.id}">
 		<span class="edit"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
 		<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
 		<span class="name dataCell" th:text="${m.name}">Name</span>
+		<span class="showStarts dataCell"><input type="checkbox" th:value="${m.showStarts}" th:checked="${m.showStarts}" disabled="disabled"/></span>
 		<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
 	</div>
 	<br/>

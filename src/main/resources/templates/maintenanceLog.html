@@ -15,8 +15,8 @@
 	<div th:replace="includes/header :: header">...</div>
 
 	<div class="dashboard-grid">
-		<div class="col" th:each="m : ${models}">
-			<a href="modelMaintenanceTypes.html?id=1" th:href="@{modelMaintenanceTypes.html(id=${m.id})}" th:text="${m.name}">Model</a>
+		<div class="col" th:each="a : ${aircrafts}">
+			<a href="aircraftMaintenanceLog.html?id=1" th:href="@{aircraftMaintenanceLog.html(id=${a.id})}" th:text="${a.name}">Aircraft Name</a>
 		</div>
 	</div>
 </body>

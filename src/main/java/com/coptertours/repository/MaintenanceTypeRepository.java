@@ -12,4 +12,6 @@ public interface MaintenanceTypeRepository extends JpaRepository<MaintenanceType
 	List<MaintenanceType> findByName(String name);
 
 	List<MaintenanceType> findByModel(Model model, Sort sort);
+
+	List<MaintenanceType> findByModelAndShowOnDashboardTrue(Model model, Sort sort);
 }

@@ -35,6 +35,8 @@
 		}
 		
 		var aircraft = /*[[${aircraft}]]*/;
+		var month = /*[[${month}]]*/;
+		var maxHobbsEnd = /*[[${maxHobbsEnd}]]*/;
 		/*]]>*/
     </script>
     <script type="text/javascript">
@@ -59,6 +61,8 @@
     		
     		createDialog("Save Flight Log");
     		
+    		$( "#date" ).datepicker();
+    		
     		//lengthValidation[lengthValidation.length] = createLengthValidationObject(userId, "'ID'", 1, 15);
     		//lengthValidation[lengthValidation.length] = createLengthValidationObject(firstName, "'First Name'", 1, 100);
     		//lengthValidation[lengthValidation.length] = createLengthValidationObject(lastName, "'Last Name'", 1, 100);
@@ -79,26 +83,42 @@
     		formData["aircraft"] = aircraft;    		
     	}
     	function writeCreatedRecord(savedRecord){
-	    	$( ".records-rows" ).last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
-			    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
-			    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
-			    	"<span class='date dataCell'>"+savedRecord.dateDisplay+"</span> " +
-			    	"<span class='user dataCell'>"+savedRecord.user.firstName+" "+savedRecord.user.lastName+"</span> " +
-			    	"<span class='starts dataCell'>"+savedRecord.starts+"</span> " +
-			    	"<span class='location dataCell'>"+savedRecord.location.name+"</span> " +
-			    	"<span class='hobbsBegin dataCell'>"+savedRecord.hobbsBegin+"</span> " +
-			    	"<span class='hobbsEnd dataCell'>"+savedRecord.hobbsEnd+"</span> " +
-			    	"<span class='operation dataCell'>"+savedRecord.operation.name+"</span> " +
-			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
-			    	"<span class='userId cell hidden'>"+savedRecord.user.id+"</span> " +
-			    	"<span class='locationId cell hidden'>"+savedRecord.location.id+"</span> " +
-			    	"<span class='operationId cell hidden'>"+savedRecord.operation.id+"</span> " +
-		    	"</div>" );    		
+    		var flightLogDate = new Date(savedRecord.date);
+    		var flightLogMonth = flightLogDate.getMonth();
+    		if(month == flightLogMonth){
+	    		var elementBefore;
+	    		if($(".records-rows").length){
+	    			elementBefore = $(".records-rows");
+	    		} else {
+	    			elementBefore = $(".records-header");
+	    		}
+	    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
+				    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
+				    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+				    	"<span class='date dataCell'>"+savedRecord.flightLogDateDisplay+"</span> " +
+				    	"<span class='user dataCell'>"+savedRecord.user.firstName+" "+savedRecord.user.lastName+"</span> " +
+				    	"<span class='starts dataCell'>"+savedRecord.starts+"</span> " +
+				    	"<span class='location dataCell'>"+savedRecord.location.name+"</span> " +
+				    	"<span class='hobbsBegin dataCell'>"+savedRecord.hobbsBegin+"</span> " +
+				    	"<span class='hobbsEnd dataCell'>"+savedRecord.hobbsEnd+"</span> " +
+				    	"<span class='operation dataCell'>"+savedRecord.operation.name+"</span> " +
+				    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
+				    	"<span class='userId cell hidden'>"+savedRecord.user.id+"</span> " +
+				    	"<span class='locationId cell hidden'>"+savedRecord.location.id+"</span> " +
+				    	"<span class='operationId cell hidden'>"+savedRecord.operation.id+"</span> " +
+				    	"<span class='dateDisplay dataCell hidden'>"+savedRecord.dateDisplay+"</span> " +
+			    	"</div>" );  
+	    		if(savedRecord.hobbsEnd > maxHobbsEnd) {
+	    			maxHobbsEnd = savedRecord.hobbsEnd;
+	    		}
+    		} else {
+    			window.location.href = $("#monthLink"+(flightLogMonth+1)).attr("href");
+    		}
     	}
     	function writeEditRecord(savedRecord){
     		var editedRow = $(".id"+savedRecord.id);
     		editedRow.find('.user').html(savedRecord.user.firstName + ' ' + savedRecord.user.lastName);
-    		editedRow.find('.date').html(savedRecord.dateDisplay);
+    		editedRow.find('.date').html(savedRecord.flightLogDateDisplay);
     		editedRow.find('.starts').html(savedRecord.starts);
     		editedRow.find('.location').html(savedRecord.location.name);
     		editedRow.find('.hobbsBegin').html(savedRecord.hobbsBegin);
@@ -108,6 +128,15 @@
     		editedRow.find('.userId').html(savedRecord.userId);
     		editedRow.find('.locationId').html(savedRecord.locationId);
     		editedRow.find('.operationId').html(savedRecord.operationId);
+    		editedRow.find('.dateDisplay').html(savedRecord.dateDisplay);
+    		if(savedRecord.hobbsEnd > maxHobbsEnd) {
+    			maxHobbsEnd = savedRecord.hobbsEnd;
+    		} else {
+    			findMaxHobbsEndByAircraft();
+    		}
+    	}
+    	function populateCreateForm(editLink){
+    		$('#addEditForm').find('#hobbsBegin').val(maxHobbsEnd);
     	}
     	function populateEditForm(editLink){
     		$('#addEditForm').find("option:selected").removeAttr("selected");
@@ -115,7 +144,7 @@
     		var userIdSpan = editSpan.nextAll('span.userId');
     		var userOptionStr = "select option[value='"+userIdSpan.html()+"']";
     		$('#addEditForm').find(userOptionStr).prop('selected','selected');
-    		$('#addEditForm').find('#date').val(editSpan.nextAll('span.date').first().html());
+    		$('#addEditForm').find('#date').val(editSpan.nextAll('span.dateDisplay').first().html());
     		$('#addEditForm').find('#starts').val(editSpan.nextAll('span.starts').first().html());
     		var locationIdSpan = editSpan.nextAll('span.locationId');
     		var locationOptionStr = "select option[value='"+locationIdSpan.html()+"']";
@@ -133,6 +162,22 @@
     	function findDeleteName(deleteLink){
     		return $(deleteLink).closest('span').nextAll('span.date').first().html();
     	}
+    	function postDeleteAction() {
+    		findMaxHobbsEndByAircraft();
+    	}
+    	function findMaxHobbsEndByAircraft() {
+    		$.ajax({
+				url: baseUrl+"/flightLog/maxHobbsEnd/"+aircraft.id,
+				dataType: 'json',
+				success: function(data) {
+					alert(data);
+					maxHobbsEnd=data;
+				},
+				error: function() {
+					//alert("error getting maxHobbsEnd");
+				}
+			});
+    	}
     	//]]>
     </script>
 </head>
@@ -140,13 +185,12 @@
 
 	<div th:replace="includes/header :: header">...</div>
 
-	<H1>Flight Logs</H1>
 	<div id="dialog-form" title="Create New Flight Log">
 		<p class="validateTips"></p>
 		<form id="addEditForm" action="/flightLogs" method="post">
 			<fieldset>
-				<label for="name">Date</label>
-				<input type="text" name="date" id="date" value="2012-04-23T18:25:43.511Z" class="text ui-widget-content ui-corner-all"/>
+				<label for="date">Date</label>
+				<input type="text" name="date" id="date" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
 				<label for="user">Pilot</label>
 				<select id="user" name="user" class="ui-widget-content ui-corner-all">
 					<option th:each="user : ${allUsers}" th:text="${user.firstName} + ' ' + ${user.lastName}" th:value="${user.id}">${user.firstName} + ' ' + ${user.lastName}</option>
@@ -158,9 +202,9 @@
 					<option th:each="location : ${allLocations}" th:text="${location.name}" th:value="${location.id}">${location.name}</option>
 				</select>
 				<label for="hobbsBegin">Hobbs Begin</label>
-				<input type="text" name="hobbsBegin" id="hobbsBegin" value="123" class="text ui-widget-content ui-corner-all"/>
+				<input type="text" name="hobbsBegin" id="hobbsBegin" value="" class="text ui-widget-content ui-corner-all"/>
 				<label for="hobbsEnd">Hobbs End</label>
-				<input type="text" name="hobbsEnd" id="hobbsEnd" value="456" class="text ui-widget-content ui-corner-all"/>
+				<input type="text" name="hobbsEnd" id="hobbsEnd" value="" class="text ui-widget-content ui-corner-all"/>
 				<label for="operation">Operation</label>
 				<select id="operation" name="operation" class="ui-widget-content ui-corner-all">
 					<option th:each="operation : ${allOperations}" th:text="${operation.name}" th:value="${operation.id}">${operation.name}</option>
@@ -169,6 +213,22 @@
 				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 			</fieldset>
 		</form>
+	</div>
+	<H1 th:text="'Collective Flight Log ' + ${aircraft.aircraftNumber}">Flight Logs</H1>
+	<div th:text="'Aircraft Model ' + ${aircraft.model.name}">Aircraft Model</div>
+	<div>
+		<span><a id="monthLink1" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=1)}">Jan</a></span> | 
+		<span><a id="monthLink2" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=2)}">Feb</a></span> |
+		<span><a id="monthLink3" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=3)}">Mar</a></span> |
+		<span><a id="monthLink4" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=4)}">Apr</a></span> |
+		<span><a id="monthLink5" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=5)}">May</a></span> |
+		<span><a id="monthLink6" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=6)}">Jun</a></span> |
+		<span><a id="monthLink7" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=7)}">Jul</a></span> |
+		<span><a id="monthLink8" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=8)}">Aug</a></span> |
+		<span><a id="monthLink9" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=9)}">Sep</a></span> |
+		<span><a id="monthLink10" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=10)}">Oct</a></span> |
+		<span><a id="monthLink11" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=11)}">Nov</a></span> |
+		<span><a id="monthLink12" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=12)}">Dec</a></span>
 	</div>
 	<div class="records-header">
 		<span class="edit"></span>
@@ -181,10 +241,10 @@
 	    <span class="headerCell dataCell">Hobbs End</span>
 	    <span class="headerCell dataCell">Operation</span>
 	</div>
-	<div class="records-rows" th:each="fl : ${aircraft.flightLogs}" th:classappend="|id${fl.id}">
+	<div class="records-rows" th:each="fl : ${flightLogs}" th:classappend="|id${fl.id}">
 		<span class="edit"><a href="#" class="editLink" th:attr="data-id=${fl.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
 		<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${fl.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
-		<span class="date dataCell" th:text="${fl.dateDisplay}">Date</span>
+		<span class="date dataCell" th:text="${fl.flightLogDateDisplay}">Date</span>
 		<span class="user dataCell" th:text="${fl.user.firstName} + ' ' + ${fl.user.lastName}">Pilot</span>
 		<span class="starts dataCell" th:text="${fl.starts}">Starts</span>
 		<span class="location dataCell" th:text="${fl.location.name}">Location</span>
@@ -195,6 +255,7 @@
 		<span class="userId cell hidden" th:text="${fl.user.id}">Hidden User Id</span>
 		<span class="locationId cell hidden" th:text="${fl.location.id}">Hidden Location Id</span>
 		<span class="operationId cell hidden" th:text="${fl.operation.id}">Hidden Operation Id</span>
+		<span class="dateDisplay dataCell hidden" th:text="${fl.dateDisplay}">Hidden Date</span>
 	</div>
 	<br/>
 	<button id="create-record">Create new flight log entry</button>

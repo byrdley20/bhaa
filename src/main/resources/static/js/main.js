@@ -1,4 +1,5 @@
 var baseUrl = "http://localhost:9999";
+var uploadImageUrl = baseUrl+"/aircrafts/uploadImage";
 var dialog, allFields, form, tips, addUpdatePath, deletePath;
 
 function createDialog(saveButtonName){
@@ -40,6 +41,7 @@ function createPasswordValidationObject(field1Obj, field2Obj){
 
 function saveRecord() {
 	var formData = {};
+	var fileFormData = {};
 	var valid = true;
 	
 	clearFormValidation();
@@ -61,6 +63,9 @@ function saveRecord() {
 				} else {
 					formData[v.name] = false;
 				}
+			} else if (v.type == "file") {
+				formData[v.name] = v.files[0].name;
+				fileFormData[v.name] = v.files[0]
 			} else {
 				formData[v.name] = v.value;
 			}
@@ -89,6 +94,34 @@ function saveRecord() {
             	alert("Error! Unable to add record");
             }
        	});
+        if(!$.isEmptyObject(fileFormData)) {
+        	var uploadFileFormData = new FormData();
+        	uploadFileFormData.append("imageFile", fileFormData.imagePath);
+        	$.ajax({
+                url: uploadImageUrl,  //Server script to process data
+                type: 'POST',
+                xhr: function() {  // Custom XMLHttpRequest
+                    var myXhr = $.ajaxSettings.xhr();
+                    if(myXhr.upload){ // Check if upload property exists
+                        //myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+                    }
+                    return myXhr;
+                },
+                //Ajax events
+                success: function() {
+                	//alert('upload success');
+                },
+                error: function(data) {
+                	alert('Error uploading file!');
+                },
+                // Form data
+                data: uploadFileFormData,
+                //Options to tell jQuery not to process data or worry about content-type.
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        }
 	}
 	return valid;
 	
@@ -132,16 +165,30 @@ function getNewCheckboxValue(booleanValue) {
 	return '';
 }
 
+var _MS_PER_DAY = 1000 * 60 * 60 * 24;
+//a and b are javascript Date objects
+function dateDiffInDays(a, b) {
+	// Discard the time and time-zone information.
+	var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+	var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+	
+	return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+}
+
 $(function() {
 	tips = $( ".validateTips" );
 	
-	buildOptions();
-	
+	if (typeof buildOptions == 'function') {
+		buildOptions();
+	}
 	function deleteRecord(id){
         $.ajax({
             url: baseUrl+deletePath+'/'+id,
             type:'DELETE',
             success:function(response){
+        		if (typeof postDeleteAction == 'function') {
+        			postDeleteAction(response);
+        		}
             },
             error:function(response){
             	// show the record again, since it couldn't be deleted
@@ -153,6 +200,9 @@ $(function() {
 	$( "#create-record" ).button().on( "click", function() {
 		clearFormValidation();
 		$('#addEditForm').trigger("reset");
+		if (typeof populateCreateForm == 'function') {
+			populateCreateForm(this);
+		}
 		dialog.dialog( "open" );
 	});
 	$(document).on("click", ".editLink", function(){

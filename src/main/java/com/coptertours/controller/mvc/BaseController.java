@@ -31,4 +31,8 @@ public class BaseController {
 	protected Sort sortByMaintCategoryThenName() {
 		return new Sort(new Order(Sort.Direction.ASC, "maintenanceCategory"), new Order(Sort.Direction.ASC, "name"));
 	}
+
+	protected Sort sortByDate() {
+		return new Sort(Sort.Direction.ASC, "date");
+	}
 }

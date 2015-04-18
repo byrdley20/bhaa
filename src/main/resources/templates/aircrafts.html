@@ -36,10 +36,9 @@
         	model = $( "#model" ),
         	serialNum = $( "#serialNum" ),
         	imagePath = $( "#imagePath" ),
-    		showStarts = $( "#showStarts" );
     		ordering = $( "#ordering" );
     		
-        	allFields = $( [] ).add( id ).add( aircraftNumber ).add( name ).add( model ).add( serialNum ).add( imagePath ).add( showStarts ).add( ordering );
+        	allFields = $( [] ).add( id ).add( aircraftNumber ).add( name ).add( model ).add( serialNum ).add( imagePath ).add( ordering );
         	addUpdatePath = "/aircrafts";
         	deletePath = "/aircrafts";
     		
@@ -66,7 +65,6 @@
 			    	"<span class='model dataCell'>"+savedRecord.model.name+"</span> " +
 			    	"<span class='serialNum dataCell'>"+savedRecord.serialNum+"</span> " +
 			    	"<span class='imagePath dataCell'>"+savedRecord.imagePath+"</span> " +
-			    	"<span class='showStarts dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.showStarts)+" disabled='disabled'/></span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 			    	"<span class='modelId cell hidden'>"+savedRecord.model.id+"</span> " +
 		    	"</div>" );    		
@@ -78,7 +76,6 @@
     		editedRow.find('.model').html(savedRecord.model.name);
     		editedRow.find('.serialNum').html(savedRecord.serialNum);
     		editedRow.find('.imagePath').html(savedRecord.imagePath);
-    		editedRow.find('.showStarts input').prop('checked', savedRecord.showStarts);
     		editedRow.find('.id').html(savedRecord.id);
     	}
     	function populateEditForm(editLink){
@@ -91,10 +88,6 @@
     		$('#addEditForm').find(modelOptionStr).prop('selected','selected');
     		$('#addEditForm').find('#serialNum').val(editSpan.nextAll('span.serialNum').first().html());
     		$('#addEditForm').find('#imagePath').val(editSpan.nextAll('span.imagePath').first().html());
-    		var showStartsValue = editSpan.nextAll('span.showStarts').first().find("input").is(':checked');
-    		if(showStartsValue){
-        		$('#addEditForm').find('#showStarts').prop('checked', true);	
-    		}
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
     	}
     	function findDeleteName(deleteLink){
@@ -122,24 +115,22 @@
 				</select>
 				<label for="serialNum">Serial Number</label>
 				<input type="text" name="serialNum" id="serialNum" value="12818" class="text ui-widget-content ui-corner-all"/>
-				<label for="imagePath">Image Path</label>
-				<input type="text" name="imagePath" id="imagePath" value="C:/Users/byrdj/Pictures/image.png" class="text ui-widget-content ui-corner-all"/>
-				<label for="showStarts">Show Starts</label>
-				<input type="checkbox" name="showStarts" id="showStarts"/>
+				<label for="imagePath">Image</label>
+				<!--<input type="text" name="imagePath" id="imagePath" value="C:/Users/byrdj/Pictures/image.png" class="text ui-widget-content ui-corner-all"/>-->
+				<input type="file" name="imagePath" id="imagePath" accept="image/png, image/gif, image/jpeg, image/jpg, image/bmp, image/gif, image/jpe"/>
 				<input type="text" name="id" id="id" class="hidden"/>
 				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 			</fieldset>
 		</form>
 	</div>
 	<div class="records-header">
-		<span class="delete"></span>
 		<span class="edit"></span>
+		<span class="delete"></span>
 	    <span class="headerCell dataCell">Number</span>
 	    <span class="headerCell dataCell">Name</span>
 	    <span class="headerCell dataCell">Model</span>
 	    <span class="headerCell dataCell">Serial Number</span>
 	    <span class="headerCell dataCell">Image Path</span>
-	    <span class="headerCell dataCell">Show Starts</span>
 	</div>
 	<div class="records-rows" th:each="a : ${aircrafts}" th:classappend="|id${a.id}">
 		<span class="edit"><a href="#" class="editLink" th:attr="data-id=${a.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
@@ -148,8 +139,8 @@
 		<span class="name dataCell" th:text="${a.name}">Name</span>
 		<span class="model dataCell" th:text="${a.model.name}">Model</span>
 		<span class="serialNum dataCell" th:text="${a.serialNum}">Serial Number</span>
-		<span class="imagePath dataCell" th:text="${a.imagePath}">Image Path</span>
-		<span class="showStarts dataCell"><input type="checkbox" th:value="${a.showStarts}" th:checked="${a.showStarts}" disabled="disabled"/></span>
+		<span class="imagePath dataCell" th:text="${a.imagePath}">Image</span>
+		<img src="" th:src="@{'file://'+${a.imagePath}}" />
 		<span class="id cell hidden" th:text="${a.id}">Hidden PK ID</span>
 		<span class="modelId cell hidden" th:text="${a.model.id}">Hidden Model Id</span>
 	</div>

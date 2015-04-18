@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import com.coptertours.options.Action;
 import com.coptertours.options.MaintenanceCategory;
@@ -48,6 +49,27 @@ public class MaintenanceType extends BaseDomain {
 	@Expose
 	private Action action;
 
+	@Expose
+	private boolean showOnDashboard;
+
+	@Transient
+	@Expose
+	private MaintenanceLog maintenanceLog;
+	
+	public void clearModel() {
+		this.model = null;
+	}
+	
+	@Override
+	public MaintenanceType clone() {
+		try {
+			// shallow copy
+			return (MaintenanceType) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -82,5 +104,17 @@ public class MaintenanceType extends BaseDomain {
 
 	public Model getModel() {
 		return model;
+	}
+
+	public MaintenanceLog getMaintenanceLog() {
+		return maintenanceLog;
+	}
+
+	public void setMaintenanceLog(MaintenanceLog maintenanceLog) {
+		this.maintenanceLog = maintenanceLog;
+	}
+
+	public boolean getShowOnDashboard() {
+		return showOnDashboard;
 	}
 }

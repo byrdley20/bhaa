@@ -1,9 +1,21 @@
 package com.coptertours.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.coptertours.domain.Aircraft;
 import com.coptertours.domain.FlightLog;
 
 public interface FlightLogRepository extends JpaRepository<FlightLog, Long> {
-	// FlightLog findByAircraftId(Long aircraftId);
+	List<FlightLog> findByAircraft(Aircraft aircraft, Sort sort);
+
+	List<FlightLog> findByAircraftAndDateBetween(Aircraft aircraft, Date startDate, Date endDate, Sort sort);
+
+	@Query("select max(fl.hobbsEnd) from FlightLog fl where fl.aircraft = ?1")
+	BigDecimal findMaxHobbsEndByAircraft(Aircraft aircraft);
 }
