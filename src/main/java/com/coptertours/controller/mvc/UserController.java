@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.coptertours.options.Role;
 import com.coptertours.repository.RatingRepository;
 import com.coptertours.repository.UserRepository;
 
@@ -19,6 +20,7 @@ public class UserController extends BaseController {
 	String users(Model model) {
 		model.addAttribute("users", this.userRepository.findAll());
 		model.addAttribute("allRatings", this.ratingRepository.findAll(sortByNameAsc()));
+		model.addAttribute("roleList", Role.asKeyValueList());
 		return "users";
 	}
 }

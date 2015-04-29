@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.coptertours.domain.FlightLog;
 import com.coptertours.repository.FlightLogRepository;
+import com.coptertours.repository.UserRepository;
 
 @RestController
 @RequestMapping(value = "/flightLogs")
 public class FlightLogRestController {
 	@Autowired
-	FlightLogRepository flightLogRepository;
+	private FlightLogRepository flightLogRepository;
+	@Autowired
+	private UserRepository userRepository;
 
 	@RequestMapping(method = RequestMethod.GET)
 	Collection<FlightLog> flightLogs() {
@@ -29,6 +32,9 @@ public class FlightLogRestController {
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	FlightLog addFlightLog(@RequestBody FlightLog flightLog, final HttpServletResponse response) {
+		if (flightLog.getUser().getRole() == null) {
+			flightLog.setUser(this.userRepository.findOne(flightLog.getUser().getId()));
+		}
 		return this.flightLogRepository.save(flightLog);
 	}
 

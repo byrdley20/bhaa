@@ -103,68 +103,75 @@
 
 	<div th:replace="includes/header :: header">...</div>
 
-	<div id="dialog-form" title="Comply With">
-		<p class="validateTips"></p>
-		<form id="addEditForm" action="/aircraftStatus/complyWith" method="post">
-			<fieldset>
-				<label for="complyWithDate" class="complyWithDate">Comply With Date</label>
-				<input type="text" name="complyWithDate" id="complyWithDate" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
-				<label for="complyWithHobbs" class="complyWithHobbs">Comply With Hobbs</label>
-				<input type="text" name="complyWithHobbs" id="complyWithHobbs" value="" class="text ui-widget-content ui-corner-all"/>
-				<input type="text" name="id" id="id" class="hidden"/>
-				<input type="text" name="maintenanceTypeId" id="maintenanceTypeId" class="hidden"/>
-				<input type="text" name="aircraftId" id="aircraftId" class="hidden"/>
-				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
-			</fieldset>
-		</form>
-	</div>
+	<div id="main-content">
+		<div id="dialog-form" title="Comply With">
+			<p class="validateTips"></p>
+			<form id="addEditForm" action="/aircraftStatus/complyWith" method="post">
+				<fieldset>
+					<label for="complyWithDate" class="complyWithDate">Comply With Date</label>
+					<input type="text" name="complyWithDate" id="complyWithDate" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
+					<label for="complyWithHobbs" class="complyWithHobbs">Comply With Hobbs</label>
+					<input type="text" name="complyWithHobbs" id="complyWithHobbs" value="" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="id" id="id" class="hidden"/>
+					<input type="text" name="maintenanceTypeId" id="maintenanceTypeId" class="hidden"/>
+					<input type="text" name="aircraftId" id="aircraftId" class="hidden"/>
+					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+				</fieldset>
+			</form>
+		</div>
+	
+		<div th:text="${aircraft.model.name}">Model Name</div>
+		<div th:text="${aircraft.aircraftNumber}">ID</div>
+		<div th:text="'S/N: ' + ${aircraft.serialNum}">Serial Number</div>
+		<div th:text="'Hobbs: ' + ${currentHobbs}">Hobbs</div>
+		<div th:text="'Engine Total Time: ' + ${engineTotalTime}">Engine TT</div>
+		<div th:text="'Aircraft Total Time: ' + ${aircraftTotalTime}">Aircraft TT</div>
 
-	<div th:text="${aircraft.model.name}">Model Name</div>
-	<div th:text="${aircraft.aircraftNumber}">ID</div>
-	<div th:text="'S/N: ' + ${aircraft.serialNum}">Serial Number</div>
-	<div th:text="'Hobbs: ' + ${currentHobbs}">Hobbs</div>
-	<div th:text="'Engine Total Time: ' + ${engineTotalTime}">Engine TT</div>
-	<div th:text="'Aircraft Total Time: ' + ${aircraftTotalTime}">Aircraft TT</div>
-	
-	<div class="records-header-hour">
-		<span class="complyWith"></span>
-	    <span class="headerCell dataCell">Item</span>
-	    <span class="headerCell dataCell">C/W</span>
-	    <span class="headerCell dataCell">TBO Hours</span>
-	    <span class="headerCell dataCell">Hobbs Due</span>
-	    <span class="headerCell dataCell">Remaining Hours</span>
-	</div>
-	<div class="maint-rows-hour" th:each="maintType : ${flightHourMaintTypes}" th:classappend="|id${maintType.id}" th:with="complyWithHobbs=((${maintType.maintenanceLog}==null)?'0':${maintType.maintenanceLog.complyWithHobbs}),hobbsDue=(${complyWithHobbs}+${maintType.timeBeforeAction}),remainingHours=(${hobbsDue}-${currentHobbs})">
-		<span class="complyWith"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" alt="Comply With" src="images/repair.png" width="15" height="15"/></a></span>
-		<span class="dataCell" th:text="${maintType.name}">Item Name</span>
-		<span class="dataCell complyWithHobbs" th:text="${complyWithHobbs}">599.9</span>
-		<span class="dataCell tbo" th:text="${maintType.timeBeforeAction}">100.0</span>
-		<span class="dataCell hobbsDue" th:text="${hobbsDue}">699.9</span>
-		<span class="dataCell remainingHours" th:text="${remainingHours}">29.0</span>
-		<span class="id cell hidden" th:text="( (${maintType.maintenanceLog} == null)? '0' : ${maintType.maintenanceLog.id})">Hidden Maintenance Log ID</span>
-		<span class="aircraftId cell hidden" th:text="${aircraft.id}">Hidden Aircraft ID</span>
-		<span class="maintenanceTypeId cell hidden" th:text="${maintType.id}">Hidden Maintenace Type ID</span>
-	</div>
-	<br/>
-	<div class="records-header-month">
-		<span class="complyWith"></span>
-	    <span class="headerCell dataCell">Item</span>
-	    <span class="headerCell dataCell">C/W</span>
-	    <span class="headerCell dataCell">TBO Months</span>
-	    <span class="headerCell dataCell">Due Date</span>
-	    <span class="headerCell dataCell">Remaining Days</span>
-	</div>
-	<div class="maint-rows-month" th:each="maintType : ${monthMaintTypes}" th:classappend="|id${maintType.id}" th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),dueDate=((${maintType.maintenanceLog}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yy')})">
-		<span class="complyWith"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" alt="Comply With" src="images/repair.png" width="15" height="15"/></a></span>
-		<span class="dataCell" th:text="${maintType.name}">Item Name</span>
-		<span class="dataCell complyWithDate" th:text="((${maintType.maintenanceLog} == null)?'N/A':${#dates.format(complyWithDate, 'MM/dd/yy')})">01/01/15</span>
-		<span class="dataCell tbo" th:text="${#numbers.formatInteger(maintType.timeBeforeAction,1)}">24</span>
-		<span class="dataCell dueDate" th:text="${dueDate}">1/1/9999</span>
-		<span class="dataCell remainingDays" th:text="((${maintType.maintenanceLog} == null)?'N/A':${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)})">76</span>
-		<span class="id cell hidden" th:text="((${maintType.maintenanceLog} == null)?'0':${maintType.maintenanceLog.id})">Hidden Maintenance Log ID</span>
-		<span class="aircraftId cell hidden" th:text="${aircraft.id}">Hidden Aircraft ID</span>
-		<span class="maintenanceTypeId cell hidden" th:text="${maintType.id}">Hidden Maintenace Type ID</span>
-	</div>
-	
+		<br/>
+		<div class="category-type">Flight Hours</div>
+		<div class="table">
+			<div class="records-header">
+				<span class="dataCell complyWith"></span>
+			    <span class="dataCell">Item</span>
+			    <span class="dataCell">C/W</span>
+			    <span class="dataCell">TBO Hours</span>
+			    <span class="dataCell">Hobbs Due</span>
+			    <span class="dataCell">Remaining Hours</span>
+			</div>
+			<div class="records-rows maint-rows-hour" th:each="maintType : ${flightHourMaintTypes}" th:classappend="|id${maintType.id}" th:with="complyWithHobbs=((${maintType.maintenanceLog}==null)?'0':${maintType.maintenanceLog.complyWithHobbs}),hobbsDue=(${complyWithHobbs}+${maintType.timeBeforeAction}),remainingHours=(${hobbsDue}-${currentHobbs})">
+				<span class="dataCell complyWith"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" alt="Comply With" src="images/repair.png" width="15" height="15"/></a></span>
+				<span class="dataCell" th:text="${maintType.name}">Item Name</span>
+				<span class="dataCell complyWithHobbs" th:text="${complyWithHobbs}">599.9</span>
+				<span class="dataCell tbo" th:text="${maintType.timeBeforeAction}">100.0</span>
+				<span class="dataCell hobbsDue" th:text="${hobbsDue}">699.9</span>
+				<span class="dataCell remainingHours" th:text="${remainingHours}">29.0</span>
+				<span class="id cell hidden" th:text="( (${maintType.maintenanceLog} == null)? '0' : ${maintType.maintenanceLog.id})">Hidden Maintenance Log ID</span>
+				<span class="aircraftId cell hidden" th:text="${aircraft.id}">Hidden Aircraft ID</span>
+				<span class="maintenanceTypeId cell hidden" th:text="${maintType.id}">Hidden Maintenace Type ID</span>
+			</div>
+		</div>
+		<div class="category-type">Months</div>
+		<div class="table">
+			<div class="records-header">
+				<span class="dataCell complyWith"></span>
+			    <span class="dataCell">Item</span>
+			    <span class="dataCell">C/W</span>
+			    <span class="dataCell">TBO Months</span>
+			    <span class="dataCell">Due Date</span>
+			    <span class="dataCell">Remaining Days</span>
+			</div>
+			<div class="records-rows maint-rows-month" th:each="maintType : ${monthMaintTypes}" th:classappend="|id${maintType.id}" th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),dueDate=((${maintType.maintenanceLog}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yy')})">
+				<span class="dataCell complyWith"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" alt="Comply With" src="images/repair.png" width="15" height="15"/></a></span>
+				<span class="dataCell" th:text="${maintType.name}">Item Name</span>
+				<span class="dataCell complyWithDate" th:text="((${maintType.maintenanceLog} == null)?'N/A':${#dates.format(complyWithDate, 'MM/dd/yy')})">01/01/15</span>
+				<span class="dataCell tbo" th:text="${#numbers.formatInteger(maintType.timeBeforeAction,1)}">24</span>
+				<span class="dataCell dueDate" th:text="${dueDate}">1/1/9999</span>
+				<span class="dataCell remainingDays" th:text="((${maintType.maintenanceLog} == null)?'N/A':${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)})">76</span>
+				<span class="id cell hidden" th:text="((${maintType.maintenanceLog} == null)?'0':${maintType.maintenanceLog.id})">Hidden Maintenance Log ID</span>
+				<span class="aircraftId cell hidden" th:text="${aircraft.id}">Hidden Aircraft ID</span>
+				<span class="maintenanceTypeId cell hidden" th:text="${maintType.id}">Hidden Maintenace Type ID</span>
+			</div>
+		</div>
+	</div>	
 </body>
 </html>

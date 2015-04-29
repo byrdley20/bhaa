@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import com.coptertours.common.AppConstants;
 import com.google.gson.annotations.Expose;
 
 @Entity
@@ -30,17 +31,17 @@ public class Aircraft extends BaseDomain {
 	@Expose
 	private String serialNum;
 	@Expose
-	private String imagePath;
+	private String imagePath = AppConstants.PLACEHOLDER_IMAGE;
 	@Expose
 	private int ordering;
 	@Expose
-	private BigDecimal hobbs;
+	private BigDecimal hobbs = BigDecimal.ZERO;
 	@Expose
-	private BigDecimal hobbsOffset;
+	private BigDecimal hobbsOffset = BigDecimal.ZERO;
 	@Expose
-	private BigDecimal engineTotalTime;
+	private BigDecimal engineTotalTime = BigDecimal.ZERO;
 	@Expose
-	private BigDecimal engineTotalTimeOffset;
+	private BigDecimal engineTotalTimeOffset = BigDecimal.ZERO;
 
 	@Transient
 	@Expose

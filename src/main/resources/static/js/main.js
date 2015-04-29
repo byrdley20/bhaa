@@ -2,13 +2,13 @@ var baseUrl = "http://localhost:9999";
 var uploadImageUrl = baseUrl+"/aircrafts/uploadImage";
 var dialog, allFields, form, tips, addUpdatePath, deletePath;
 
-function createDialog(saveButtonName){
+function createDialog(){
 	
 	var buttonsOpts = {}
-	buttonsOpts[saveButtonName] = saveRecord;
 	buttonsOpts["Cancel"] = function() {
 		dialog.dialog( "close" );
 	};
+	buttonsOpts["Save"] = saveRecord;
 	
 	dialog = $( "#dialog-form" ).dialog({
     	autoOpen: false,
@@ -31,6 +31,22 @@ function createLengthValidationObject(fieldObj, fieldName, minimum, maximum){
 	return lengthValidationObject;
 }
 
+function createNumberValidationObject(fieldObj, fieldName){
+	var numberValidationObject = {
+		field: fieldObj,
+		name: fieldName
+	};
+	return numberValidationObject;
+}
+
+function createDateValidationObject(fieldObj, fieldName){
+	var dateValidationObject = {
+		field: fieldObj,
+		name: fieldName
+	};
+	return dateValidationObject;
+}
+
 function createPasswordValidationObject(field1Obj, field2Obj){
 	var passwordValidationObject = {
 		field1: field1Obj,
@@ -45,13 +61,29 @@ function saveRecord() {
 	var valid = true;
 	
 	clearFormValidation();
-	$.each(lengthValidation, function(){
-		valid = checkLength( this.field, this.name, this.min, this.max ) && valid;
-	});
-	$.each(passwordValidation, function(){
-		valid = checkPasswordsMatch( this.field1, this.field2 ) && valid;
-	});
-	
+	if (typeof lengthValidation !== 'undefined') {
+		$.each(lengthValidation, function(){
+			valid = checkLength( this.field, this.name, this.min, this.max ) && valid;
+		});
+	}
+	if (typeof numberValidation !== 'undefined') {
+		$.each(numberValidation, function(){
+			valid = checkNumber( this.field, this.name ) && valid;
+		});
+	}
+	if (typeof dateValidation !== 'undefined') {
+		$.each(dateValidation, function(){
+			valid = checkDate( this.field, this.name ) && valid;
+		});
+	}
+	if (typeof passwordValidation !== 'undefined') {
+		$.each(passwordValidation, function(){
+			valid = checkPasswordsMatch( this.field1, this.field2 ) && valid;
+		});
+	}
+	if (typeof extraValidation == 'function') { 
+		valid = extraValidation() && valid;
+	}
 	
 	if(valid) {
 		$.each(allFields, function(i, v){
@@ -64,15 +96,17 @@ function saveRecord() {
 					formData[v.name] = false;
 				}
 			} else if (v.type == "file") {
-				formData[v.name] = v.files[0].name;
-				fileFormData[v.name] = v.files[0]
+				if (typeof v.files[0] !== 'undefined') {
+					formData[v.name] = v.files[0].name;
+					fileFormData[v.name] = v.files[0];
+				}
 			} else {
 				formData[v.name] = v.value;
 			}
-			if (typeof setExtraValues == 'function') { 
-				setExtraValues(formData); 
-			}
 		});
+		if (typeof setExtraValues == 'function') { 
+			setExtraValues(formData); 
+		}
 		var editRecord = (formData["id"] > 0);
         $.ajax({
             url: baseUrl+addUpdatePath,
@@ -130,6 +164,7 @@ function clearFormValidation(){
 	tips.empty();
 	allFields.removeClass( "ui-state-error" );
 	tips.removeClass( "ui-state-highlight" );
+	tips.hide();
 }
 function updateTips( t ) {
 	if(tips.text().length > 0) {
@@ -137,6 +172,7 @@ function updateTips( t ) {
 	}
 	tips.append(t);
 	tips.addClass( "ui-state-highlight" );
+	tips.show();
 	//setTimeout(function() {
 	//	tips.removeClass( "ui-state-highlight", 1500 );
 	//}, 500 );
@@ -150,6 +186,15 @@ function checkLength( o, n, min, max ) {
 		return true;
 	}
 }
+function checkNumber( o, n ) {
+	if ( !$.isNumeric(o.val()) ) {
+		o.addClass( "ui-state-error" );
+		updateTips( n + " must be a valid number." );
+		return false;
+	} else {
+		return true;
+	}
+}
 function checkPasswordsMatch( p1, p2 ) {
 	if( p1.val() == p2.val() ) {
 		return true;	
@@ -158,6 +203,20 @@ function checkPasswordsMatch( p1, p2 ) {
 	updateTips( "The passwords do not match" );
 	return false;
 }
+function checkDate( o, n ){
+	var t = o.val().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+	if(t!==null) {
+		var m=+t[1], d=+t[2], y=+t[3];
+		var date = new Date(y,m-1,d);
+		if(date.getFullYear()===y && date.getMonth()===m-1) {
+			return true;
+	    }
+	}
+	o.addClass( "ui-state-error" );
+	updateTips( n + " must be a valid date in the mm/dd/yyyy format." );
+	return false;
+}
+
 function getNewCheckboxValue(booleanValue) {
 	if(booleanValue) {
 		return 'checked';
@@ -200,6 +259,7 @@ $(function() {
 	$( "#create-record" ).button().on( "click", function() {
 		clearFormValidation();
 		$('#addEditForm').trigger("reset");
+		$('#addEditForm').show();
 		if (typeof populateCreateForm == 'function') {
 			populateCreateForm(this);
 		}
@@ -208,6 +268,7 @@ $(function() {
 	$(document).on("click", ".editLink", function(){
 		clearFormValidation();
 		$('#addEditForm').trigger("reset");
+		$('#addEditForm').show();
 		populateEditForm(this);
 		dialog.dialog( "open" );
 	});

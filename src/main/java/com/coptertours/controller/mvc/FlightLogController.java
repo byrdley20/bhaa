@@ -1,6 +1,7 @@
 package com.coptertours.controller.mvc;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.coptertours.domain.Aircraft;
 import com.coptertours.domain.FlightLog;
+import com.coptertours.domain.User;
 import com.coptertours.repository.AircraftRepository;
 import com.coptertours.repository.FlightLogRepository;
 import com.coptertours.repository.LocationRepository;
@@ -54,7 +56,14 @@ public class FlightLogController extends BaseController {
 
 		List<FlightLog> flightLogs = this.flightLogRepository.findByAircraftAndDateBetween(aircraft, startDateCal.getTime(), endDateCal.getTime(), sortByDate());
 		model.addAttribute("flightLogs", flightLogs);
-		model.addAttribute("allUsers", this.userRepository.findAll(sortByLastNameAsc())); // TODO find all PILOTs only
+		List<User> allUsers = this.userRepository.findAll(sortByLastNameAsc());
+		List<User> clonedAllUsers = new ArrayList<User>(allUsers.size());
+		for (User user : allUsers) {
+			User clonedUser = user.clone();
+			clonedUser.clearRole();
+			clonedAllUsers.add(clonedUser);
+		}
+		model.addAttribute("allUsers", clonedAllUsers); // TODO find all PILOTs only
 		model.addAttribute("allLocations", this.locationRepository.findAll(sortByNameAsc()));
 		model.addAttribute("allOperations", this.operationRepository.findAll(sortByNameAsc()));
 		model.addAttribute("month", startDateCal.get(Calendar.MONTH));

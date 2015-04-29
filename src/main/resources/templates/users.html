@@ -13,13 +13,19 @@
     	/*<![CDATA[*/
 
 		var ratings = {};
+    	var roles = {};
     	           
 		function buildOptions(){
 			var allRatings = /*[[${allRatings}]]*/;
 			for(var i=0; i < allRatings.length; i++) {
 				var rating = allRatings[i];
 				ratings[rating.id] = rating;
-			}			
+			}
+			var allRoles = /*[[${roleList}]]*/;
+			for(var i=0; i < allRoles.length; i++) {
+				var role = allRoles[i];
+				roles[role.key] = role.value;
+			}
 		}
 		/*]]>*/
     </script>
@@ -38,12 +44,13 @@
         	username = $( "#username" ),
         	password = $( "#password" ),
         	password2 = $( "#password2" );
+    		role = $( "#role" );
     		
-        	allFields = $( [] ).add( id ).add( userId ).add( firstName ).add( lastName).add( rating ).add( username ).add( password );
+        	allFields = $( [] ).add( id ).add( userId ).add( firstName ).add( lastName).add( rating ).add( username ).add( password ).add( role );
         	addUpdatePath = "/users";
         	deletePath = "/users";
     		
-    		createDialog("Save User");
+    		createDialog();
     		
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(userId, "'ID'", 1, 15);
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(firstName, "'First Name'", 1, 100);
@@ -55,20 +62,26 @@
     	function setSelectValue(formData, element) {
 			if(element.name == 'rating'){
 				formData[element.name] = ratings[element.value];
+			} else if(element.name == 'role'){
+				formData[element.name] = element.value;
 			}
     	}
     	function writeCreatedRecord(savedRecord){
 	    	$( ".records-rows" ).last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
-			    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
-			    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+	    			"<span class='dataCell'>" +
+			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+			    	"</span>" +
 			    	"<span class='userId dataCell'>"+savedRecord.userId+"</span> " +
 			    	"<span class='name dataCell'>"+savedRecord.firstName+" "+savedRecord.lastName+"</span> " +
 			    	"<span class='rating dataCell'>"+savedRecord.rating.name+"</span> " +
+			    	"<span class='role dataCell'>"+roles[savedRecord.role]+"</span> " +
 			    	"<span class='username dataCell'>"+savedRecord.username+"</span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 			    	"<span class='firstName cell hidden'>"+savedRecord.firstName+"</span> " +
 			    	"<span class='lastName cell hidden'>"+savedRecord.lastName+"</span> " +
 			    	"<span class='ratingId cell hidden'>"+savedRecord.rating.id+"</span> " +
+			    	"<span class='roleValue cell hidden'>"+savedRecord.role+"</span> " +
 		    	"</div>" );    		
     	}
     	function writeEditRecord(savedRecord){
@@ -80,10 +93,12 @@
     		editedRow.find('.id').html(savedRecord.id);
     		editedRow.find('.firstName').html(savedRecord.firstName);
     		editedRow.find('.lastName').html(savedRecord.lastName);
+    		editedRow.find('.role').html(roles[savedRecord.role]);
+    		editedRow.find('.roleValue').html(savedRecord.role);
     	}
     	function populateEditForm(editLink){
     		$('#addEditForm').find("option:selected").removeAttr("selected");
-    		var editSpan = $(editLink).closest('span');
+    		var editSpan = $(editLink).closest('span.dataCell');
     		$('#addEditForm').find('#userId').val(editSpan.nextAll('span.userId').first().html());
     		$('#addEditForm').find('#firstName').val(editSpan.nextAll('span.firstName').first().html());
     		$('#addEditForm').find('#lastName').val(editSpan.nextAll('span.lastName').first().html());
@@ -91,10 +106,13 @@
     		var ratingOptionStr = "select option[value='"+ratingIdSpan.html()+"']";
     		$('#addEditForm').find(ratingOptionStr).prop('selected','selected');
     		$('#addEditForm').find('#username').val(editSpan.nextAll('span.username').first().html());
+    		var roleValueSpan = editSpan.nextAll('span.roleValue');
+    		var roleValueStr = "select option[value='"+roleValueSpan.html()+"']";
+    		$('#addEditForm').find(roleValueStr).prop('selected','selected');
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
     	}
     	function findDeleteName(deleteLink){
-    		return $(deleteLink).closest('span').nextAll('span.name').first().html();
+    		return $(deleteLink).closest('span.dataCell').nextAll('span.name').first().html();
     	}
     	//]]>
     </script>
@@ -102,54 +120,64 @@
 <body>
 
 	<div th:replace="includes/header :: header">...</div>
-
-	<H1>Users</H1>
-	<div id="dialog-form" title="Create New User">
-		<p class="validateTips"></p>
-		<form id="addEditForm" action="/users" method="post">
-			<fieldset>
-				<label for="name">ID</label>
-				<input type="text" name="userId" id="userId" value="5555" class="text ui-widget-content ui-corner-all"/>
-				<label for="name">First Name</label>
-				<input type="text" name="firstName" id="firstName" value="Jane" class="text ui-widget-content ui-corner-all"/>
-				<label for="name">Last Name</label>
-				<input type="text" name="lastName" id="lastName" value="Smith" class="text ui-widget-content ui-corner-all"/>
-				<label for="email">Rating</label>
-				<select id="rating" name="rating" class="ui-widget-content ui-corner-all">
-					<option th:each="rating : ${allRatings}" th:text="${rating.name}" th:value="${rating.id}">${rating.name}</option>
-				</select>
-				<label for="email">Username</label>
-				<input type="text" name="username" id="username" value="jsmith" class="text ui-widget-content ui-corner-all"/>
-				<label for="password">Password</label>
-				<input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all"/>
-				<input type="password" name="password2" id="password2" value="xxxxxxx" class="text ui-widget-content ui-corner-all"/>
-				<input type="text" name="id" id="id" class="hidden"/>
-				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
-			</fieldset>
-		</form>
+	<div id="main-content">
+		<H1>Users</H1>
+		<div id="dialog-form" title="User">
+			<p class="validateTips"></p>
+			<form id="addEditForm" action="/users" method="post">
+				<fieldset>
+					<label for="name">ID</label>
+					<input type="text" name="userId" id="userId" value="5555" class="text ui-widget-content ui-corner-all"/>
+					<label for="name">First Name</label>
+					<input type="text" name="firstName" id="firstName" value="Jane" class="text ui-widget-content ui-corner-all"/>
+					<label for="name">Last Name</label>
+					<input type="text" name="lastName" id="lastName" value="Smith" class="text ui-widget-content ui-corner-all"/>
+					<label for="email">Rating</label>
+					<select id="rating" name="rating" class="ui-widget-content ui-corner-all">
+						<option th:each="rating : ${allRatings}" th:text="${rating.name}" th:value="${rating.id}">${rating.name}</option>
+					</select>
+					<label for="role">Role</label>
+					<select id="role" name="role" class="ui-widget-content ui-corner-all">
+					  <option th:each="role : ${T(com.coptertours.options.Role).values()}" th:value="${role}" th:text="${role.name}"></option>
+					</select>
+					<label for="email">Username</label>
+					<input type="text" name="username" id="username" value="jsmith" class="text ui-widget-content ui-corner-all"/>
+					<label for="password">Password</label>
+					<input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all"/>
+					<input type="password" name="password2" id="password2" value="xxxxxxx" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="id" id="id" class="hidden"/>
+					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+				</fieldset>
+			</form>
+		</div>
+	
+		<div class="table">
+			<div class="records-header">
+				<span class="edit delete icon"></span>
+			    <span class="headerCell dataCell">ID</span>
+			    <span class="headerCell dataCell">Name</span>
+			    <span class="headerCell dataCell">Rating</span>
+			    <span class="headerCell dataCell">Role</span>
+			    <span class="headerCell dataCell">Username</span>
+			</div>
+			<div class="records-rows" th:each="u : ${users}" th:classappend="|id${u.id}">
+				<span class="dataCell">
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${u.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${u.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+				</span>
+				<span class="userId dataCell" th:text="${u.userId}">ID</span>
+				<span class="name dataCell" th:text="${u.displayName}">Name</span>
+				<span class="rating dataCell" th:text="${u.rating.name}">Rating</span>
+				<span class="role dataCell" th:text="${u.role.name}">Action</span>
+				<span class="username dataCell" th:text="${u.username}">UserName</span>
+				<span class="id cell hidden" th:text="${u.id}">Hidden PK ID</span>
+				<span class="firstName cell hidden" th:text="${u.firstName}">Hidden First Name</span>
+				<span class="lastName cell hidden" th:text="${u.lastName}">Hidden Last Name</span>
+				<span class="ratingId cell hidden" th:text="${u.rating.id}">Hidden Rating Id</span>
+				<span class="roleValue cell hidden" th:text="${u.role}">Hidden Role</span>
+			</div>
+		</div>
+		<button id="create-record">Create New</button>
 	</div>
-
-	<div class="records-header">
-		<span class="edit"></span>
-		<span class="delete"></span>
-	    <span class="headerCell dataCell">ID</span>
-	    <span class="headerCell dataCell">Name</span>
-	    <span class="headerCell dataCell">Rating</span>
-	    <span class="headerCell dataCell">Username</span>
-	</div>
-	<div class="records-rows" th:each="u : ${users}" th:classappend="|id${u.id}">
-		<span class="edit"><a href="#" class="editLink" th:attr="data-id=${u.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-		<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${u.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
-		<span class="userId dataCell" th:text="${u.userId}">ID</span>
-		<span class="name dataCell" th:text="${u.displayName}">Name</span>
-		<span class="rating dataCell" th:text="${u.rating.name}">Rating</span>
-		<span class="username dataCell" th:text="${u.username}">UserName</span>
-		<span class="id cell hidden" th:text="${u.id}">Hidden PK ID</span>
-		<span class="firstName cell hidden" th:text="${u.firstName}">Hidden First Name</span>
-		<span class="lastName cell hidden" th:text="${u.lastName}">Hidden Last Name</span>
-		<span class="ratingId cell hidden" th:text="${u.rating.id}">Hidden Rating Id</span>
-	</div>
-	<br/>
-	<button id="create-record">Create new user</button>
 </body>
 </html>

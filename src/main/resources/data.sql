@@ -27,24 +27,24 @@ INSERT INTO RATING (name) values ('Private');
 INSERT INTO RATING (name) values ('Commercial');
 INSERT INTO RATING (name) values ('CFI');
 
-INSERT INTO APP_USER (user_id, first_name, last_name, rating_id, username, password) values('1111', 'jeff', 'byrd', (select id from RATING where name='Commercial'), 'byrdje', 'password1');
-INSERT INTO APP_USER (user_id, first_name, last_name, rating_id, username, password) values('2222', 'megan', 'byrd', (select id from RATING where name='Private'), 'byrdm', 'password2');
-INSERT INTO APP_USER (user_id, first_name, last_name, rating_id, username, password) values('3333', 'juliana', 'byrd', (select id from RATING where name='Commercial'), 'byrdju', 'password3');
-INSERT INTO APP_USER (user_id, first_name, last_name, rating_id, username, password) values('4444', 'derek', 'byrd', (select id from RATING where name='CFI'), 'byrdd', 'password4');
+INSERT INTO APP_USER (user_id, first_name, last_name, rating_id, username, password, role) values('1111', 'jeff', 'byrd', (select id from RATING where name='Commercial'), 'byrdje', 'password1', 'ADMIN');
+INSERT INTO APP_USER (user_id, first_name, last_name, rating_id, username, password, role) values('2222', 'megan', 'byrd', (select id from RATING where name='Private'), 'byrdm', 'password2', 'PILOT');
+INSERT INTO APP_USER (user_id, first_name, last_name, rating_id, username, password, role) values('3333', 'juliana', 'byrd', (select id from RATING where name='Commercial'), 'byrdju', 'password3', 'PILOT');
+INSERT INTO APP_USER (user_id, first_name, last_name, rating_id, username, password, role) values('4444', 'derek', 'byrd', (select id from RATING where name='CFI'), 'byrdd', 'password4', 'MECHANIC');
 
 INSERT INTO MODEL(NAME, SHOW_STARTS) values('Robinson R44', true);
 INSERT INTO MODEL(NAME, SHOW_STARTS) values('Bell 47G2A1', false);
 INSERT INTO MODEL(NAME, SHOW_STARTS) values('Bell 47G3B1', false);
 INSERT INTO MODEL(NAME, SHOW_STARTS) values('Bell 206', true);
 
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N175KM','N121AH', (select id from MODEL where name='Robinson R44'), '12106', 'image.png', 1, 99.0, 0, 99.0, 0);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N441ML','N710MY', (select id from MODEL where name='Robinson R44'), '10465', '', 2, 15.0, 76, 124, 130);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N4344J','N4344J', (select id from MODEL where name='Robinson R44'), '12818', 'image2.png', 3, 15.0, 76, 124, 130);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N86SL','N241AU', (select id from MODEL where name='Robinson R44'), '10375', 'image3.png', 4, 15.0, 76, 124, 130);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('47 G3-B1','N32FG', (select id from MODEL where name='Bell 47G3B1'), '3838', '', 5, 15.0, 76, 124, 130);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N118TV','N118TV', (select id from MODEL where name='Bell 206'), '2844', '', 6, 15.0, 76, 124, 130);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('47 G2-A1','N8505F', (select id from MODEL where name='Bell 47G2A1'), '', '', 7, 15.0, 76, 124, 130);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N586SC','N586SC', (select id from MODEL where name='Bell 206'), '2033', '', 8, 15.0, 76, 124, 130);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N175KM','N121AH', (select id from MODEL where name='Robinson R44'), '12106', 'N175KM.png', 1, 99.0, 0, 99.0, 0);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N441ML','N710MY', (select id from MODEL where name='Robinson R44'), '10465', 'N441ML.png', 2, 15.0, 76, 124, 130);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N4344J','N4344J', (select id from MODEL where name='Robinson R44'), '12818', 'N4344J.png', 3, 15.0, 76, 124, 130);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N86SL','N241AU', (select id from MODEL where name='Robinson R44'), '10375', 'N86SL.png', 4, 15.0, 76, 124, 130);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('47 G3-B1','N32FG', (select id from MODEL where name='Bell 47G3B1'), '3838', 'N32FG.png', 5, 15.0, 76, 124, 130);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N118TV','N118TV', (select id from MODEL where name='Bell 206'), '2844', 'N118TV.png', 6, 15.0, 76, 124, 130);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('47 G2-A1','N8505F', (select id from MODEL where name='Bell 47G2A1'), '', 'N8505F.png', 7, 15.0, 76, 124, 130);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N586SC','N586SC', (select id from MODEL where name='Bell 206'), '2033', 'N586SC.png', 8, 15.0, 76, 124, 130);
 
 INSERT INTO LOCATION(NAME) values('BHAA');
 INSERT INTO LOCATION(NAME) values('Badlands');

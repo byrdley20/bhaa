@@ -32,22 +32,19 @@
         	addUpdatePath = "/models";
         	deletePath = "/models";
     		
-    		createDialog("Save Model");
+    		createDialog();
     		
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(userId, "'ID'", 1, 15);
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(firstName, "'First Name'", 1, 100);
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(lastName, "'Last Name'", 1, 100);
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(username, "'Username'", 1, 100);
-    		
-    		//passwordValidation[passwordValidation.length] = createPasswordValidationObject(password, password2);
+    		lengthValidation[lengthValidation.length] = createLengthValidationObject(name, "'Name'", 1, 50);
     	});
     	function setSelectValue(formData, element) {
 
     	}
     	function writeCreatedRecord(savedRecord){
 	    	$( ".records-rows" ).last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
-			    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
-			    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+	    			"<span class='dataCell'>" +
+			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+			    	"</span>" +
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='showStarts dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.showStarts)+" disabled='disabled'/></span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
@@ -60,7 +57,7 @@
     		editedRow.find('.id').html(savedRecord.id);
     	}
     	function populateEditForm(editLink){
-    		var editSpan = $(editLink).closest('span');
+    		var editSpan = $(editLink).closest('span.dataCell');
     		$('#addEditForm').find('#name').val(editSpan.nextAll('span.name').first().html());
     		var showStartsValue = editSpan.nextAll('span.showStarts').first().find("input").is(':checked');
     		if(showStartsValue){
@@ -69,7 +66,7 @@
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
     	}
     	function findDeleteName(deleteLink){
-    		return $(deleteLink).closest('span').nextAll('span.name').first().html();
+    		return $(deleteLink).closest('span.dataCell').nextAll('span.name').first().html();
     	}
     	//]]>
     </script>
@@ -77,35 +74,38 @@
 <body>
 
 	<div th:replace="includes/header :: header">...</div>
-
-	<H1>Models</H1>
-	<div id="dialog-form" title="Create New Model">
-		<p class="validateTips"></p>
-		<form id="addEditForm" action="/models" method="post">
-			<fieldset>
-				<label for="name">Name</label>
-				<input type="text" name="name" id="name" value="Bell 406" class="text ui-widget-content ui-corner-all"/>
-				<label for="showStarts">Track Starts</label>
-				<input type="checkbox" name="showStarts" id="showStarts"/>
-				<input type="text" name="id" id="id" class="hidden"/>
-				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
-			</fieldset>
-		</form>
+	<div id="main-content">
+		<H1>Models</H1>
+		<div id="dialog-form" title="Model">
+			<p class="validateTips"></p>
+			<form id="addEditForm" action="/models" method="post">
+				<fieldset>
+					<label for="name">Name</label>
+					<input type="text" name="name" id="name" value="Bell 406" class="text ui-widget-content ui-corner-all"/>
+					<label style="display:inline;" for="showStarts">Track Starts</label>
+					<input style="display:inline;" type="checkbox" name="showStarts" id="showStarts"/>
+					<input type="text" name="id" id="id" class="hidden"/>
+					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+				</fieldset>
+			</form>
+		</div>
+		<div class="table">
+			<div class="records-header">
+				<span class="edit delete icon"></span>
+			    <span class="headerCell dataCell">Name</span>
+			    <span class="headerCell dataCell">Track Starts</span>
+			</div>
+			<div class="records-rows" th:each="m : ${models}" th:classappend="|id${m.id}">
+				<span class="dataCell">
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+				</span>
+				<span class="name dataCell" th:text="${m.name}">Name</span>
+				<span class="showStarts dataCell"><input type="checkbox" th:value="${m.showStarts}" th:checked="${m.showStarts}" disabled="disabled"/></span>
+				<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
+			</div>
+		</div>
+		<button id="create-record">Create New</button>
 	</div>
-	<div class="records-header">
-		<span class="delete"></span>
-		<span class="edit"></span>
-	    <span class="headerCell dataCell">Name</span>
-	    <span class="headerCell dataCell">Track Starts</span>
-	</div>
-	<div class="records-rows" th:each="m : ${models}" th:classappend="|id${m.id}">
-		<span class="edit"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-		<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
-		<span class="name dataCell" th:text="${m.name}">Name</span>
-		<span class="showStarts dataCell"><input type="checkbox" th:value="${m.showStarts}" th:checked="${m.showStarts}" disabled="disabled"/></span>
-		<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
-	</div>
-	<br/>
-	<button id="create-record">Create new model</button>
 </body>
 </html>

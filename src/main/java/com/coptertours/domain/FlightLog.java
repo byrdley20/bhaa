@@ -91,4 +91,8 @@ public class FlightLog extends BaseDomain {
 	public Operation getOperation() {
 		return operation;
 	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 }

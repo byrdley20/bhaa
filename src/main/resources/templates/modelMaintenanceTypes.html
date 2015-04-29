@@ -34,6 +34,7 @@
   		//<![CDATA[
   		           
 		var lengthValidation = [];
+		var numberValidation = [];
 		var passwordValidation = [];
 		
     	$(function() {
@@ -51,14 +52,14 @@
         	addUpdatePath = "/maintenanceTypes";
         	deletePath = "/maintenanceTypes";
     		
-    		createDialog("Save Maintenance Type");
+    		createDialog();
     		
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(userId, "'ID'", 1, 15);
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(firstName, "'First Name'", 1, 100);
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(lastName, "'Last Name'", 1, 100);
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(username, "'Username'", 1, 100);
-    		
-    		//passwordValidation[passwordValidation.length] = createPasswordValidationObject(password, password2);
+    		lengthValidation[lengthValidation.length] = createLengthValidationObject(name, "'Name'", 1, 50);
+    		numberValidation[numberValidation.length] = createNumberValidationObject(timeBeforeAction, "'TBO'");
+    		lengthValidation[lengthValidation.length] = createLengthValidationObject(manualNumber, "'Manual Number'", 1, 20);
+    		lengthValidation[lengthValidation.length] = createLengthValidationObject(partNumber, "'Part Number'", 1, 20);
+    		lengthValidation[lengthValidation.length] = createLengthValidationObject(serialNumber, "'Serial Number'", 1, 20);
+   		
     	});
     	function setSelectValue(formData, element) {
 			if(element.name == 'maintenanceCategory'){
@@ -71,15 +72,18 @@
     		formData["model"] = model;
     	}
     	function writeCreatedRecord(savedRecord){
+    		var siblingTable = $("."+savedRecord.maintenanceCategory).siblings(".table")[0];
     		var elementBefore;
-    		if($("."+savedRecord.maintenanceCategory).siblings(".records-rows").length){
-    			elementBefore = $("."+savedRecord.maintenanceCategory).siblings(".records-rows");
+    		if($(siblingTable).find(".records-rows").length){
+    			elementBefore = $(siblingTable).find(".records-rows");
     		} else {
-    			elementBefore = $("."+savedRecord.maintenanceCategory).siblings(".records-header");
+    			elementBefore = $(siblingTable).find(".records-header");
     		}
     		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
-			    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
-			    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+    				"<span class='dataCell'>" +
+			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+			    	"</span>" +
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='timeBeforeAction dataCell'>"+savedRecord.timeBeforeAction+"</span> " +
 			    	"<span class='manualNumber dataCell'>"+savedRecord.manualNumber+"</span> " +
@@ -113,7 +117,7 @@
     		}
     	}
     	function populateEditForm(editLink){
-    		var editSpan = $(editLink).closest('span');
+    		var editSpan = $(editLink).closest('span.dataCell');
     		$('#addEditForm').find('#name').val(editSpan.nextAll('span.name').first().html());
     		
     		var maintenanceCategoryValueSpan = editSpan.nextAll('span.maintenanceCategoryValue');
@@ -136,78 +140,88 @@
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
     	}
     	function findDeleteName(deleteLink){
-    		return $(deleteLink).closest('span').nextAll('span.name').first().html();
+    		return $(deleteLink).closest('span.dataCell').nextAll('span.name').first().html();
     	}
     	//]]>
     </script>
     <style>
-    	.model-row {margin-bottom:20px;}
+    	.model {
+    		font-size: 1.4em;
+    		font-weight: bold;
+    		margin-bottom:20px;
+    	}
+    	.showOnDashboard.dataCell {
+    		padding-left: 60px;
+		}
     </style>
 </head>
 <body>
 
 	<div th:replace="includes/header :: header">...</div>
-
-	<H1>Maintenance Types</H1>
-	<div id="dialog-form" title="New Maintenance Type">
-		<p class="validateTips"></p>
-		<form id="addEditForm" action="/maintenanceTypes" method="post">
-			<fieldset>
-				<label for="maintenanceCategory">Category</label>
-				<select id="maintenanceCategory" name="maintenanceCategory" class="ui-widget-content ui-corner-all">
-				  <option th:each="maintenanceCategory : ${T(com.coptertours.options.MaintenanceCategory).values()}" th:value="${maintenanceCategory}" th:text="${maintenanceCategory.name}"></option>
-				</select>
-				<label for="name">Name</label>
-				<input type="text" name="name" id="name" value="New Maintenance Type" class="text ui-widget-content ui-corner-all"/>
-				<label for="timeBeforeAction">TBO</label>
-				<input type="text" name="timeBeforeAction" id="timeBeforeAction" value="50" class="text ui-widget-content ui-corner-all"/>
-				<label for="manualNumber">Manual Number</label>
-				<input type="text" name="manualNumber" id="manualNumber" value="Manual-123" class="text ui-widget-content ui-corner-all"/>
-				<label for="partNumber">Part Number</label>
-				<input type="text" name="partNumber" id="partNumber" value="Part-123" class="text ui-widget-content ui-corner-all"/>
-				<label for="serialNumber">Serial Number</label>
-				<input type="text" name="serialNumber" id="serialNumber" value="Serial-123" class="text ui-widget-content ui-corner-all"/>
-				<label for="action">Action</label>
-				<select id="action" name="action" class="ui-widget-content ui-corner-all">
-				  <option th:each="action : ${T(com.coptertours.options.Action).values()}" th:value="${action}" th:text="${action.name}"></option>
-				</select>
-				<label for="showOnDashboard">Show on Dashboard</label>
-				<input type="checkbox" name="showOnDashboard" id="showOnDashboard"/>		
-				<input type="text" name="id" id="id" class="hidden"/>
-				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
-			</fieldset>
-		</form>
-	</div>
-	<div class="dataCell" th:text="${model.name}">Robinson 44</div>
-	<div class="category-row" th:each="mctmt : ${maintCategoryToMaintTypes}">
-		<span class="dataCell" th:text="${mctmt.key.name}" th:classappend="|${mctmt.key}">MONTH</span>
-		<div class="records-header">
-			<span class="delete"></span>
-			<span class="edit"></span>
-		    <span class="headerCell dataCell">Name</span>
-		    <span class="headerCell dataCell">TBO</span>
-		    <span class="headerCell dataCell">Manual Number</span>
-		    <span class="headerCell dataCell">Part Number</span>
-		    <span class="headerCell dataCell">Serial Number</span>
-		    <span class="headerCell dataCell">Action</span>
-		    <span class="headerCell dataCell">Show on Dashboard</span>
+	<div id="main-content">
+		<H1>Maintenance Types</H1>
+		<div id="dialog-form" title="Maintenance Type">
+			<p class="validateTips"></p>
+			<form id="addEditForm" action="/maintenanceTypes" method="post">
+				<fieldset>
+					<label for="maintenanceCategory">Category</label>
+					<select id="maintenanceCategory" name="maintenanceCategory" class="ui-widget-content ui-corner-all">
+					  <option th:each="maintenanceCategory : ${T(com.coptertours.options.MaintenanceCategory).values()}" th:value="${maintenanceCategory}" th:text="${maintenanceCategory.name}"></option>
+					</select>
+					<label for="name">Name</label>
+					<input type="text" name="name" id="name" value="New Maintenance Type" class="text ui-widget-content ui-corner-all"/>
+					<label for="timeBeforeAction">TBO</label>
+					<input type="text" name="timeBeforeAction" id="timeBeforeAction" value="50" class="text ui-widget-content ui-corner-all"/>
+					<label for="manualNumber">Manual Number</label>
+					<input type="text" name="manualNumber" id="manualNumber" value="Manual-123" class="text ui-widget-content ui-corner-all"/>
+					<label for="partNumber">Part Number</label>
+					<input type="text" name="partNumber" id="partNumber" value="Part-123" class="text ui-widget-content ui-corner-all"/>
+					<label for="serialNumber">Serial Number</label>
+					<input type="text" name="serialNumber" id="serialNumber" value="Serial-123" class="text ui-widget-content ui-corner-all"/>
+					<label for="action">Action</label>
+					<select id="action" name="action" class="ui-widget-content ui-corner-all">
+					  <option th:each="action : ${T(com.coptertours.options.Action).values()}" th:value="${action}" th:text="${action.name}"></option>
+					</select>
+					<label for="showOnDashboard" style="display:inline;">Show on Dashboard</label>
+					<input style="display:inline;" type="checkbox" name="showOnDashboard" id="showOnDashboard"/>		
+					<input type="text" name="id" id="id" class="hidden"/>
+					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+				</fieldset>
+			</form>
 		</div>
-		<div class="records-rows" th:each="m : ${mctmt.value}" th:classappend="|id${m.id}">
-			<span class="edit"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-			<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
-			<span class="name dataCell" th:text="${m.name}">Name</span>
-			<span class="timeBeforeAction dataCell" th:text="${m.timeBeforeAction}">TBO</span>
-			<span class="manualNumber dataCell" th:text="${m.manualNumber}">Manual Number</span>
-			<span class="partNumber dataCell" th:text="${m.partNumber}">Part Number</span>
-			<span class="serialNumber dataCell" th:text="${m.serialNumber}">Serial Number</span>
-			<span class="action dataCell" th:text="${m.action.name}">Action</span>
-			<span class="showOnDashboard dataCell"><input type="checkbox" th:value="${m.showOnDashboard}" th:checked="${m.showOnDashboard}" disabled="disabled"/></span>
-			<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
-			<span class="maintenanceCategoryValue cell hidden" th:text="${m.maintenanceCategory}">Hidden Maintenance Category</span>
-			<span class="actionValue cell hidden" th:text="${m.action}">Hidden Action</span>
+		<div class="model" th:text="'Model: '+${model.name}">Robinson 44</div>
+		<div th:each="mctmt : ${maintCategoryToMaintTypes}">
+			<div class="category-type" th:text="${mctmt.key.name}" th:classappend="|${mctmt.key}">CATEGORY TYPE</div>
+			<div class="table">
+				<div class="records-header">
+					<span class="edit delete icon"></span>
+				    <span class="headerCell dataCell">Name</span>
+				    <span class="headerCell dataCell">TBO</span>
+				    <span class="headerCell dataCell">Manual Number</span>
+				    <span class="headerCell dataCell">Part Number</span>
+				    <span class="headerCell dataCell">Serial Number</span>
+				    <span class="headerCell dataCell">Action</span>
+				    <span class="headerCell dataCell">Show on Dashboard</span>
+				</div>
+				<div class="records-rows" th:each="m : ${mctmt.value}" th:classappend="|id${m.id}">
+					<span class="dataCell">
+						<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
+						<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+					</span>
+					<span class="name dataCell" th:text="${m.name}">Name</span>
+					<span class="timeBeforeAction dataCell" th:text="${m.timeBeforeAction}">TBO</span>
+					<span class="manualNumber dataCell" th:text="${m.manualNumber}">Manual Number</span>
+					<span class="partNumber dataCell" th:text="${m.partNumber}">Part Number</span>
+					<span class="serialNumber dataCell" th:text="${m.serialNumber}">Serial Number</span>
+					<span class="action dataCell" th:text="${m.action.name}">Action</span>
+					<span class="showOnDashboard dataCell"><input type="checkbox" th:value="${m.showOnDashboard}" th:checked="${m.showOnDashboard}" disabled="disabled"/></span>
+					<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
+					<span class="maintenanceCategoryValue cell hidden" th:text="${m.maintenanceCategory}">Hidden Maintenance Category</span>
+					<span class="actionValue cell hidden" th:text="${m.action}">Hidden Action</span>
+				</div>
+			</div>
 		</div>
+		<button id="create-record">Create New</button>
 	</div>
-	<br/>
-	<button id="create-record">Create new maintenance type</button>
 </body>
 </html>

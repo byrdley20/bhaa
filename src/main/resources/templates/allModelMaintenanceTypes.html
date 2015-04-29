@@ -142,99 +142,101 @@
 
 	<div th:replace="includes/header :: header">...</div>
 
-	<H1>Maintenance Types</H1>
-	<div id="dialog-form" title="New Maintenance Type">
-		<p class="validateTips"></p>
-		<form id="addEditForm" action="/maintenanceTypes" method="post">
-			<fieldset>
-				<label for="model">Model</label>
-				<select id="model" name="model" class="ui-widget-content ui-corner-all">
-					<option th:each="model : ${allModels}" th:text="${model.name}" th:value="${model.id}">${model.name}</option>
-				</select>
-				<label for="maintenanceCategory">Category</label>
-				<select id="maintenanceCategory" name="maintenanceCategory" class="ui-widget-content ui-corner-all">
-				  <option th:each="maintenanceCategory : ${T(com.coptertours.options.MaintenanceCategory).values()}" th:value="${maintenanceCategory}" th:text="${maintenanceCategory.name}"></option>
-				</select>
-				<label for="name">Name</label>
-				<input type="text" name="name" id="name" value="New Maintenance Type" class="text ui-widget-content ui-corner-all"/>
-				<label for="timeBeforeAction">TBO</label>
-				<input type="text" name="timeBeforeAction" id="timeBeforeAction" value="50" class="text ui-widget-content ui-corner-all"/>
-				<label for="manualNumber">Manual Number</label>
-				<input type="text" name="manualNumber" id="manualNumber" value="Manual-123" class="text ui-widget-content ui-corner-all"/>
-				<label for="partNumber">Part Number</label>
-				<input type="text" name="partNumber" id="partNumber" value="Part-123" class="text ui-widget-content ui-corner-all"/>
-				<label for="serialNumber">Serial Number</label>
-				<input type="text" name="serialNumber" id="serialNumber" value="Serial-123" class="text ui-widget-content ui-corner-all"/>
-				<label for="action">Action</label>
-				<select id="action" name="action" class="ui-widget-content ui-corner-all">
-				  <option th:each="action : ${T(com.coptertours.options.Action).values()}" th:value="${action}" th:text="${action.name}"></option>
-				</select>
-								
-				<input type="text" name="id" id="id" class="hidden"/>
-				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
-			</fieldset>
-		</form>
-	</div>
-	<!--
-	<div class="records-header">
-		<span class="delete"></span>
-		<span class="edit"></span>
-	    <span class="headerCell dataCell">Name</span>
-	    <span class="headerCell dataCell">Maintenance Category</span>
-	    <span class="headerCell dataCell">Model</span>
-	    <span class="headerCell dataCell">TBO</span>
-	    <span class="headerCell dataCell">Manual Number</span>
-	    <span class="headerCell dataCell">Part Number</span>
-	    <span class="headerCell dataCell">Serial Number</span>
-	    <span class="headerCell dataCell">Action</span>
-	</div>
-	<div class="records-rows" th:each="m : ${maintenanceTypes}" th:classappend="|id${m.id}">
-		<span class="edit"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-		<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
-		<span class="name dataCell" th:text="${m.name}">Name</span>
-		<span class="maintenanceCategory dataCell" th:text="${m.maintenanceCategory.name}">Maintenance Category</span>
-		<span class="model dataCell" th:text="${m.model.name}">Model</span>
-		<span class="timeBeforeAction dataCell" th:text="${m.timeBeforeAction}">TBO</span>
-		<span class="manualNumber dataCell" th:text="${m.manualNumber}">Manual Number</span>
-		<span class="partNumber dataCell" th:text="${m.partNumber}">Part Number</span>
-		<span class="serialNumber dataCell" th:text="${m.serialNumber}">Serial Number</span>
-		<span class="action dataCell" th:text="${m.action.name}">Action</span>
-		<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
-		<span class="modelId cell hidden" th:text="${m.model.id}">Hidden Model Id</span>
-		<span class="maintenanceCategoryValue cell hidden" th:text="${m.maintenanceCategory}">Hidden Maintenance Category</span>
-		<span class="actionValue cell hidden" th:text="${m.action}">Hidden Action</span>
-	</div>
-	-->
-	<div class="model-row" th:each="modelToMaintType : ${modelToMaintTypes}">
-		<span class="dataCell" th:text="${modelToMaintType.key}">Robinson 44</span>
-		<div class="category-row" th:each="maintCategoryToMaintTypes : ${modelToMaintType.value}">
-			<span class="dataCell" th:text="${maintCategoryToMaintTypes.key.name}">MONTH</span>
-			<div class="records-header">
-				<span class="delete"></span>
-				<span class="edit"></span>
-			    <span class="headerCell dataCell">Name</span>
-			    <span class="headerCell dataCell">TBO</span>
-			    <span class="headerCell dataCell">Manual Number</span>
-			    <span class="headerCell dataCell">Part Number</span>
-			    <span class="headerCell dataCell">Serial Number</span>
-			    <span class="headerCell dataCell">Action</span>
-			</div>
-			<div class="records-rows" th:each="m : ${maintCategoryToMaintTypes.value}" th:classappend="|id${m.id}">
-				<span class="edit"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-				<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
-				<span class="name dataCell" th:text="${m.name}">Name</span>
-				<span class="timeBeforeAction dataCell" th:text="${m.timeBeforeAction}">TBO</span>
-				<span class="manualNumber dataCell" th:text="${m.manualNumber}">Manual Number</span>
-				<span class="partNumber dataCell" th:text="${m.partNumber}">Part Number</span>
-				<span class="serialNumber dataCell" th:text="${m.serialNumber}">Serial Number</span>
-				<span class="action dataCell" th:text="${m.action.name}">Action</span>
-				<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
-				<span class="maintenanceCategoryValue cell hidden" th:text="${m.maintenanceCategory}">Hidden Maintenance Category</span>
-				<span class="actionValue cell hidden" th:text="${m.action}">Hidden Action</span>
+	<div id="main-content">
+		<H1>Maintenance Types</H1>
+		<div id="dialog-form" title="New Maintenance Type">
+			<p class="validateTips"></p>
+			<form id="addEditForm" action="/maintenanceTypes" method="post">
+				<fieldset>
+					<label for="model">Model</label>
+					<select id="model" name="model" class="ui-widget-content ui-corner-all">
+						<option th:each="model : ${allModels}" th:text="${model.name}" th:value="${model.id}">${model.name}</option>
+					</select>
+					<label for="maintenanceCategory">Category</label>
+					<select id="maintenanceCategory" name="maintenanceCategory" class="ui-widget-content ui-corner-all">
+					  <option th:each="maintenanceCategory : ${T(com.coptertours.options.MaintenanceCategory).values()}" th:value="${maintenanceCategory}" th:text="${maintenanceCategory.name}"></option>
+					</select>
+					<label for="name">Name</label>
+					<input type="text" name="name" id="name" value="New Maintenance Type" class="text ui-widget-content ui-corner-all"/>
+					<label for="timeBeforeAction">TBO</label>
+					<input type="text" name="timeBeforeAction" id="timeBeforeAction" value="50" class="text ui-widget-content ui-corner-all"/>
+					<label for="manualNumber">Manual Number</label>
+					<input type="text" name="manualNumber" id="manualNumber" value="Manual-123" class="text ui-widget-content ui-corner-all"/>
+					<label for="partNumber">Part Number</label>
+					<input type="text" name="partNumber" id="partNumber" value="Part-123" class="text ui-widget-content ui-corner-all"/>
+					<label for="serialNumber">Serial Number</label>
+					<input type="text" name="serialNumber" id="serialNumber" value="Serial-123" class="text ui-widget-content ui-corner-all"/>
+					<label for="action">Action</label>
+					<select id="action" name="action" class="ui-widget-content ui-corner-all">
+					  <option th:each="action : ${T(com.coptertours.options.Action).values()}" th:value="${action}" th:text="${action.name}"></option>
+					</select>
+									
+					<input type="text" name="id" id="id" class="hidden"/>
+					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+				</fieldset>
+			</form>
+		</div>
+		<!--
+		<div class="records-header">
+			<span class="delete"></span>
+			<span class="edit"></span>
+		    <span class="headerCell dataCell">Name</span>
+		    <span class="headerCell dataCell">Maintenance Category</span>
+		    <span class="headerCell dataCell">Model</span>
+		    <span class="headerCell dataCell">TBO</span>
+		    <span class="headerCell dataCell">Manual Number</span>
+		    <span class="headerCell dataCell">Part Number</span>
+		    <span class="headerCell dataCell">Serial Number</span>
+		    <span class="headerCell dataCell">Action</span>
+		</div>
+		<div class="records-rows" th:each="m : ${maintenanceTypes}" th:classappend="|id${m.id}">
+			<span class="edit"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
+			<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+			<span class="name dataCell" th:text="${m.name}">Name</span>
+			<span class="maintenanceCategory dataCell" th:text="${m.maintenanceCategory.name}">Maintenance Category</span>
+			<span class="model dataCell" th:text="${m.model.name}">Model</span>
+			<span class="timeBeforeAction dataCell" th:text="${m.timeBeforeAction}">TBO</span>
+			<span class="manualNumber dataCell" th:text="${m.manualNumber}">Manual Number</span>
+			<span class="partNumber dataCell" th:text="${m.partNumber}">Part Number</span>
+			<span class="serialNumber dataCell" th:text="${m.serialNumber}">Serial Number</span>
+			<span class="action dataCell" th:text="${m.action.name}">Action</span>
+			<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
+			<span class="modelId cell hidden" th:text="${m.model.id}">Hidden Model Id</span>
+			<span class="maintenanceCategoryValue cell hidden" th:text="${m.maintenanceCategory}">Hidden Maintenance Category</span>
+			<span class="actionValue cell hidden" th:text="${m.action}">Hidden Action</span>
+		</div>
+		-->
+		<div class="model-row" th:each="modelToMaintType : ${modelToMaintTypes}">
+			<span class="dataCell" th:text="${modelToMaintType.key}">Robinson 44</span>
+			<div class="category-row" th:each="maintCategoryToMaintTypes : ${modelToMaintType.value}">
+				<span class="dataCell" th:text="${maintCategoryToMaintTypes.key.name}">MONTH</span>
+				<div class="records-header">
+					<span class="delete"></span>
+					<span class="edit"></span>
+				    <span class="headerCell dataCell">Name</span>
+				    <span class="headerCell dataCell">TBO</span>
+				    <span class="headerCell dataCell">Manual Number</span>
+				    <span class="headerCell dataCell">Part Number</span>
+				    <span class="headerCell dataCell">Serial Number</span>
+				    <span class="headerCell dataCell">Action</span>
+				</div>
+				<div class="records-rows" th:each="m : ${maintCategoryToMaintTypes.value}" th:classappend="|id${m.id}">
+					<span class="edit"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
+					<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+					<span class="name dataCell" th:text="${m.name}">Name</span>
+					<span class="timeBeforeAction dataCell" th:text="${m.timeBeforeAction}">TBO</span>
+					<span class="manualNumber dataCell" th:text="${m.manualNumber}">Manual Number</span>
+					<span class="partNumber dataCell" th:text="${m.partNumber}">Part Number</span>
+					<span class="serialNumber dataCell" th:text="${m.serialNumber}">Serial Number</span>
+					<span class="action dataCell" th:text="${m.action.name}">Action</span>
+					<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
+					<span class="maintenanceCategoryValue cell hidden" th:text="${m.maintenanceCategory}">Hidden Maintenance Category</span>
+					<span class="actionValue cell hidden" th:text="${m.action}">Hidden Action</span>
+				</div>
 			</div>
 		</div>
+		<br/>
+		<button id="create-record">Create new maintenance type</button>
 	</div>
-	<br/>
-	<button id="create-record">Create new maintenance type</button>
 </body>
 </html>

@@ -9,14 +9,21 @@
     <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
+
+	<style>
+		.col {
+		    padding: 3px;
+		}
+	</style>
 </head>
 <body>
-
 	<div th:replace="includes/header :: header">...</div>
-
-	<div class="dashboard-grid">
-		<div class="col" th:each="m : ${models}">
-			<a href="modelMaintenanceTypes.html?id=1" th:href="@{modelMaintenanceTypes.html(id=${m.id})}" th:text="${m.name}">Model</a>
+	<div id="main-content">
+		<h1>Select Model:</h1>
+		<div class="dashboard-grid">
+			<div class="col" th:each="m : ${models}">
+				<a href="modelMaintenanceTypes.html?id=1" th:href="@{modelMaintenanceTypes.html(id=${m.id})}" th:text="${m.name}">Model</a>
+			</div>
 		</div>
 	</div>
 </body>
