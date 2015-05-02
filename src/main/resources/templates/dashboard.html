@@ -15,10 +15,17 @@
     	//]]>
     </script>
     <style>
+    	.emph {
+    		font-weight: bold;
+    		font-size: 1.1em;
+    		margin-bottom: 2px;
+    	}
     	.col {
     		float: left;
-    		width: 50%;
+    		width: 48%;
     		margin-bottom: 20px;
+    		padding-top: 10px;
+    		border-top: 3px solid black;
     	}
     	.data-header {
     		font-weight: bold;
@@ -49,16 +56,26 @@
 		.cellRight {
     		border: 1px solid black;
 		}
-		.image {
+		.leftColumn {
 			float: left;
 			width: 250px;
 			margin-right:30px;
+			margin-left: 15px;
+		}
+		.rightColumn {
+			width: 450px;
+			margin-left: 280px; /*.image width+margin-right*/
 		}
 		.data {
 			display: table;
 			border: 1px solid black;
 			border-collapse: collapse;
-			width: 450px;
+			background-color: white;
+		}
+		.starts-data {
+			display: table;
+			border: 1px solid black;
+			border-collapse: collapse;
 			background-color: white;
 		}
 		.dueNow {
@@ -79,29 +96,40 @@
 		<br/><br/>
 		<div class="dashboard-grid">
 			<div class="col" th:each="a : ${aircrafts}" th:classappend="${aStat.even}?'cleared'" th:with="currentHobbs=(${a.hobbs}+${a.hobbsOffset})">
-				<span class="name" th:text="${a.name}">Name</span>:
-				<a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${a.id})}">Log</a>
-				|
-				<a href="aircraftStatus.html?id=1" th:href="@{aircraftStatus.html(id=${a.id})}">Status</a>
-				|
-				<a href="adCompliance.html?id=1" th:href="@{adCompliance.html(id=${a.id})}">AD Compliance</a>
-				<div th:text="'Current Hobbs: ' + ${currentHobbs} + ' HR'">Current Hobbs</div>
-				<div>
-				<div class="image"><img src="" th:src="'images/aircrafts/' + @{${a.imagePath}}" /></div>
-				<div class="data">
-					<div class="records-header">
-						<div class="dataCell">Maintenance</div>
-			    		<div class="dataCell">Due</div>
-			    		<div class="dataCell">Remaining Time</div>
-			    	</div>
-					<div class="data-row" th:each="m : ${a.maintenanceTypes}" th:with="maintCategoryType=(${m.maintenanceCategory}), complyWithDate=(((${m.maintenanceLog}==null)or(${m.maintenanceLog.complyWithDate}==null))?'N/A':${m.maintenanceLog.complyWithDate}), complyWithHobbs=((${m.maintenanceLog}==null)?'0':${m.maintenanceLog.complyWithHobbs}), hobbsDue=((${maintCategoryType}==${T(com.coptertours.options.MaintenanceCategory).FLIGHT_HOURS})?(${complyWithHobbs}+${m.timeBeforeAction})), dueDate=(((${maintCategoryType}==${T(com.coptertours.options.MaintenanceCategory).MONTHS}) and (${m.maintenanceLog} != null) and (${m.maintenanceLog.complyWithDate} != null))?${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, m.timeBeforeAction), 'MM/dd/yy')}:'N/A'), remainingHr=((${hobbsDue}!=null)?(${hobbsDue}-${currentHobbs}):null), remainingDays=(((${dueDate} == null) or (${dueDate} == 'N/A'))?null:${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)})" th:classappend="((${remainingHr}!=null)?((${remainingHr} &lt; 10) ? 'dueNow' : ((${remainingHr} &lt; 20 ) ? 'dueSoon')):((${remainingDays}!=null)?((${remainingDays} &lt; 5) ? 'dueNow' : ((${remainingDays} &lt; 15) ? 'dueSoon'))))">
-						<div class="dataCell" th:text="${m.name}">Maint Type Name</div>
-						<div class="dataCell" th:text="((${hobbsDue}!=null)?${hobbsDue}:${dueDate})">Due</div>
-						<!--<div class="dataCell" th:text="((${hobbsDue}!=null)?(${hobbsDue}-${currentHobbs})+' hr':(((${dueDate} == null) or (${dueDate} == 'N/A'))?'N/A':${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)} + ' days'))">Remaining</div>-->
-						<div class="dataCell" th:text="((${remainingHr}!=null)?(${remainingHr})+' hr':((${remainingDays}!=null)?${remainingDays} + ' days':'N/A'))">Remaining</div>
+				<div class="leftColumn">
+					<div class="emph" th:text="${a.name}">Name</div>
+					<div class="image">
+						<div style="margin-bottom:5px;">
+							<img src="" th:src="'images/aircrafts/' + @{${a.imagePath}}" />
+						</div>
+						<div>
+							<span><a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>
+							<span><a href="aircraftStatus.html?id=1" th:href="@{aircraftStatus.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Status</span></button></a></span>
+							<span><a href="adCompliance.html?id=1" th:href="@{adCompliance.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text">AD Compliance</span></button></a></span>
+						</div>
 					</div>
 				</div>
-				<div class="cleared"></div>
+				<div class="rightColumn">
+					<div class="emph" th:text="'Current Hobbs: ' + ${currentHobbs} + ' HR'">Current Hobbs</div>
+					<div class="data">
+						<div class="records-header">
+							<div class="dataCell">Maintenance</div>
+				    		<div class="dataCell">Due</div>
+				    		<div class="dataCell">Remaining Time</div>
+				    	</div>
+						<div class="data-row" th:each="m : ${a.maintenanceTypes}" th:with="maintCategoryType=(${m.maintenanceCategory}), complyWithDate=(((${m.maintenanceLog}==null)or(${m.maintenanceLog.complyWithDate}==null))?'N/A':${m.maintenanceLog.complyWithDate}), complyWithHobbs=((${m.maintenanceLog}==null)?'0':${m.maintenanceLog.complyWithHobbs}), hobbsDue=((${maintCategoryType}==${T(com.coptertours.options.MaintenanceCategory).FLIGHT_HOURS})?(${complyWithHobbs}+${m.timeBeforeAction})), dueDate=(((${maintCategoryType}==${T(com.coptertours.options.MaintenanceCategory).MONTHS}) and (${m.maintenanceLog} != null) and (${m.maintenanceLog.complyWithDate} != null))?${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, m.timeBeforeAction), 'MM/dd/yy')}:'N/A'), remainingHr=((${hobbsDue}!=null)?(${hobbsDue}-${currentHobbs}):null), remainingDays=(((${dueDate} == null) or (${dueDate} == 'N/A'))?null:${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)})" th:classappend="((${remainingHr}!=null)?((${remainingHr} &lt; 10) ? 'dueNow' : ((${remainingHr} &lt; 20 ) ? 'dueSoon')):((${remainingDays}!=null)?((${remainingDays} &lt; 5) ? 'dueNow' : ((${remainingDays} &lt; 15) ? 'dueSoon'))))">
+							<div class="dataCell" th:text="${m.name}">Maint Type Name</div>
+							<div class="dataCell" th:text="((${hobbsDue}!=null)?${hobbsDue}:${dueDate})">Due</div>
+							<div class="dataCell" th:text="((${remainingHr}!=null)?(${remainingHr})+' hr':((${remainingDays}!=null)?${remainingDays} + ' days':'N/A'))">Remaining</div>
+						</div>
+					</div>
+					<br/>
+					<div class="starts-data" th:if="${a.model.showStarts}">
+						<div class="data-row">
+							<div class="dataCell" th:text="'Total Starts: '+${a.totalStarts}"></div>
+						</div>
+					</div>
+					<div class="cleared"></div>
 				</div>
 			</div>
 		</div>

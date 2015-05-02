@@ -6,6 +6,64 @@
 	background: url("../images/header-right.png") repeat-x scroll 50% 50%;
 	margin-left: 171px;
 	height: 87px;
+	position: relative;
+}
+.header-menu {
+	position: absolute;
+	bottom: 23px;
+}
+a button.header-button,
+a button.admin-button {
+	border-left: 1px solid #d3d3d3;
+	border-right: 1px solid #d3d3d3;
+	border-top: 1px solid #d3d3d3;
+	border-bottom: none;
+	color: #000000;
+	border-top-right-radius: 4px;
+	border-top-left-radius: 4px;
+	font-size: 1em;
+	font-weight: bold;
+}
+a button.header-button {
+	background: #e6e6e6 url("../css/jqueryui/1.11.3/images/ui-bg_inset-soft_95_fef1ec_1x100.png") 50% 50% repeat-x;
+}
+a button.admin-button {
+	background: #e6e6e6 url("../images/menu-button.png") 50% 50% repeat-x;
+}
+a button.month-button-off {
+	background: #e6e6e6 url("../images/menu-button.png") 50% 50% repeat-x;
+}
+a button.month-button-on {
+	background: #dadada url("../css/jqueryui/1.11.3/images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;
+}
+a button.month-button  {
+	border: 1px solid black;
+	color: #000000;
+	border-top-right-radius: 4px;
+	border-top-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom-left-radius: 4px;
+	font-size: 1em;
+	font-weight: bold;
+}
+
+a button.header-button:hover,
+a button.admin-button:hover,
+a button.month-button:hover {
+	background: #dadada url("../css/jqueryui/1.11.3/images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;
+	cursor: pointer;
+	cursor: hand;
+}
+.header-button-hover {
+	
+}
+.header-button .button-text,
+.admin-button .button-text {
+  padding: .4em 1em;
+  display: block;
+}
+.log-totals {
+	font-weight: bold;
 }
 #main-content {
 	margin-left: 20px;
@@ -36,6 +94,11 @@
     padding: 3px 10px;
     border: 1px solid black;
 }
+.emptyCell {
+    display: table-cell;
+    padding: 3px 10px;
+    border: none;
+}
 .icon {
     display: table-cell;
 }
@@ -53,6 +116,7 @@ div.colspan>div>div
 }
 .records-header,
 .records-rows,
+.totals-rows,
 .row {
 	 display: table-row;
 }
@@ -70,6 +134,7 @@ div.colspan>div>div
 body { font-size: 100%; margin: 0px; background-color:#f3f1ef; }
 label, input { display:block; }
 input.text { margin-bottom:12px; width:95%; padding: .4em; }
+#imagePath { font-size: 0.8em; font-weight: bold; }
 select { margin-bottom:12px; width:95%; padding: .4em; }
 fieldset { padding:0; border:0; margin-top:25px; }
 h1 { font-size: 1.2em; margin: .6em 0; }
@@ -79,3 +144,7 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 .ui-dialog .ui-state-error { padding: .3em; }
 .validateTips { border: 1px solid transparent; padding: 0.3em; display:none; }
 .hidden { display:none; }
+.error {
+	font-weight: bold;
+	margin-left: 171px;
+}

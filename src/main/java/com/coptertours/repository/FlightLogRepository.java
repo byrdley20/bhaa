@@ -18,4 +18,7 @@ public interface FlightLogRepository extends JpaRepository<FlightLog, Long> {
 
 	@Query("select max(fl.hobbsEnd) from FlightLog fl where fl.aircraft = ?1")
 	BigDecimal findMaxHobbsEndByAircraft(Aircraft aircraft);
+
+	@Query("select sum(fl.starts) from FlightLog fl where fl.aircraft = ?1")
+	Integer findTotalStartsByAircraft(Aircraft aircraft);
 }

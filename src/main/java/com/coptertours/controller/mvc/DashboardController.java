@@ -15,6 +15,7 @@ import com.coptertours.domain.Aircraft;
 import com.coptertours.domain.MaintenanceLog;
 import com.coptertours.domain.MaintenanceType;
 import com.coptertours.repository.AircraftRepository;
+import com.coptertours.repository.FlightLogRepository;
 import com.coptertours.repository.MaintenanceLogRepository;
 import com.coptertours.repository.MaintenanceTypeRepository;
 
@@ -26,9 +27,11 @@ public class DashboardController extends BaseController {
 	private MaintenanceTypeRepository maintenanceTypeRepository;
 	@Autowired
 	private MaintenanceLogRepository maintenanceLogRepository;
+	@Autowired
+	private FlightLogRepository flightLogRepository;
 
 	@RequestMapping("/dashboard.html")
-	String ratings(Model model) {
+	String dashboard(Model model) {
 		List<Aircraft> aircrafts = this.aircraftRepository.findAll();
 		for (Aircraft aircraft : aircrafts) {
 			List<MaintenanceLog> maintenanceLogs = this.maintenanceLogRepository.findByAircraftId(aircraft.getId());
@@ -48,6 +51,11 @@ public class DashboardController extends BaseController {
 				clonedMaintenanceTypes.add(clonedMaintenanceType);
 			}
 			aircraft.setMaintenanceTypes(clonedMaintenanceTypes);
+
+			Integer totalStarts = this.flightLogRepository.findTotalStartsByAircraft(aircraft);
+			if (totalStarts != null) {
+				aircraft.setTotalStarts(totalStarts);
+			}
 		}
 		model.addAttribute("aircrafts", aircrafts);
 		model.addAttribute("today", new Date());

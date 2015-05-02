@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Black Hills Aerial Adventures | Error</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
+	<link rel="stylesheet" href="css/main.css" />
+    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+</head>
+<body>
+	<div th:replace="includes/header :: header">...</div>
+	<br/>
+	<div class="error">
+		<div th:if="${status}==404" th:text="'You seem to be lost. Check the address again. If you believe your address is correct, contact the owner of your application.'">400 Error Message</div>
+		<div th:if="${status}==401" th:text="'You do not have access to this page. If you believe this is an error or you need access to this page, contact the owner of your application.'">401 Error Message</div>
+		<div th:if="(${status}!=404 and ${status}!=401)" th:text="'An error has occurred. Try your request again. If you still receive the error, contact the owner of your application.'">500 Error Message</div>
+		<br/>
+		<br/>
+		<br/>
+		<div th:text="${error}">Error Text</div>
+		<div th:text="${status}">Status</div>
+	</div>
+</body>
+</html>

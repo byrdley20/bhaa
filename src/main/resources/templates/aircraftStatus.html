@@ -119,8 +119,13 @@
 				</fieldset>
 			</form>
 		</div>
-	
-		<div th:text="${aircraft.model.name}">Model Name</div>
+		<br/>
+		<div>
+			<span th:text="${aircraft.model.name}">Model Name</span>
+			&nbsp;&nbsp;
+			<span><a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>
+			<span><a href="adCompliance.html?id=1" th:href="@{adCompliance.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">AD Compliance</span></button></a></span>
+		</div>
 		<div th:text="${aircraft.aircraftNumber}">ID</div>
 		<div th:text="'S/N: ' + ${aircraft.serialNum}">Serial Number</div>
 		<div th:text="'Hobbs: ' + ${currentHobbs}">Hobbs</div>

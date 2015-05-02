@@ -42,6 +42,9 @@ public class Aircraft extends BaseDomain {
 	private BigDecimal engineTotalTime = BigDecimal.ZERO;
 	@Expose
 	private BigDecimal engineTotalTimeOffset = BigDecimal.ZERO;
+	@Transient
+	@Expose
+	private int totalStarts;
 
 	@Transient
 	@Expose
@@ -129,6 +132,14 @@ public class Aircraft extends BaseDomain {
 
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
+	}
+
+	public int getTotalStarts() {
+		return totalStarts;
+	}
+
+	public void setTotalStarts(int totalStarts) {
+		this.totalStarts = totalStarts;
 	}
 
 }

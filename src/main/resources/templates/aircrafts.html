@@ -47,6 +47,11 @@
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(aircraftNumber, "'Aircraft Number'", 1, 10);
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(name, "'Aircraft Name'", 1, 10);
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(serialNum, "'Serial Number'", 1, 20);
+    		
+        	$('#chooseImage').on('click', function() {
+        		$('#imagePath').click();
+        		return false;
+        	});
        	});
     	function setSelectValue(formData, element) {
 			if(element.name == 'model'){
@@ -129,6 +134,9 @@
 					<input type="text" name="serialNum" id="serialNum" value="12818" class="text ui-widget-content ui-corner-all"/>
 					<label for="imagePath">Image</label>
 					<!--<input type="text" name="imagePath" id="imagePath" value="C:/Users/byrdj/Pictures/image.png" class="text ui-widget-content ui-corner-all"/>-->
+					<button type="button" id="chooseImage" class="hidden ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button">
+						<span class="ui-button-text">Choose Image</span>
+					</button>
 					<input type="file" name="imagePath" id="imagePath" accept="image/png, image/gif, image/jpeg, image/jpg, image/bmp, image/gif, image/jpe"/>
 					<input type="text" name="id" id="id" class="hidden"/>
 					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
