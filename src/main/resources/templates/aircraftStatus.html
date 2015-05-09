@@ -165,10 +165,10 @@
 			    <span class="dataCell">Due Date</span>
 			    <span class="dataCell">Remaining Days</span>
 			</div>
-			<div class="records-rows maint-rows-month" th:each="maintType : ${monthMaintTypes}" th:classappend="|id${maintType.id}" th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),dueDate=((${maintType.maintenanceLog}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yy')})">
+			<div class="records-rows maint-rows-month" th:each="maintType : ${monthMaintTypes}" th:classappend="|id${maintType.id}" th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),dueDate=((${maintType.maintenanceLog}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yyyy')})">
 				<span class="dataCell complyWith"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" alt="Comply With" src="images/repair.png" width="15" height="15"/></a></span>
 				<span class="dataCell" th:text="${maintType.name}">Item Name</span>
-				<span class="dataCell complyWithDate" th:text="((${maintType.maintenanceLog} == null)?'N/A':${#dates.format(complyWithDate, 'MM/dd/yy')})">01/01/15</span>
+				<span class="dataCell complyWithDate" th:text="((${maintType.maintenanceLog} == null)?'N/A':${#dates.format(complyWithDate, 'MM/dd/yyyy')})">01/01/15</span>
 				<span class="dataCell tbo" th:text="${#numbers.formatInteger(maintType.timeBeforeAction,1)}">24</span>
 				<span class="dataCell dueDate" th:text="${dueDate}">1/1/9999</span>
 				<span class="dataCell remainingDays" th:text="((${maintType.maintenanceLog} == null)?'N/A':${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)})">76</span>

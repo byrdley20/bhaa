@@ -1,3 +1,5 @@
+delete from AD_COMPLIANCE_LOG;
+delete from AD_COMPLIANCE;
 delete from MAINTENANCE_TYPE;
 delete from LOCATION;
 delete from AIRCRAFT;
@@ -7,13 +9,14 @@ delete from RATING;
 delete from OPERATION;
 delete from FLIGHT_LOG;
 delete from MAINTENANCE_LOG;
-
+delete from REPAIR_LOG;
 
 --drop table flight_log;
 --drop table aircraft;
 --drop table maintenance_type;
 --drop table model;
 
+--ALTER TABLE AD_COMPLIANCE_LOG ADD COLUMN AIRCRAFT_ID BIGINT;
 --ALTER TABLE MAINTENANCE_TYPE ADD COLUMN SHOW_ON_DASHBOARD BOOLEAN;
 --ALTER TABLE MAINTENANCE_LOG DROP COLUMN COMPLY_WITH_DATE;
 --ALTER TABLE MAINTENANCE_LOG ADD COLUMN COMPLY_WITH_DATE DATE;
@@ -81,3 +84,25 @@ INSERT INTO FLIGHT_LOG (AIRCRAFT_ID, USER_ID, DATE, STARTS, LOCATION_ID, HOBBS_B
 INSERT INTO MAINTENANCE_LOG(AIRCRAFT_ID, MAINTENANCE_TYPE_ID, COMPLY_WITH_HOBBS, COMPLY_WITH_DATE) values ((select id from AIRCRAFT where name='N121AH'), (select id from MAINTENANCE_TYPE where name='Replace hydraulic filter per Section 1.170.' and MODEL_ID=(select id from MODEL where name='Robinson R44')), 601.5, null);
 INSERT INTO MAINTENANCE_LOG(AIRCRAFT_ID, MAINTENANCE_TYPE_ID, COMPLY_WITH_HOBBS, COMPLY_WITH_DATE) values ((select id from AIRCRAFT where name='N121AH'), (select id from MAINTENANCE_TYPE where name='Overhaul Lycoming Engine.' and MODEL_ID=(select id from MODEL where name='Robinson R44')), null, TIMESTAMP('2015-02-02 00:00:00'));
 INSERT INTO MAINTENANCE_LOG(AIRCRAFT_ID, MAINTENANCE_TYPE_ID, COMPLY_WITH_HOBBS, COMPLY_WITH_DATE) values ((select id from AIRCRAFT where name='N121AH'), (select id from MAINTENANCE_TYPE where name='50HR' and MODEL_ID=(select id from MODEL where name='Robinson R44')), 250.0, null);
+
+INSERT INTO REPAIR_LOG(REPORT_DATE, PILOT_ID, AIRCRAFT_ID, ISSUE_NOTES, REPAIR_DATE, MECHANIC_ID, REPAIR_NOTES) values (TIMESTAMP('2015-04-27 00:00:00'), (select ID from APP_USER where username='byrdju'), (select id from AIRCRAFT where name='N121AH'), 'Passenger tail light is out', TIMESTAMP('2015-02-02 00:00:00'), (select ID from APP_USER where username='byrdd'), 'Replace passenger tail light');
+INSERT INTO REPAIR_LOG(REPORT_DATE, PILOT_ID, AIRCRAFT_ID, ISSUE_NOTES, REPAIR_DATE, MECHANIC_ID, REPAIR_NOTES) values (TIMESTAMP('2015-04-05 00:00:00'), (select ID from APP_USER where username='byrdje'), (select id from AIRCRAFT where name='N4344J'), 'Dinging noise', null, null, null);
+INSERT INTO REPAIR_LOG(REPORT_DATE, PILOT_ID, AIRCRAFT_ID, ISSUE_NOTES, REPAIR_DATE, MECHANIC_ID, REPAIR_NOTES) values (TIMESTAMP('2015-04-08 00:00:00'), (select ID from APP_USER where username='byrdm'), (select id from AIRCRAFT where name='N4344J'), 'Funny smell', null, null, null);
+
+INSERT INTO AD_COMPLIANCE(NAME, DESCRIPTION, MODEL_ID, TIME_BEFORE_ACTION, DAILY) values ('Main Rotor Blade Part No. C016-5', 'Per AD 2011-12-10, Amendment 39-16717 issued 2 June, 2011, paragraph (a), I have visually checked for any exposed (bare metal) skin-to-skin joint area on the lower surface of each main rotor blade.  (This check must be performed prior to the first flight of each day and may be performed by the owner/operator (pilot) holding at least a private pilot certificate.  Any exposed skin-to-spar joint area must be refinished before further flight.)', (select id from MODEL where name='Robinson R44'), null, true);
+INSERT INTO AD_COMPLIANCE(NAME, DESCRIPTION, MODEL_ID, TIME_BEFORE_ACTION, DAILY) values ('Secondary Rotor Blade Part No. C022-9', 'Per Secondary AD 2011-12-10, Amendment 39-16717 issued 2 June, 2011, paragraph (a), I have visually checked for any exposed (bare metal) skin-to-skin joint area on the lower surface of each main rotor blade.  (This check must be performed prior to the first flight of each day and may be performed by the owner/operator (pilot) holding at least a private pilot certificate.  Any exposed skin-to-spar joint area must be refinished before further flight.)', (select id from MODEL where name='Robinson R44'), null, true);
+INSERT INTO AD_COMPLIANCE(NAME, DESCRIPTION, MODEL_ID, TIME_BEFORE_ACTION, DAILY) values ('Stabilizer Tube', 'Per AD 74-8-2, Move stabilizer tube assambly fore and aft in the horizontal plane by hand visually check the tube assambly for cracks in area extending outboard six inches from the tube retaining nut P/N 47-104-114-1', (select id from MODEL where name='Bell 47G2A1'), null, true);
+INSERT INTO AD_COMPLIANCE(NAME, DESCRIPTION, MODEL_ID, TIME_BEFORE_ACTION, DAILY) values ('Mast thrust bearing AD 62-23-02 (N/A)', '', (select id from MODEL where name='Bell 47G3B1'), 25, false);
+INSERT INTO AD_COMPLIANCE(NAME, DESCRIPTION, MODEL_ID, TIME_BEFORE_ACTION, DAILY) values ('Stabalizer Bar AD 74-08-02', '', (select id from MODEL where name='Robinson R44'), 100, false);
+INSERT INTO AD_COMPLIANCE(NAME, DESCRIPTION, MODEL_ID, TIME_BEFORE_ACTION, DAILY) values ('Crankshaft Flange Bolt AD80-04-04 R1', '', (select id from MODEL where name='Robinson R44'), 600, false);
+
+INSERT INTO AD_COMPLIANCE_LOG(DATE, PILOT_ID, AIRCRAFT_ID, AD_COMPLIANCE_ID) values (TIMESTAMP('2015-04-08 00:00:00'), (select ID from APP_USER where username='byrdje'), (select id from AIRCRAFT where name='N121AH'), (select ID from AD_COMPLIANCE where NAME='Main Rotor Blade Part No. C016-5'));
+INSERT INTO AD_COMPLIANCE_LOG(DATE, PILOT_ID, AIRCRAFT_ID, AD_COMPLIANCE_ID) values (TIMESTAMP('2015-04-09 00:00:00'), (select ID from APP_USER where username='byrdju'), (select id from AIRCRAFT where name='N121AH'), (select ID from AD_COMPLIANCE where NAME='Main Rotor Blade Part No. C016-5'));
+INSERT INTO AD_COMPLIANCE_LOG(DATE, PILOT_ID, AIRCRAFT_ID, AD_COMPLIANCE_ID) values (TIMESTAMP('2015-04-10 00:00:00'), (select ID from APP_USER where username='byrdje'), (select id from AIRCRAFT where name='N121AH'), (select ID from AD_COMPLIANCE where NAME='Main Rotor Blade Part No. C016-5'));
+INSERT INTO AD_COMPLIANCE_LOG(DATE, PILOT_ID, AIRCRAFT_ID, AD_COMPLIANCE_ID) values (TIMESTAMP('2015-04-10 00:00:00'), (select ID from APP_USER where username='byrdd'), (select id from AIRCRAFT where name='N121AH'), (select ID from AD_COMPLIANCE where NAME='Secondary Rotor Blade Part No. C022-9'));
+INSERT INTO AD_COMPLIANCE_LOG(DATE, PILOT_ID, AIRCRAFT_ID, AD_COMPLIANCE_ID) values (TIMESTAMP('2015-04-11 00:00:00'), (select ID from APP_USER where username='byrdd'), (select id from AIRCRAFT where name='N121AH'), (select ID from AD_COMPLIANCE where NAME='Secondary Rotor Blade Part No. C022-9'));
+INSERT INTO AD_COMPLIANCE_LOG(DATE, PILOT_ID, AIRCRAFT_ID, AD_COMPLIANCE_ID) values (TIMESTAMP('2015-04-11 00:00:00'), (select ID from APP_USER where username='byrdm'), (select id from AIRCRAFT where name='N32FG'), (select ID from AD_COMPLIANCE where NAME='Mast thrust bearing AD 62-23-02 (N/A)'));
+INSERT INTO AD_COMPLIANCE_LOG(DATE, PILOT_ID, AIRCRAFT_ID, AD_COMPLIANCE_ID) values (TIMESTAMP('2015-04-25 00:00:00'), (select ID from APP_USER where username='byrdm'), (select id from AIRCRAFT where name='N32FG'), (select ID from AD_COMPLIANCE where NAME='Mast thrust bearing AD 62-23-02 (N/A)'));
+INSERT INTO AD_COMPLIANCE_LOG(DATE, PILOT_ID, AIRCRAFT_ID, AD_COMPLIANCE_ID) values (TIMESTAMP('2015-03-05 00:00:00'), (select ID from APP_USER where username='byrdd'), (select id from AIRCRAFT where name='N4344J'), (select ID from AD_COMPLIANCE where NAME='Stabalizer Bar AD 74-08-02'));
+INSERT INTO AD_COMPLIANCE_LOG(DATE, PILOT_ID, AIRCRAFT_ID, AD_COMPLIANCE_ID) values (TIMESTAMP('2014-04-01 00:00:00'), (select ID from APP_USER where username='byrdd'), (select id from AIRCRAFT where name='N4344J'), (select ID from AD_COMPLIANCE where NAME='Stabalizer Bar AD 74-08-02'));
+INSERT INTO AD_COMPLIANCE_LOG(DATE, PILOT_ID, AIRCRAFT_ID, AD_COMPLIANCE_ID) values (TIMESTAMP('2015-02-14 00:00:00'), (select ID from APP_USER where username='byrdd'), (select id from AIRCRAFT where name='N710MY'), (select ID from AD_COMPLIANCE where NAME='Stabalizer Bar AD 74-08-02'));

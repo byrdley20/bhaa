@@ -1,0 +1,183 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Black Hills Aerial Adventures | AD Compliances</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
+	<link rel="stylesheet" href="css/main.css" />
+    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script th:inline="javascript">
+    	/*<![CDATA[*/
+    	           
+    	var model = /*[[${model}]]*/;
+    	           
+		function buildOptions(){
+
+		}
+		/*]]>*/
+    </script>
+    <script type="text/javascript">
+  		//<![CDATA[
+  		           
+		var lengthValidation = [];
+		var numberValidation = [];
+		var passwordValidation = [];
+		
+    	$(function() {
+    		var id = $( "#id" ),
+        	name = $( "#name" ),
+        	description = $( "#description" ),
+        	daily = $( "#daily" ),
+        	timeBeforeAction = $( "#timeBeforeAction" );
+    		
+        	allFields = $( [] ).add( id ).add( name ).add( description ).add( daily ).add( timeBeforeAction );
+        	addUpdatePath = "/adCompliances";
+        	deletePath = "/adCompliances";
+    		
+    		createDialog();
+    		
+    		lengthValidation[lengthValidation.length] = createLengthValidationObject(name, "'Name'", 1, 50);
+    		lengthValidation[lengthValidation.length] = createLengthValidationObject(description, "'Description'", 1, 5000);
+    		//numberValidation[numberValidation.length] = createNumberValidationObject(timeBeforeAction, "'TBO'");
+    	});
+    	function setSelectValue(formData, element) {
+
+    	}
+    	function setExtraValues(formData) {
+    		formData["model"] = model;
+    	}
+    	function writeCreatedRecord(savedRecord){
+    		var tboValue;
+    		if(savedRecord.daily) {
+    			tboValue = 'N/A';
+    		} else {
+    			tboValue = savedRecord.timeBeforeAction;
+    		}
+    		
+    		$( ".records-rows" ).last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
+    				"<span class='dataCell'>" +
+			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+			    	"</span>" +
+			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
+			    	"<span class='description dataCell'>"+savedRecord.description+"</span> " +
+			    	"<span class='daily dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.daily)+" disabled='disabled'/></span> " +
+			    	"<span class='timeBeforeAction dataCell'>"+tboValue+"</span> " +
+			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
+		    	"</div>" );
+    	}
+    	function writeEditRecord(savedRecord){
+    		var editedRow = $(".id"+savedRecord.id);
+    		editedRow.find('.name').html(savedRecord.name);
+    		editedRow.find('.description').html(savedRecord.description);
+    		editedRow.find('.daily input').prop('checked', savedRecord.daily);
+    		
+    		var tboValue;
+    		if(savedRecord.timeBeforeAction != null) {
+    			tboValue = savedRecord.timeBeforeAction.toFixed(2);
+    		} else {
+    			tboValue = 'N/A';
+    		}
+    		editedRow.find('.timeBeforeAction').html(tboValue);
+    		
+    		editedRow.find('.id').html(savedRecord.id);
+    	}
+    	function populateCreateForm(editLink) {
+    		$('#addEditForm').find('label[for="timeBeforeAction"]').show();
+    		$('#addEditForm').find('#timeBeforeAction').show();
+    	}
+    	function populateEditForm(editLink){
+    		var editSpan = $(editLink).closest('span.dataCell');
+    		$('#addEditForm').find('#name').val(editSpan.nextAll('span.name').first().html());
+    		$('#addEditForm').find('#description').val(editSpan.nextAll('span.description').first().html());
+    		
+    		var tboValue;
+     		var dailyValue = editSpan.nextAll('span.daily').first().find("input").is(':checked');
+    		if(dailyValue){
+        		$('#addEditForm').find('#daily').prop('checked', true);	
+        		tboValue = '';
+        		$('#addEditForm').find('label[for="timeBeforeAction"]').hide();
+        		$('#addEditForm').find('#timeBeforeAction').hide();
+    		} else {
+    			tboValue = editSpan.nextAll('span.timeBeforeAction').first().html();
+    		}
+
+    		$('#addEditForm').find('#timeBeforeAction').val(tboValue);
+    		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
+    	}
+    	function findDeleteName(deleteLink){
+    		return $(deleteLink).closest('span.dataCell').nextAll('span.name').first().html();
+    	}
+    	$(document).on("click", "input#daily", function() {
+    		if($('input#daily').is(":checked")) {
+    			$('input#timeBeforeAction').val('');
+    			$('label[for="timeBeforeAction"]').hide();
+	    		$('input#timeBeforeAction').hide();
+    		} else {
+    			$('label[for="timeBeforeAction"]').show();
+    			$('input#timeBeforeAction').show();
+    		}
+    	});
+    	//]]>
+    </script>
+    <style>
+    	.model {
+    		font-size: 1.4em;
+    		font-weight: bold;
+    		margin-bottom:20px;
+    	}
+    	.showOnDashboard.dataCell {
+    		padding-left: 60px;
+		}
+    </style>
+</head>
+<body>
+
+	<div th:replace="includes/header :: header">...</div>
+	<div id="main-content">
+		<H1>AD Compliances</H1>
+		<div id="dialog-form" title="AD Compliance">
+			<p class="validateTips"></p>
+			<form id="addEditForm" action="/adCompliances" method="post">
+				<fieldset>
+					<label for="name">Name</label>
+					<input type="text" name="name" id="name" value="New AD Compliance" class="text ui-widget-content ui-corner-all"/>
+					<label for="description">Description</label>
+					<input type="text" name="description" id="description" value="description" class="text ui-widget-content ui-corner-all"/>
+					<label for="daily" style="display:inline;">Daily</label>
+					<input style="display:inline; margin-bottom:15px;" type="checkbox" name="daily" id="daily"/>	
+					<label for="timeBeforeAction">TBO</label>
+					<input type="text" name="timeBeforeAction" id="timeBeforeAction" value="50" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="id" id="id" class="hidden"/>
+					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+				</fieldset>
+			</form>
+		</div>
+		<div class="model" th:text="'Model: '+${model.name}">Robinson 44</div>
+		<div class="table">
+			<div class="records-header">
+				<span class="edit delete icon"></span>
+			    <span class="headerCell dataCell">Name</span>
+			    <span class="headerCell dataCell">Description</span>
+			    <span class="headerCell dataCell">Daily</span>
+			    <span class="headerCell dataCell">TBO</span>
+			</div>
+			<div class="records-rows" th:each="adCompliance : ${adCompliances}" th:classappend="|id${adCompliance.id}">
+				<span class="dataCell">
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${adCompliance.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${adCompliance.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+				</span>
+				<span class="name dataCell" th:text="${adCompliance.name}">Name</span>
+				<span class="description dataCell" th:text="${adCompliance.description}">Description</span>
+				<span class="daily dataCell"><input type="checkbox" th:value="${adCompliance.daily}" th:checked="${adCompliance.daily}" disabled="disabled"/></span>
+				<span class="timeBeforeAction dataCell" th:text="${adCompliance.daily} ? ('N/A') : ${adCompliance.timeBeforeAction}">TBO</span>
+				<span class="id cell hidden" th:text="${adCompliance.id}">Hidden PK ID</span>
+			</div>
+		</div>
+		<button id="create-record">Create New</button>
+	</div>
+</body>
+</html>

@@ -30,10 +30,10 @@ a button.header-button {
 a button.admin-button {
 	background: #e6e6e6 url("../images/menu-button.png") 50% 50% repeat-x;
 }
-a button.month-button-off {
+a button.button-off {
 	background: #e6e6e6 url("../images/menu-button.png") 50% 50% repeat-x;
 }
-a button.month-button-on {
+a button.button-on {
 	background: #dadada url("../css/jqueryui/1.11.3/images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;
 }
 a button.month-button  {
@@ -62,6 +62,9 @@ a button.month-button:hover {
   padding: .4em 1em;
   display: block;
 }
+.print-button {
+	margin-left: 100px;
+}
 .log-totals {
 	font-weight: bold;
 }
@@ -72,6 +75,7 @@ a button.month-button:hover {
 .table {
 	display: table;
 	margin-bottom: 20px;
+	margin-right: 20px;
 	border: 1px solid black;
 	border-collapse: collapse;
 	background-color: white;
@@ -147,4 +151,26 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 .error {
 	font-weight: bold;
 	margin-left: 171px;
+}
+.print-only {
+	display: none;
+}
+.monthName{
+	margin-bottom: 5px;
+	font-weight: bold;
+}
+.topButton{
+	margin-bottom: 20px;
+}
+
+@media print {
+	.header-left,
+	.header-right,
+	#create-record,
+	.no-print {
+		display: none;
+	}
+	.print-only {
+		display: block;
+	}
 }

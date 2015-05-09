@@ -12,32 +12,34 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.coptertours.domain.FlightLog;
+import com.coptertours.domain.RepairLog;
 import com.coptertours.domain.User;
-import com.coptertours.repository.FlightLogRepository;
+import com.coptertours.repository.RepairLogRepository;
 import com.coptertours.repository.UserRepository;
 
 @RestController
-@RequestMapping(value = "/flightLogs")
-public class FlightLogRestController {
+@RequestMapping(value = "/squawks")
+public class RepairLogRestController {
 	@Autowired
-	private FlightLogRepository flightLogRepository;
+	private RepairLogRepository repairLogRepository;
 	@Autowired
 	private UserRepository userRepository;
 
 	@RequestMapping(method = RequestMethod.GET)
-	Collection<FlightLog> flightLogs() {
-		return this.flightLogRepository.findAll();
+	Collection<RepairLog> repairLogs() {
+		return this.repairLogRepository.findAll();
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	FlightLog addFlightLog(@RequestBody FlightLog flightLog, final HttpServletResponse response) {
-		this.resetRole(flightLog.getUser());
-		if (flightLog.getUser().getRole() == null) {
-			flightLog.setUser(this.userRepository.findOne(flightLog.getUser().getId()));
-		}
-		return this.flightLogRepository.save(flightLog);
+	RepairLog addRepairLog(@RequestBody RepairLog repairLog, final HttpServletResponse response) {
+		this.resetRoles(repairLog);
+		return this.repairLogRepository.save(repairLog);
+	}
+
+	private void resetRoles(RepairLog repairLog) {
+		resetRole(repairLog.getPilot());
+		resetRole(repairLog.getMechanic());
 	}
 
 	private void resetRole(User user) {
@@ -50,7 +52,7 @@ public class FlightLogRestController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	void deleteFlightLog(@PathVariable Long id) {
-		this.flightLogRepository.delete(id);
+	void deleteRepairLog(@PathVariable Long id) {
+		this.repairLogRepository.delete(id);
 	}
 }

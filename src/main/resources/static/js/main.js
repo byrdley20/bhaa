@@ -56,57 +56,12 @@ function createPasswordValidationObject(field1Obj, field2Obj){
 }
 
 function saveRecord() {
-	var formData = {};
 	var fileFormData = {};
-	var valid = true;
-	
-	clearFormValidation();
-	if (typeof lengthValidation !== 'undefined') {
-		$.each(lengthValidation, function(){
-			valid = checkLength( this.field, this.name, this.min, this.max ) && valid;
-		});
-	}
-	if (typeof numberValidation !== 'undefined') {
-		$.each(numberValidation, function(){
-			valid = checkNumber( this.field, this.name ) && valid;
-		});
-	}
-	if (typeof dateValidation !== 'undefined') {
-		$.each(dateValidation, function(){
-			valid = checkDate( this.field, this.name ) && valid;
-		});
-	}
-	if (typeof passwordValidation !== 'undefined') {
-		$.each(passwordValidation, function(){
-			valid = checkPasswordsMatch( this.field1, this.field2 ) && valid;
-		});
-	}
-	if (typeof extraValidation == 'function') { 
-		valid = extraValidation() && valid;
-	}
+	var valid = validateForm();
 	
 	if(valid) {
-		$.each(allFields, function(i, v){
-			if(v.nodeName == "SELECT") {
-				setSelectValue(formData, v);
-			} else if (v.type == "checkbox") {
-				if(v.checked) {
-					formData[v.name] = true;
-				} else {
-					formData[v.name] = false;
-				}
-			} else if (v.type == "file") {
-				if (typeof v.files[0] !== 'undefined') {
-					formData[v.name] = v.files[0].name;
-					fileFormData[v.name] = v.files[0];
-				}
-			} else {
-				formData[v.name] = v.value;
-			}
-		});
-		if (typeof setExtraValues == 'function') { 
-			setExtraValues(formData); 
-		}
+		var formData = populateFormData();
+		
 		var editRecord = (formData["id"] > 0);
         $.ajax({
             url: baseUrl+addUpdatePath,
@@ -158,14 +113,84 @@ function saveRecord() {
         }
 	}
 	return valid;
-	
 }
+function validateForm() {
+	var valid=true;
+	
+	clearFormValidation();
+	if (typeof preValidation == 'function') { 
+		valid = preValidation() && valid;
+	}
+	if (typeof lengthValidation !== 'undefined') {
+		$.each(lengthValidation, function(){
+			valid = checkLength( this.field, this.name, this.min, this.max ) && valid;
+		});
+	}
+	if (typeof numberValidation !== 'undefined') {
+		$.each(numberValidation, function(){
+			valid = checkNumber( this.field, this.name ) && valid;
+		});
+	}
+	if (typeof dateValidation !== 'undefined') {
+		$.each(dateValidation, function(){
+			valid = checkDate( this.field, this.name ) && valid;
+		});
+	}
+	if (typeof passwordValidation !== 'undefined') {
+		$.each(passwordValidation, function(){
+			valid = checkPasswordsMatch( this.field1, this.field2 ) && valid;
+		});
+	}
+	if (typeof extraValidation == 'function') { 
+		valid = extraValidation() && valid;
+	}
+	return valid;
+}
+
 function clearFormValidation(){
 	tips.empty();
 	allFields.removeClass( "ui-state-error" );
 	tips.removeClass( "ui-state-highlight" );
 	tips.hide();
 }
+function populateFormData() {
+	var formData = {};
+	
+	$.each(allFields, function(i, v){
+		var shortName = findShortName(v.name);
+		if(v.nodeName == "SELECT") {
+			setSelectValue(formData, v);
+		} else if (v.type == "checkbox") {
+			if(v.checked) {
+				formData[shortName] = true;
+			} else {
+				formData[shortName] = false;
+			}
+		} else if (v.type == "file") {
+			if (typeof v.files[0] !== 'undefined') {
+				formData[shortName] = v.files[0].name;
+				fileFormData[shortName] = v.files[0];
+			}
+		} else {
+			formData[shortName] = v.value;
+		}
+	});
+	if (typeof setExtraValues == 'function') { 
+		setExtraValues(formData); 
+	}
+	return formData;
+}
+function findShortName(name) {
+	var underscoreIndex = name.indexOf('_');
+	var shortName;
+	if(underscoreIndex >= 0) {
+		shortName = name.substring(underscoreIndex+1);
+	} else {
+		shortName = name;
+	}
+	return shortName;
+}
+
 function updateTips( t ) {
 	if(tips.text().length > 0) {
 		tips.append("<br>");
@@ -279,4 +304,10 @@ $(function() {
 			$(this).closest('div.records-rows').toggle();
 		}
 	});
+	$("#addEditForm").submit(function(e){
+		e.preventDefault();
+		saveRecord();
+	});
+	$( "#open-squawks" ).button();
+	$( "#completed-squawks" ).button();
 });

@@ -94,4 +94,8 @@ public class User extends BaseDomain {
 	public void clearRole() {
 		this.role = null;
 	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
 }

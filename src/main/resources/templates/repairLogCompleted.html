@@ -1,0 +1,223 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Black Hills Aerial Adventures | Squawks</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
+	<link rel="stylesheet" href="css/main.css" />
+    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script th:inline="javascript">
+    	/*<![CDATA[*/
+
+		var pilots = {};
+		var mechanics = {};
+    	var aircrafts = {};
+    	           
+		function buildOptions(){
+			var allPilots = /*[[${allPilots}]]*/;
+			for(var i=0; i < allPilots.length; i++) {
+				var pilot = allPilots[i];
+				pilots[pilot.id] = pilot;
+			}
+			var allMechanics = /*[[${allMechanics}]]*/;
+			for(var i=0; i < allMechanics.length; i++) {
+				var mechanic = allMechanics[i];
+				mechanics[mechanic.id] = mechanic;
+			}
+			var allAircrafts = /*[[${allAircrafts}]]*/;
+			for(var i=0; i < allAircrafts.length; i++) {
+				var aircraft = allAircrafts[i];
+				aircrafts[aircraft.id] = aircraft;
+			}
+		}
+		/*]]>*/
+    </script>
+    <script type="text/javascript">
+  		//<![CDATA[
+  		           
+		var lengthValidation = [];
+		var dateValidation = [];
+		
+    	$(function() {    		
+    		var id = $( "#id" ),
+    		reportDate = $( "#reportDate" ),
+    		pilot = $( "#pilot" ),
+    		aircraft = $( "#aircraft" ),
+    		issueNotes = $( "#issueNotes" ),
+    		repairDate = $( "#repairDate" ),
+    		mechanic = $( "#mechanic" ),
+    		repairNotes = $( "#repairNotes" );
+		
+        	allFields = $( [] ).add( id ).add( reportDate ).add( pilot ).add( aircraft).add( issueNotes ).add( repairDate ).add( mechanic ).add( repairNotes );
+        	addUpdatePath = "/squawks";
+        	deletePath = "/squawks";
+    		
+    		createDialog();
+    		
+    		$( "#reportDate" ).datepicker();
+    		$( "#repairDate" ).datepicker();
+    		
+    		dateValidation[dateValidation.length] = createDateValidationObject(reportDate, "'Date Reported'");
+    		lengthValidation[lengthValidation.length] = createLengthValidationObject(issueNotes, "'Issue Notes'", 1, 500);
+    	});
+    	function addRepairValidation() {
+    		dateValidation[dateValidation.length] = createDateValidationObject($('#repairDate'), "'Repair Date'");
+    		lengthValidation[lengthValidation.length] = createLengthValidationObject($('#repairNotes'), "'Repair Notes'", 1, 500);    		
+    	}
+    	function removeRepairValidation() {
+    		if(lengthValidation.length == 2) {
+				// Don't validate the repair fields individually unless we determine they are all populated
+				lengthValidation.pop();
+				dateValidation.pop();
+    		}
+    	}
+    	function preValidation() {
+    		removeRepairValidation();
+    		
+    		var repairDatePopulated = (repairDate.value.length > 0);
+    		var repairNotesPopulated = (repairNotes.value.length > 0);
+    		// TODO: add mechanic here
+    		var allRepairPopulated = repairDatePopulated && repairNotesPopulated;
+    		var someRepairPopulated = repairDatePopulated || repairNotesPopulated;
+    		var noRepairPopulated = !repairDatePopulated && !repairNotesPopulated;
+    		if ( someRepairPopulated && !allRepairPopulated) {
+    			$('#repairDate').addClass( "ui-state-error" );
+    			$('#mechanic').addClass( "ui-state-error" );
+    			$('#repairNotes').addClass( "ui-state-error" );
+				updateTips( "The 'Repair Date', 'Mechanic' and 'Repair Notes' fields must either all be populated or all be empty." );
+    			return false;
+    		}
+    		if(allRepairPopulated) {
+        		addRepairValidation();    			
+    		}
+    		return true;
+    	}
+    	function setSelectValue(formData, element) {
+			if(element.name == 'pilot'){
+				formData[element.name] = pilots[element.value];
+			} else if(element.name == 'aircraft'){
+				formData[element.name] = aircrafts[element.value];
+			} else if(element.name == 'mechanic'){
+				formData[element.name] = mechanics[element.value];
+			}
+    	}
+    	function writeEditRecord(savedRecord){
+    		if(savedRecord.repairDate == null) {
+    			window.location.href = "squawks.html?id="+savedRecord.id;
+    		} else {
+	    		var editedRow = $(".id"+savedRecord.id);
+	    		editedRow.find('.reportDate').html(savedRecord.reportDate);
+	    		editedRow.find('.pilot').html(savedRecord.pilot.displayName);
+	    		editedRow.find('.aircraft').html(savedRecord.aircraft.name);
+	    		editedRow.find('.issueNotes').html(savedRecord.issueNotes);
+	    		editedRow.find('.repairDate').html(savedRecord.repairDate);
+	    		editedRow.find('.mechanic').html(savedRecord.mechanic.displayName);
+	    		editedRow.find('.repairNotes').html(savedRecord.repairNotes);
+	    		editedRow.find('.id').html(savedRecord.id);
+	    		editedRow.find('.pilotId').html(savedRecord.pilot.id);
+	    		editedRow.find('.aircraftId').html(savedRecord.aircraft.id);
+	    		editedRow.find('.mechanicId').html(savedRecord.mechanic.id);
+    		}
+    	}
+    	function populateEditForm(editLink){
+    		$('#addEditForm').find("option:selected").removeAttr("selected");
+    		var editSpan = $(editLink).closest('span.dataCell');
+    		$('#addEditForm').find('#reportDate').val(editSpan.nextAll('span.reportDate').first().html());
+
+    		var pilotIdSpan = editSpan.nextAll('span.pilotId');
+    		var pilotOptionStr = "select#pilot option[value='"+pilotIdSpan.html()+"']";
+    		$('#addEditForm').find(pilotOptionStr).prop('selected','selected');
+    		
+    		var aircraftIdSpan = editSpan.nextAll('span.aircraftId');
+    		var aircraftOptionStr = "select#aircraft option[value='"+aircraftIdSpan.html()+"']";
+    		$('#addEditForm').find(aircraftOptionStr).prop('selected','selected');
+
+    		$('#addEditForm').find('#issueNotes').val(editSpan.nextAll('span.issueNotes').first().html());
+    		$('#addEditForm').find('#repairDate').val(editSpan.nextAll('span.repairDate').first().html());
+    		
+    		var mechanicIdSpan = editSpan.nextAll('span.mechanicId');
+    		var mechanicOptionStr = "select#mechanic option[value='"+mechanicIdSpan.html()+"']";
+    		$('#addEditForm').find(mechanicOptionStr).prop('selected','selected');
+
+    		$('#addEditForm').find('#repairNotes').val(editSpan.nextAll('span.repairNotes').first().html());
+    		
+    		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
+    	}
+    	function findDeleteName(deleteLink){
+    		return $(deleteLink).closest('span.dataCell').nextAll('span.issueNotes').first().html();
+    	}
+    	//]]>
+    </script>
+</head>
+<body>
+
+	<div th:replace="includes/header :: header">...</div>
+	<div id="main-content">
+		<br/>
+		<a href="squawks.html"><button id="open-squawks" class="topButton">Open</button></a>
+		<a href="squawks-completed.html"><button id="completed-squawks" class="topButton button-on">Completed</button></a>
+		<div id="dialog-form" title="Squawk">
+			<p class="validateTips"></p>
+			<form id="addEditForm" action="/squawks" method="post">
+				<fieldset>
+					<label for="reportDate">Date Reported</label>
+					<input type="text" name="reportDate" id="reportDate" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
+					<label for="pilot">Pilot</label>
+					<select id="pilot" name="pilot" class="ui-widget-content ui-corner-all">
+						<option th:each="pilot : ${allPilots}" th:text="${pilot.displayName}" th:value="${pilot.id}">${pilot.displayName}</option>
+					</select>
+					<label for="aircraft">Aircraft</label>
+					<select id="aircraft" name="aircraft" class="ui-widget-content ui-corner-all">
+						<option th:each="aircraft : ${allAircrafts}" th:text="${aircraft.name}" th:value="${aircraft.id}">${aircraft.name}</option>
+					</select>
+					<label for="issueNotes">Issue</label>
+					<input type="text" name="issueNotes" id="issueNotes" class="text ui-widget-content ui-corner-all"/>
+					<label for="repairDate">Repair Date</label>
+					<input type="text" name="repairDate" id="repairDate" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
+					<label for="mechanic">Mechanic</label>
+					<select id="mechanic" name="mechanic" class="ui-widget-content ui-corner-all">
+						<option th:each="mechanic : ${allMechanics}" th:text="${mechanic.displayName}" th:value="${mechanic.id}">${mechanic.displayName}</option>
+					</select>					
+					<label for="repairNotes">Repair Notes</label>
+					<input type="text" name="repairNotes" id="repairNotes" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="id" id="id" class="hidden"/>
+					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+				</fieldset>
+			</form>
+		</div>
+	
+		<div class="table">
+			<div class="records-header">
+				<span class="edit delete icon"></span>
+			    <span class="headerCell dataCell">Date Reported</span>
+			    <span class="headerCell dataCell">Pilot</span>
+			    <span class="headerCell dataCell">Aircraft</span>
+			    <span class="headerCell dataCell">Issue</span>
+			    <span class="headerCell dataCell">Repair Date</span>
+			    <span class="headerCell dataCell">Mechanic</span>
+			    <span class="headerCell dataCell">Repair Notes</span>
+			</div>
+			<div class="records-rows" th:each="s : ${completedSquawks}" th:classappend="|id${s.id}">
+				<span class="dataCell">
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${s.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${s.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+				</span>
+				<span class="reportDate dataCell" th:text="${#dates.format(s.reportDate, 'MM/dd/yyyy')}">Date Reported</span>
+				<span class="pilot dataCell" th:text="${s.pilot.displayName}">Pilot</span>
+				<span class="aircraft dataCell" th:text="${s.aircraft.name}">Aircraft</span>
+				<span class="issueNotes dataCell" th:text="${s.issueNotes}">Issue</span>
+				<span class="repairDate dataCell" th:text="${#dates.format(s.repairDate, 'MM/dd/yyyy')}">Repair Date</span>
+				<span class="mechanic dataCell" th:text="${s.mechanic.displayName}">Mechanic</span>
+				<span class="repairNotes dataCell" th:text="${s.repairNotes}">Repair Notes</span>
+				<span class="id cell hidden" th:text="${s.id}">Hidden PK ID</span>
+				<span class="pilotId cell hidden" th:text="${s.pilot.id}">Hidden Pilot Id</span>
+				<span class="aircraftId cell hidden" th:text="${s.aircraft.id}">Hidden Aircraft Id</span>
+				<span class="mechanicId cell hidden" th:text="${s.mechanic.id}">Hidden Mechanic Id</span>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
