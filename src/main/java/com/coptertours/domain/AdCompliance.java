@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import com.google.gson.annotations.Expose;
 
@@ -26,7 +27,7 @@ public class AdCompliance extends BaseDomain {
 	@Column(columnDefinition = "varchar(800)")
 	String description;
 
-	@ManyToOne(targetEntity = Model.class, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
+	@ManyToOne(targetEntity = Model.class, cascade = { CascadeType.REFRESH, CascadeType.PERSIST })
 	@JoinColumn(name = "MODEL_ID")
 	@Expose
 	private Model model;
@@ -36,6 +37,14 @@ public class AdCompliance extends BaseDomain {
 
 	@Expose
 	private Boolean daily;
+
+	@Transient
+	@Expose
+	private AdComplianceLog adComplianceLog;
+
+	public void clearModel() {
+		this.model = null;
+	}
 
 	public Long getId() {
 		return id;
@@ -59,5 +68,17 @@ public class AdCompliance extends BaseDomain {
 
 	public Boolean getDaily() {
 		return daily;
+	}
+
+	public void setModel(Model model) {
+		this.model = model;
+	}
+
+	public AdComplianceLog getAdComplianceLog() {
+		return adComplianceLog;
+	}
+
+	public void setAdComplianceLog(AdComplianceLog adComplianceLog) {
+		this.adComplianceLog = adComplianceLog;
 	}
 }

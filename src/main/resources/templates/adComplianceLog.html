@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Black Hills Aerial Adventures | AD Compliance Log</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
+<link rel="stylesheet" href="css/main.css" />
+<script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script th:inline="javascript">
+    	/*<![CDATA[*/
+    	           
+    	var aircraft = /*[[${aircraft}]]*/;
+    	var currentAdCompliance = /*[[${currentAdCompliance}]]*/;
+    	var month = /*[[${month}]]*/;
+    	var pilots = {};
+    	           
+		function buildOptions(){
+			var allPilots = /*[[${allPilots}]]*/;
+			for(var i=0; i < allPilots.length; i++) {
+				var pilot = allPilots[i];
+				pilots[pilot.id] = pilot;
+			}
+		}
+		/*]]>*/
+    </script>
+	<script type="text/javascript">
+  		//<![CDATA[
+  		           
+		var dateValidation = [];
+		
+    	$(function() {
+    		var id = $( "#id" ),
+        	complyWithDate  = $( "#complyWithDate" ),
+        	pilot = $( "#pilot" );
+    		
+        	allFields = $( [] ).add( id ).add( complyWithDate ).add( pilot );
+        	addUpdatePath = "/adComplianceLog";
+        	deletePath = "/adComplianceLog";
+    		
+    		createDialog();
+    		
+    		$( "#complyWithDate" ).datepicker();
+    		
+    		dateValidation[dateValidation.length] = createDateValidationObject(complyWithDate, "'Date'");
+    	});
+    	function setSelectValue(formData, element) {
+    		if(element.name == 'pilot'){
+				formData[element.name] = pilots[element.value];
+			}
+    	}
+    	function setExtraValues(formData) {
+    		formData["aircraftId"] = aircraft.id;
+    		formData["adComplianceId"] = currentAdCompliance.id;
+    	}
+    	function writeCreatedRecord(savedRecord){
+    		var adComplianceLogDate = new Date(savedRecord.complyWithDate);
+    		var adComplianceLogMonth = adComplianceLogDate.getMonth();
+    		
+    		var elementBefore;
+    		if($(".records-rows").length){
+    			elementBefore = $(".records-rows");
+    		} else {
+    			elementBefore = $(".records-header");
+    		}
+    		
+    		if(month == adComplianceLogMonth){    		
+    			elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
+	    				"<span class='dataCell'>" +
+				    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
+				    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+				    	"</span>" +
+				    	"<span class='complyWithDate dataCell'>"+savedRecord.adComplianceLogDateDisplay+"</span> " +
+				    	"<span class='pilot dataCell'>"+savedRecord.pilot.displayName+"</span> " +
+				    	"<span class='certificateType dataCell'>"+savedRecord.pilot.rating.name+"</span> " +
+				    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
+				    	"<span class='adComplianceId cell hidden'>"+savedRecord.adComplianceId+"</span> " +
+				    	"<span class='pilotId cell hidden'>"+savedRecord.pilot.id+"</span> " +
+				    	"<span class='dateDisplay dataCell hidden'>"+savedRecord.dateDisplay+"</span> " +
+			    	"</div>" );
+    		} else {
+    			window.location.href = $("#monthLink"+(adComplianceLogMonth+1)).attr("href");
+	    	}
+	    }
+    	function writeEditRecord(savedRecord){
+    		var adComplianceLogDate = new Date(savedRecord.complyWithDate);
+    		var adComplianceLogMonth = adComplianceLogDate.getMonth();
+    		if(month == adComplianceLogMonth){
+	    		var editedRow = $(".id"+savedRecord.id);
+	    		editedRow.find('.complyWithDate').html(savedRecord.adComplianceLogDateDisplay);
+	    		editedRow.find('.pilot').html(savedRecord.pilot.displayName);
+	    		editedRow.find('.certificateType').html(savedRecord.pilot.rating.name);
+	    		editedRow.find('.id').html(savedRecord.id);
+	    		editedRow.find('.pilotId').html(savedRecord.pilot.id);
+	    		editedRow.find('.dateDisplay').html(savedRecord.dateDisplay);
+    		} else {
+    			window.location.href = $("#monthLink"+(adComplianceLogMonth+1)).attr("href");
+	    	}
+    	}
+    	function populateCreateForm(editLink) {
+    		$('#complyWithDate').datepicker("setDate", new Date() );
+    	}
+    	function populateEditForm(editLink){
+    		var editSpan = $(editLink).closest('span.dataCell');
+    		$('#addEditForm').find('#complyWithDate').val(editSpan.nextAll('span.dateDisplay').first().html());
+
+    		var pilotIdSpan = editSpan.nextAll('span.pilotId');
+    		var pilotOptionStr = "select#pilot option[value='"+pilotIdSpan.html()+"']";
+    		$('#addEditForm').find(pilotOptionStr).prop('selected','selected');
+    		
+    		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
+    		$('#addEditForm').find('#pilotId').val(editSpan.nextAll('span.pilotId').first().html());
+    	}
+    	function findDeleteName(deleteLink){
+    		return $(deleteLink).closest('span.dataCell').nextAll('span.complyWithDate').first().html();
+    	}
+    	//]]>
+    </script>
+</head>
+<body>
+
+	<div th:replace="includes/header :: header">...</div>
+	<div id="main-content">
+		<br />
+		<div id="dialog-form" title="AD Compliance Log">
+			<p class="validateTips"></p>
+			<form id="addEditForm" action="/adCompliances" method="post">
+				<fieldset>
+					<label for="complyWithDate">Date</label>
+					<input type="text" name="complyWithDate" id="complyWithDate" tabindex="-1" class="text ui-widget-content ui-corner-all" />
+					<label for="pilot">Pilot</label>
+					<select id="pilot" name="pilot"	class="ui-widget-content ui-corner-all">
+						<option th:each="pilot : ${allPilots}" th:text="${pilot.displayName}" th:value="${pilot.id}">Pilot Name</option>
+					</select>
+					<input type="text" name="id" id="id" class="hidden" />
+					<input type="submit" tabindex="-1" style="position: absolute; top: -1000px" />
+				</fieldset>
+			</form>
+		</div>
+		<div class="table-upper-caption">
+			<div>
+				<span th:text="${aircraft.name}+' AD Compliance'">Aircraft AD Compliance</span>
+				&nbsp;&nbsp;
+				<span><a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${aircraft.id})}"><button type="button" class="month-button" style="font-size: 0.7em;" role="button"><span class="button-text">Log</span></button></a></span>
+				<span><a href="aircraftStatus.html?id=1" th:href="@{aircraftStatus.html(id=${aircraft.id})}"><button type="button" class="month-button" style="font-size: 0.7em;" role="button"><span class="button-text">Status</span></button></a></span>
+			</div>
+			<div th:text="${aircraft.model.name}">Model</div>
+		</div>
+		<div>
+			<span th:each="adCompliance : ${adCompliances}"><a href="adComplianceLog.html?id=0" th:href="@{adComplianceLog.html(id=${aircraft.id},month=${month}+1,adComplianceId=${adCompliance.id})}"><button type="button" class="month-button" role="button" th:classappend="(${adCompliance.id}==${currentAdCompliance.id}?'button-on':'button-off')"><span class="button-text" th:text="${adCompliance.name}">AD Compliance Name</span></button></a></span>
+			<br/>
+			<br/>
+		</div>
+		<div>
+			<div th:text="${currentAdCompliance.description}">Ad Compliance description</div>
+			<br/>
+		</div>
+		<div>
+			<a id="monthLink1" href="adComplianceLog.html?id=0" th:href="@{adComplianceLog.html(id=${aircraft.id},month=1,adComplianceId=${currentAdCompliance.id})}"><button type="button" class="month-button" role="button" th:classappend="(${month}==0?'button-on':'button-off')"><span class="button-text">Jan</span></button></a>
+			<a id="monthLink2" href="adComplianceLog.html?id=0" th:href="@{adComplianceLog.html(id=${aircraft.id},month=2,adComplianceId=${currentAdCompliance.id})}"><button type="button" class="month-button" role="button" th:classappend="(${month}==1?'button-on':'button-off')"><span class="button-text">Feb</span></button></a>
+			<a id="monthLink3" href="adComplianceLog.html?id=0" th:href="@{adComplianceLog.html(id=${aircraft.id},month=3,adComplianceId=${currentAdCompliance.id})}"><button type="button" class="month-button" role="button" th:classappend="(${month}==2?'button-on':'button-off')"><span class="button-text">Mar</span></button></a>
+			<a id="monthLink4" href="adComplianceLog.html?id=0" th:href="@{adComplianceLog.html(id=${aircraft.id},month=4,adComplianceId=${currentAdCompliance.id})}"><button type="button" class="month-button" role="button" th:classappend="(${month}==3?'button-on':'button-off')"><span class="button-text">Apr</span></button></a>
+			<a id="monthLink5" href="adComplianceLog.html?id=0" th:href="@{adComplianceLog.html(id=${aircraft.id},month=5,adComplianceId=${currentAdCompliance.id})}"><button type="button" class="month-button" role="button" th:classappend="(${month}==4?'button-on':'button-off')"><span class="button-text">May</span></button></a>
+			<a id="monthLink6" href="adComplianceLog.html?id=0" th:href="@{adComplianceLog.html(id=${aircraft.id},month=6,adComplianceId=${currentAdCompliance.id})}"><button type="button" class="month-button" role="button" th:classappend="(${month}==5?'button-on':'button-off')"><span class="button-text">Jun</span></button></a>
+			<a id="monthLink7" href="adComplianceLog.html?id=0" th:href="@{adComplianceLog.html(id=${aircraft.id},month=7,adComplianceId=${currentAdCompliance.id})}"><button type="button" class="month-button" role="button" th:classappend="(${month}==6?'button-on':'button-off')"><span class="button-text">Jul</span></button></a>
+			<a id="monthLink8" href="adComplianceLog.html?id=0" th:href="@{adComplianceLog.html(id=${aircraft.id},month=8,adComplianceId=${currentAdCompliance.id})}"><button type="button" class="month-button" role="button" th:classappend="(${month}==7?'button-on':'button-off')"><span class="button-text">Aug</span></button></a>
+			<a id="monthLink9" href="adComplianceLog.html?id=0" th:href="@{adComplianceLog.html(id=${aircraft.id},month=9,adComplianceId=${currentAdCompliance.id})}"><button type="button" class="month-button" role="button" th:classappend="(${month}==8?'button-on':'button-off')"><span class="button-text">Sep</span></button></a>
+			<a id="monthLink10" href="adComplianceLog.html?id=0" th:href="@{adComplianceLog.html(id=${aircraft.id},month=10,adComplianceId=${currentAdCompliance.id})}"><button type="button" class="month-button" role="button" th:classappend="(${month}==9?'button-on':'button-off')"><span class="button-text">Oct</span></button></a>
+			<a id="monthLink11" href="adComplianceLog.html?id=0" th:href="@{adComplianceLog.html(id=${aircraft.id},month=11,adComplianceId=${currentAdCompliance.id})}"><button type="button" class="month-button" role="button" th:classappend="(${month}==10?'button-on':'button-off')"><span class="button-text">Nov</span></button></a>
+			<a id="monthLink12" href="adComplianceLog.html?id=0" th:href="@{adComplianceLog.html(id=${aircraft.id},month=12,adComplianceId=${currentAdCompliance.id})}"><button type="button" class="month-button" role="button" th:classappend="(${month}==11?'button-on':'button-off')"><span class="button-text">Dec</span></button></a>
+			<br/>
+			<br/>
+		</div>
+		<div class="table">
+			<div class="records-header">
+				<span class="edit delete icon"></span>
+				<span class="headerCell dataCell">Date</span>
+				<span class="headerCell dataCell">Pilot</span>
+				<span class="headerCell dataCell">Certificate Type</span>
+			</div>
+			<div class="records-rows" th:each="adComplianceLog : ${adComplianceLogs}" th:classappend="|id${adComplianceLog.id}">
+				<span class="dataCell">
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${adComplianceLog.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15" /></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${adComplianceLog.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15" /></a></span>
+				</span>
+				<span class="complyWithDate dataCell" th:text="${adComplianceLog.adComplianceLogDateDisplay}">Date</span>
+				<span class="pilot dataCell" th:text="${adComplianceLog.pilot.displayName}">Pilot</span>
+				<span class="certificateType dataCell" th:text="${adComplianceLog.pilot.rating.name}">Certificate Type</span>
+				<span class="id cell hidden" th:text="${adComplianceLog.id}">Hidden	PK ID</span>
+				<span class="adComplianceId cell hidden" th:text="${currentAdCompliance.id}">Hidden	AD Compliance ID</span>
+				<span class="pilotId cell hidden" th:text="${adComplianceLog.pilot.id}">Hidden User Id</span>
+				<span class="dateDisplay dataCell hidden" th:text="${adComplianceLog.dateDisplay}">Hidden Date</span>
+			</div>
+		</div>
+		<button id="create-record">Comply</button>
+	</div>
+</body>
+</html>

@@ -45,6 +45,9 @@ public class Aircraft extends BaseDomain {
 	@Transient
 	@Expose
 	private int totalStarts;
+	@Transient
+	@Expose
+	private boolean adComplied = true;
 
 	@Transient
 	@Expose
@@ -140,6 +143,14 @@ public class Aircraft extends BaseDomain {
 
 	public void setTotalStarts(int totalStarts) {
 		this.totalStarts = totalStarts;
+	}
+
+	public boolean isAdComplied() {
+		return adComplied;
+	}
+
+	public void setAdComplied(boolean adComplied) {
+		this.adComplied = adComplied;
 	}
 
 }

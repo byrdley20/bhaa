@@ -26,6 +26,44 @@ public class DateUtil {
 		return result.intValue();
 	}
 
+	public static Calendar findMonthEndDate(Integer month) {
+		Calendar endDateCal = Calendar.getInstance();
+		endDateCal.set(Calendar.DAY_OF_MONTH, endDateCal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		if (month != null) {
+			endDateCal.set(Calendar.MONTH, month - 1);
+		}
+		endDateCal.setTime(findDayEnd(endDateCal.getTime()));
+		return endDateCal;
+	}
+
+	public static Calendar findMonthStartDate(Integer month) {
+		Calendar startDateCal = Calendar.getInstance();
+		startDateCal.set(Calendar.DAY_OF_MONTH, 1);
+		if (month != null) {
+			startDateCal.set(Calendar.MONTH, month - 1);
+		}
+		startDateCal.setTime(findDayStart(startDateCal.getTime()));
+		return startDateCal;
+	}
+
+	public static Date findDayStart(Date date) {
+		Calendar calendar = createCalendar(date);
+		calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMinimum(Calendar.HOUR_OF_DAY));
+		calendar.set(Calendar.MINUTE, calendar.getActualMinimum(Calendar.MINUTE));
+		calendar.set(Calendar.SECOND, calendar.getActualMinimum(Calendar.SECOND));
+		calendar.set(Calendar.MILLISECOND, calendar.getActualMinimum(Calendar.MILLISECOND));
+		return calendar.getTime();
+	}
+
+	public static Date findDayEnd(Date date) {
+		Calendar calendar = createCalendar(date);
+		calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY));
+		calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE));
+		calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND));
+		calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND));
+		return calendar.getTime();
+	}
+
 	private static Calendar createCalendar(Date date) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);

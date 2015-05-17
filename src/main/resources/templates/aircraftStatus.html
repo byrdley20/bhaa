@@ -15,37 +15,37 @@
 
 		var aircraft = /*[[${aircraft}]]*/;
     	var currentHobbs = /*[[${aircraft.hobbs}+${aircraft.hobbsOffset}]]*/;
-    	           
+
 		/*]]>*/
     </script>
     <script type="text/javascript">
   		//<![CDATA[
   		           
-		var lengthValidation = [];
-		var passwordValidation = [];
+		var numberValidation = [];
+		var dateValidation = [];
   		           
     	$(function() {
     		var id = $( "#id" ),
     		maintenanceTypeId = $( "#maintenanceTypeId" ),
+    		adComplianceId = $( "#adComplianceId" ),
     		aircraftId = $( "#aircraftId" ),
     		complyWithHobbs = $( "#complyWithHobbs" ),
     		complyWithDate = $( "#complyWithDate" );
     		
-        	allFields = $( [] ).add( id ).add( complyWithHobbs ).add( complyWithDate ).add( maintenanceTypeId ).add( aircraftId );
+        	allFields = $( [] ).add( id ).add( complyWithHobbs ).add( complyWithDate ).add( maintenanceTypeId ).add( adComplianceId ).add( aircraftId );
         	addUpdatePath = "/aircraftStatus/complyWith";
         	deletePath = "/aircraftStatus/complyWith";
     		
     		createDialog("Save");
     		
     		$( "#complyWithDate" ).datepicker();
-    		
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(userId, "'ID'", 1, 15);
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(firstName, "'First Name'", 1, 100);
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(lastName, "'Last Name'", 1, 100);
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(username, "'Username'", 1, 100);
-    		
-    		//passwordValidation[passwordValidation.length] = createPasswordValidationObject(password, password2);
-    	});
+       	});
+    	function addComplyWithDateValidation() {
+    		dateValidation[dateValidation.length] = createDateValidationObject($('#complyWithDate'), "'Comply With Date'");
+    	}
+    	function addComplyWithHobbsValidation() {
+    		numberValidation[numberValidation.length] = createNumberValidationObject($('#complyWithHobbs'), "'Comply With Hobbs'");
+    	}
     	function setExtraValues(formData){
     		//formData["aircraftId"] = aircraft;
     	}
@@ -53,42 +53,70 @@
     		writeEditRecord(savedRecord);
     	}
     	function writeEditRecord(savedRecord){
-    		var editedRow = $(".id"+savedRecord.maintenanceTypeId);
-    		var tbo = editedRow.find('.tbo').html();
+    		var editedRow;
+    		var adCompliance = false;
+    		if(typeof savedRecord.maintenanceTypeId != 'undefined') {
+	    		editedRow = $(".maintenanceTypeId-"+savedRecord.maintenanceTypeId);
+    		} else if(typeof savedRecord.adComplianceId != 'undefined') {
+    			editedRow = $(".adComplianceId-"+savedRecord.adComplianceId);
+    			adCompliance = true;
+    		}
+	    	var tbo = editedRow.find('.tbo').html();
     		if(editedRow.find('.hobbsDue').length){
-        		editedRow.find('.complyWithHobbs').html(savedRecord.complyWithHobbs);
-    			var hobbsDue = Number(savedRecord.complyWithHobbs) + Number(tbo);
+        		editedRow.find('.complyWithHobbs').html((savedRecord.complyWithHobbs).toFixed(2));
+    			var hobbsDue = (Number(savedRecord.complyWithHobbs) + Number(tbo)).toFixed(2);
     			editedRow.find('.hobbsDue').html(hobbsDue);
-    			editedRow.find('.remainingHours').html(Number(hobbsDue) - Number(currentHobbs));
+    			editedRow.find('.remainingHours').html((Number(hobbsDue) - Number(currentHobbs)).toFixed(2));
     		} else if(editedRow.find('.dueDate').length){
-        		editedRow.find('.complyWithDate').html(savedRecord.complyWithDateDisplay);
-    			var complyWithDate = Date.parse(savedRecord.complyWithDateDisplay, "M/d/yyyy");
-    			var dueDate = complyWithDate.addMonths(Number(tbo));
+           		editedRow.find('.complyWithDate').html(savedRecord.complyWithDateDisplay);
+       			var complyWithDate = Date.parse(savedRecord.complyWithDateDisplay, "M/d/yyyy");
+   				var dueDate = complyWithDate.addMonths(Number(tbo));
     			editedRow.find('.dueDate').html(dueDate.toString("M/d/yyyy"));
     			var remainingDays = dateDiffInDays(Date.today(), dueDate);
     			editedRow.find('.remainingDays').html(remainingDays);
     		}
     		editedRow.find('.maintenanceTypeId').html(savedRecord.maintenanceTypeId);
+    		editedRow.find('.adComplianceId').html(savedRecord.adComplianceId);
     		editedRow.find('.aircraftId').html(savedRecord.aircraftId);
     		editedRow.find('.id').html(savedRecord.id);
     	}
     	function populateEditForm(editLink){
+    		var dailyAD = $(editLink).parent('.daily').length;
+    		var nonDailyAD = $(editLink).parent('.nonDaily').length;
+    		
+    		if(dailyAD || nonDailyAD) {
+	    		$("#addEditForm").attr("action", "/aircraftStatus/complyWithAd");
+	    		addUpdatePath = "/aircraftStatus/complyWithAd";
+    		} else {
+    			$("#addEditForm").attr("action", "/aircraftStatus/complyWith");
+    			addUpdatePath = "/aircraftStatus/complyWith";
+    		}    		
+    		
     		var editSpan = $(editLink).closest('span');
 			$('#addEditForm').find('#complyWithDate').show();
 			$('#addEditForm').find('.complyWithDate').show();
 			$('#addEditForm').find('#complyWithHobbs').show();
 			$('#addEditForm').find('.complyWithHobbs').show();
 			
-    		if(editSpan.parent('.maint-rows-month').length) {
+			//reset validation
+			dateValidation = [];
+			numberValidation = [];;
+			
+    		if(editSpan.parent('.maint-rows-month').length || dailyAD) {
     			$('#addEditForm').find('#complyWithHobbs').hide();
     			$('#addEditForm').find('.complyWithHobbs').hide();
-    		} else if (editSpan.parent('.maint-rows-hour').length) {
+    			addComplyWithDateValidation();
+    			$('#complyWithDate').datepicker("setDate", new Date() );
+    		} else if (editSpan.parent('.maint-rows-hour').length || nonDailyAD) {
     			$('#addEditForm').find('#complyWithDate').hide();
     			$('#addEditForm').find('.complyWithDate').hide();
+    			addComplyWithHobbsValidation();
+    			$('#addEditForm').find('#complyWithHobbs').val(currentHobbs);
     		}
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
     		$('#addEditForm').find('#maintenanceTypeId').val(editSpan.nextAll('span.maintenanceTypeId').first().html());
     		$('#addEditForm').find('#aircraftId').val(editSpan.nextAll('span.aircraftId').first().html());
+    		$('#addEditForm').find('#adComplianceId').val(editSpan.nextAll('span.adComplianceId').first().html());
     	}
     	//]]>
     </script>
@@ -114,6 +142,7 @@
 					<input type="text" name="complyWithHobbs" id="complyWithHobbs" value="" class="text ui-widget-content ui-corner-all"/>
 					<input type="text" name="id" id="id" class="hidden"/>
 					<input type="text" name="maintenanceTypeId" id="maintenanceTypeId" class="hidden"/>
+					<input type="text" name="adComplianceId" id="adComplianceId" class="hidden"/>
 					<input type="text" name="aircraftId" id="aircraftId" class="hidden"/>
 					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 				</fieldset>
@@ -124,7 +153,7 @@
 			<span th:text="${aircraft.model.name}">Model Name</span>
 			&nbsp;&nbsp;
 			<span><a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>
-			<span><a href="adCompliance.html?id=1" th:href="@{adCompliance.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">AD Compliance</span></button></a></span>
+			<span><a href="adCompliance.html?id=1" th:href="@{adComplianceLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">AD Compliance</span></button></a></span>
 		</div>
 		<div th:text="${aircraft.aircraftNumber}">ID</div>
 		<div th:text="'S/N: ' + ${aircraft.serialNum}">Serial Number</div>
@@ -143,7 +172,7 @@
 			    <span class="dataCell">Hobbs Due</span>
 			    <span class="dataCell">Remaining Hours</span>
 			</div>
-			<div class="records-rows maint-rows-hour" th:each="maintType : ${flightHourMaintTypes}" th:classappend="|id${maintType.id}" th:with="complyWithHobbs=((${maintType.maintenanceLog}==null)?'0':${maintType.maintenanceLog.complyWithHobbs}),hobbsDue=(${complyWithHobbs}+${maintType.timeBeforeAction}),remainingHours=(${hobbsDue}-${currentHobbs})">
+			<div class="records-rows maint-rows-hour" th:each="maintType : ${flightHourMaintTypes}" th:classappend="|maintenanceTypeId-${maintType.id}" th:with="complyWithHobbs=((${maintType.maintenanceLog}==null)?'0':${maintType.maintenanceLog.complyWithHobbs}),hobbsDue=(${complyWithHobbs}+${maintType.timeBeforeAction}),remainingHours=(${hobbsDue}-${currentHobbs})">
 				<span class="dataCell complyWith"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" alt="Comply With" src="images/repair.png" width="15" height="15"/></a></span>
 				<span class="dataCell" th:text="${maintType.name}">Item Name</span>
 				<span class="dataCell complyWithHobbs" th:text="${complyWithHobbs}">599.9</span>
@@ -165,7 +194,7 @@
 			    <span class="dataCell">Due Date</span>
 			    <span class="dataCell">Remaining Days</span>
 			</div>
-			<div class="records-rows maint-rows-month" th:each="maintType : ${monthMaintTypes}" th:classappend="|id${maintType.id}" th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),dueDate=((${maintType.maintenanceLog}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yyyy')})">
+			<div class="records-rows maint-rows-month" th:each="maintType : ${monthMaintTypes}" th:classappend="|maintenanceTypeId-${maintType.id}" th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),dueDate=((${maintType.maintenanceLog}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yyyy')})">
 				<span class="dataCell complyWith"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" alt="Comply With" src="images/repair.png" width="15" height="15"/></a></span>
 				<span class="dataCell" th:text="${maintType.name}">Item Name</span>
 				<span class="dataCell complyWithDate" th:text="((${maintType.maintenanceLog} == null)?'N/A':${#dates.format(complyWithDate, 'MM/dd/yyyy')})">01/01/15</span>
@@ -175,6 +204,28 @@
 				<span class="id cell hidden" th:text="((${maintType.maintenanceLog} == null)?'0':${maintType.maintenanceLog.id})">Hidden Maintenance Log ID</span>
 				<span class="aircraftId cell hidden" th:text="${aircraft.id}">Hidden Aircraft ID</span>
 				<span class="maintenanceTypeId cell hidden" th:text="${maintType.id}">Hidden Maintenace Type ID</span>
+			</div>
+		</div>
+		<div class="category-type">ADs</div>
+		<div class="table">
+			<div class="records-header">
+				<span class="dataCell complyWith"></span>
+			    <span class="dataCell">Name</span>
+			    <span class="dataCell">C/W</span>
+			    <span class="dataCell">TBO</span>
+			    <span class="dataCell">Hobbs Due</span>
+			    <span class="dataCell">Remaining Hours</span>
+			</div>
+			<div class="records-rows maint-rows-ad" th:each="adCompliance : ${adCompliances}" th:classappend="|adComplianceId-${adCompliance.id}" th:with="complyWithHobbs=(!${adCompliance.daily}?((${adCompliance.adComplianceLog}==null)?'0':${adCompliance.adComplianceLog.complyWithHobbs})), hobbsDue=(!${adCompliance.daily} ? (${complyWithHobbs}+${adCompliance.timeBeforeAction})), remainingHours=(!${adCompliance.daily} ? (${hobbsDue}-${currentHobbs}))">
+				<span class="dataCell complyWith" th:classappend="${adCompliance.daily} ? 'daily' : 'nonDaily'"><a href="#" th:href="${adCompliance.daily} ? (@{adComplianceLog.html(id=${aircraft.id},adComplianceId=${adCompliance.id})}) : '#'" th:classappend="!${adCompliance.daily} ? 'editLink'" th:attr="data-id=${adCompliance.id}"><img border="0" alt="Comply With" src="images/repair.png" width="15" height="15"/></a></span>
+				<span class="dataCell" th:text="${adCompliance.name}">Name</span>
+				<span class="dataCell" th:classappend="${adCompliance.daily} ? 'complyWithDate' : 'complyWithHobbs'" th:text="${adCompliance.daily} ? ((${adCompliance.adComplianceLog} == null)?'N/A':${#dates.format(adCompliance.adComplianceLog.complyWithDate, 'MM/dd/yyyy')}) : ${complyWithHobbs}">599.9</span>
+				<span class="dataCell tbo" th:text="${adCompliance.daily} ? 'Daily' : ${adCompliance.timeBeforeAction}">100.0</span>
+				<span class="dataCell" th:classappend="${adCompliance.daily} ? 'dueDate' : 'hobbsDue'" th:text="${adCompliance.daily} ? 'Daily' : ${hobbsDue}">699.9</span>
+				<span class="dataCell remainingHours" th:text="${adCompliance.daily} ? 'Daily' : ${remainingHours}">29.0</span>
+				<span class="id cell hidden" th:text="( (${adCompliance.adComplianceLog} == null)? '0' : ${adCompliance.adComplianceLog.id})">Hidden AD Compliance Log ID</span>
+				<span class="aircraftId cell hidden" th:text="${aircraft.id}">Hidden Aircraft ID</span>
+				<span class="adComplianceId cell hidden" th:text="${adCompliance.id}">Hidden AD Compliance ID</span>
 			</div>
 		</div>
 	</div>	

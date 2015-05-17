@@ -12,6 +12,22 @@
 	position: absolute;
 	bottom: 23px;
 }
+.alert-button {
+	color: #FF0000;
+}
+/*
+.admin-button {
+	position: absolute;
+	float: right;
+	right: 38px;
+	bottom: 11px;
+}
+*/
+.table-upper-caption {
+	font-size: 1.4em;
+	font-weight: bold;
+	margin-bottom:20px;
+}
 a button.header-button,
 a button.admin-button {
 	border-left: 1px solid #d3d3d3;

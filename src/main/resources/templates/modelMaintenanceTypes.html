@@ -145,11 +145,6 @@
     	//]]>
     </script>
     <style>
-    	.model {
-    		font-size: 1.4em;
-    		font-weight: bold;
-    		margin-bottom:20px;
-    	}
     	.showOnDashboard.dataCell {
     		padding-left: 60px;
 		}
@@ -189,7 +184,7 @@
 				</fieldset>
 			</form>
 		</div>
-		<div class="model" th:text="'Model: '+${model.name}">Robinson 44</div>
+		<div class="table-upper-caption" th:text="'Model: '+${model.name}">Robinson 44</div>
 		<div th:each="mctmt : ${maintCategoryToMaintTypes}">
 			<div class="category-type" th:text="${mctmt.key.name}" th:classappend="|${mctmt.key}">CATEGORY TYPE</div>
 			<div class="table">

@@ -253,13 +253,13 @@
 			<span th:text="'Collective Flight Log ' + ${aircraft.aircraftNumber}">Flight Logs</span>
 			&nbsp;&nbsp;
 			<span><a href="aircraftStatus.html?id=1" th:href="@{aircraftStatus.html(id=${aircraft.id})}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Status</span></button></a></span>
-			<span><a href="adCompliance.html?id=1" th:href="@{adCompliance.html(id=${aircraft.id})}"><button type="button" class="month-button no-print" role="button"><span class="button-text">AD Compliance</span></button></a></span>
+			<span><a href="adCompliance.html?id=1" th:href="@{adComplianceLog.html(id=${aircraft.id})}"><button type="button" class="month-button no-print" role="button"><span class="button-text">AD Compliance</span></button></a></span>
 		</div>
 		<div th:text="'Model: ' + ${aircraft.model.name}">Aircraft Model</div>
 		<br/>
 		<div class="no-print">
 			<a id="monthLink1" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=1)}"><button type="button" class="month-button" role="button" th:classappend="(${month}==0?'button-on':'button-off')"><span class="button-text">Jan</span></button></a>
-			<a id="monthLink2" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=2)}"><button type="button" class="month-button" role="button" th:classappend="(${month}==1?'button-on':'button-off')"><span class="button-text">Feb</span></button></a>
+			<a id="monthLink2" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=2)}"><button type="button" class="month-button" role="button" th:classappend="(${month}==1?'button-on':'button-off')"><span class="button-text">Jan</span></button></a>
 			<a id="monthLink3" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=3)}"><button type="button" class="month-button" role="button" th:classappend="(${month}==2?'button-on':'button-off')"><span class="button-text">Mar</span></button></a>
 			<a id="monthLink4" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=4)}"><button type="button" class="month-button" role="button" th:classappend="(${month}==3?'button-on':'button-off')"><span class="button-text">Apr</span></button></a>
 			<a id="monthLink5" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=5)}"><button type="button" class="month-button" role="button" th:classappend="(${month}==4?'button-on':'button-off')"><span class="button-text">May</span></button></a>
@@ -275,7 +275,7 @@
 			<br/>
 		</div>
 		<div class="print-only monthName" th:with="monthDate=(${#dates.create(2015,month+1,1)})">
-			<span th:text="${#dates.monthName(monthDate)}">Month Name</span>
+			 <span th:text="${#dates.monthName(monthDate)}">Month Name</span>
 		</div>
 		<div class="table">
 			<div class="records-header">

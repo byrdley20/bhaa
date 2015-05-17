@@ -22,6 +22,7 @@ import com.coptertours.repository.FlightLogRepository;
 import com.coptertours.repository.LocationRepository;
 import com.coptertours.repository.OperationRepository;
 import com.coptertours.repository.UserRepository;
+import com.coptertours.util.DateUtil;
 
 @Controller
 public class FlightLogController extends BaseController {
@@ -42,17 +43,8 @@ public class FlightLogController extends BaseController {
 		Aircraft aircraft = this.aircraftRepository.findOne(id);
 		model.addAttribute("aircraft", aircraft);
 
-		Calendar startDateCal = Calendar.getInstance();
-		startDateCal.set(Calendar.DAY_OF_MONTH, 1);
-		if (month != null) {
-			startDateCal.set(Calendar.MONTH, month - 1);
-		}
-
-		Calendar endDateCal = Calendar.getInstance();
-		endDateCal.set(Calendar.DAY_OF_MONTH, endDateCal.getActualMaximum(Calendar.DAY_OF_MONTH));
-		if (month != null) {
-			endDateCal.set(Calendar.MONTH, month - 1);
-		}
+		Calendar startDateCal = DateUtil.findMonthStartDate(month);
+		Calendar endDateCal = DateUtil.findMonthEndDate(month);
 
 		List<FlightLog> flightLogs = this.flightLogRepository.findByAircraftAndDateBetween(aircraft, startDateCal.getTime(), endDateCal.getTime(), sortByDate());
 		model.addAttribute("flightLogs", flightLogs);

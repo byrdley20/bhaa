@@ -13,13 +13,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.coptertours.domain.RepairLog;
-import com.coptertours.domain.User;
 import com.coptertours.repository.RepairLogRepository;
 import com.coptertours.repository.UserRepository;
 
 @RestController
 @RequestMapping(value = "/squawks")
-public class RepairLogRestController {
+public class RepairLogRestController extends BaseRestController {
 	@Autowired
 	private RepairLogRepository repairLogRepository;
 	@Autowired
@@ -37,22 +36,13 @@ public class RepairLogRestController {
 		return this.repairLogRepository.save(repairLog);
 	}
 
-	private void resetRoles(RepairLog repairLog) {
-		resetRole(repairLog.getPilot());
-		resetRole(repairLog.getMechanic());
-	}
-
-	private void resetRole(User user) {
-		if (user != null) {
-			User foundUser = this.userRepository.findOne(user.getId());
-			if (foundUser != null) {
-				user.setRole(foundUser.getRole());
-			}
-		}
-	}
-
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	void deleteRepairLog(@PathVariable Long id) {
 		this.repairLogRepository.delete(id);
+	}
+
+	private void resetRoles(RepairLog repairLog) {
+		resetRole(repairLog.getPilot());
+		resetRole(repairLog.getMechanic());
 	}
 }

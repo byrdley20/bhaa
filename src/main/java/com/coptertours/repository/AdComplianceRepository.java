@@ -10,4 +10,6 @@ import com.coptertours.domain.Model;
 
 public interface AdComplianceRepository extends JpaRepository<AdCompliance, Long> {
 	List<AdCompliance> findByModel(Model model, Sort sort);
+
+	List<AdCompliance> findByModelAndDaily(Model model, Boolean daily, Sort sort);
 }
