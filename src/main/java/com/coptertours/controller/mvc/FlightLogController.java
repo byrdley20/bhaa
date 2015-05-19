@@ -1,8 +1,8 @@
 package com.coptertours.controller.mvc;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.coptertours.domain.Aircraft;
 import com.coptertours.domain.FlightLog;
-import com.coptertours.domain.User;
+import com.coptertours.options.Role;
 import com.coptertours.repository.AircraftRepository;
 import com.coptertours.repository.FlightLogRepository;
 import com.coptertours.repository.LocationRepository;
@@ -45,17 +45,23 @@ public class FlightLogController extends BaseController {
 
 		Calendar startDateCal = DateUtil.findMonthStartDate(month);
 		Calendar endDateCal = DateUtil.findMonthEndDate(month);
+		Date today = new Date();
+		Date yearStart = DateUtil.findYearStartDate(today);
+		Date yearEnd = DateUtil.findYearEndDate(today);
 
 		List<FlightLog> flightLogs = this.flightLogRepository.findByAircraftAndDateBetween(aircraft, startDateCal.getTime(), endDateCal.getTime(), sortByDate());
-		model.addAttribute("flightLogs", flightLogs);
-		List<User> allUsers = this.userRepository.findAll(sortByLastNameAsc());
-		List<User> clonedAllUsers = new ArrayList<User>(allUsers.size());
-		for (User user : allUsers) {
-			User clonedUser = user.clone();
-			clonedUser.clearRole();
-			clonedAllUsers.add(clonedUser);
+
+		BigDecimal monthlyHobbsTotal = BigDecimal.ZERO;
+		for (FlightLog flightLog : flightLogs) {
+			monthlyHobbsTotal = monthlyHobbsTotal.add(flightLog.getHobbsEnd().subtract(flightLog.getHobbsBegin()));
 		}
-		model.addAttribute("allUsers", clonedAllUsers); // TODO find all PILOTs only
+
+		if (aircraft.getModel().getShowStarts()) {
+			model.addAttribute("yearlyStarts", this.flightLogRepository.findTotalStartsByAircraftAndDateBetween(aircraft, yearStart, yearEnd));
+		}
+		model.addAttribute("monthlyHobbsTotal", monthlyHobbsTotal);
+		model.addAttribute("flightLogs", flightLogs);
+		model.addAttribute("allUsers", findUsersByRole(Role.PILOT));
 		model.addAttribute("allLocations", this.locationRepository.findAll(sortByNameAsc()));
 		model.addAttribute("allOperations", this.operationRepository.findAll(sortByNameAsc()));
 		model.addAttribute("month", startDateCal.get(Calendar.MONTH));

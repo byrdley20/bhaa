@@ -44,8 +44,11 @@ public class DashboardController extends BaseController {
 	String dashboard(Model model) {
 		Map<Long, List<AdCompliance>> modelToAdCompliances = new HashMap<Long, List<AdCompliance>>();
 		List<Aircraft> aircrafts = this.aircraftRepository.findAll();
-		Date todayStart = DateUtil.findDayStart(new Date());
-		Date todayEnd = DateUtil.findDayEnd(new Date());
+		Date today = new Date();
+		Date todayStart = DateUtil.findDayStart(today);
+		Date todayEnd = DateUtil.findDayEnd(today);
+		Date yearStart = DateUtil.findYearStartDate(today);
+		Date yearEnd = DateUtil.findYearEndDate(today);
 
 		for (Aircraft aircraft : aircrafts) {
 			List<MaintenanceLog> maintenanceLogs = this.maintenanceLogRepository.findByAircraftId(aircraft.getId());
@@ -66,7 +69,7 @@ public class DashboardController extends BaseController {
 			}
 			aircraft.setMaintenanceTypes(clonedMaintenanceTypes);
 
-			Integer totalStarts = this.flightLogRepository.findTotalStartsByAircraft(aircraft);
+			Integer totalStarts = this.flightLogRepository.findTotalStartsByAircraftAndDateBetween(aircraft, yearStart, yearEnd);
 			if (totalStarts != null) {
 				aircraft.setTotalStarts(totalStarts);
 			}

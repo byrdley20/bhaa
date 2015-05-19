@@ -27,7 +27,7 @@ public class AdComplianceLog extends BaseDomain {
 	@Expose
 	private BigDecimal complyWithHobbs;
 
-	@ManyToOne(targetEntity = User.class, cascade = { CascadeType.REFRESH, CascadeType.PERSIST })
+	@ManyToOne(targetEntity = User.class, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
 	@JoinColumn(name = "PILOT_ID")
 	@Expose
 	private User pilot;

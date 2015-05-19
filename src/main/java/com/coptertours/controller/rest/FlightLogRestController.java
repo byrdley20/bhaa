@@ -1,6 +1,7 @@
 package com.coptertours.controller.rest;
 
 import java.util.Collection;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,18 +13,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.coptertours.domain.Aircraft;
 import com.coptertours.domain.FlightLog;
-import com.coptertours.domain.User;
+import com.coptertours.repository.AircraftRepository;
 import com.coptertours.repository.FlightLogRepository;
 import com.coptertours.repository.UserRepository;
+import com.coptertours.util.DateUtil;
 
 @RestController
 @RequestMapping(value = "/flightLogs")
-public class FlightLogRestController {
+public class FlightLogRestController extends BaseRestController {
 	@Autowired
 	private FlightLogRepository flightLogRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private AircraftRepository aircraftRepository;
 
 	@RequestMapping(method = RequestMethod.GET)
 	Collection<FlightLog> flightLogs() {
@@ -40,17 +45,20 @@ public class FlightLogRestController {
 		return this.flightLogRepository.save(flightLog);
 	}
 
-	private void resetRole(User user) {
-		if (user != null) {
-			User foundUser = this.userRepository.findOne(user.getId());
-			if (foundUser != null) {
-				user.setRole(foundUser.getRole());
-			}
-		}
-	}
-
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	void deleteFlightLog(@PathVariable Long id) {
 		this.flightLogRepository.delete(id);
+	}
+
+	@RequestMapping(value = "/yearlyStarts/{aircraftId}", method = RequestMethod.GET)
+	int totalStartsByYear(@PathVariable Long aircraftId) {
+		int totalStarts = 0;
+		Aircraft aircraft = this.aircraftRepository.findOne(aircraftId);
+		if (aircraft != null) {
+			Date today = new Date();
+			totalStarts = this.flightLogRepository.findTotalStartsByAircraftAndDateBetween(aircraft, DateUtil.findYearStartDate(today), DateUtil.findYearEndDate(today));
+		}
+
+		return totalStarts;
 	}
 }

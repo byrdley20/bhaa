@@ -178,6 +178,13 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 .topButton{
 	margin-bottom: 20px;
 }
+.dueNow {
+	background-color: #970102;
+	color: white;
+}
+.dueSoon {
+	background-color: #f9df00;
+}
 
 @media print {
 	.header-left,

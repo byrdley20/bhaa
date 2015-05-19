@@ -38,6 +38,7 @@
 		var month = /*[[${month}]]*/;
 		var maxHobbsEnd = /*[[${maxHobbsEnd}]]*/;
 		var showStarts = /*[[${aircraft.model.showStarts}]]*/;
+		var monthlyHobbsTotal = /*[[${monthlyHobbsTotal}]]*/;
 		/*]]>*/
     </script>
     <script type="text/javascript">
@@ -115,11 +116,15 @@
 			    	newRecord += 
 			    		"<span class='starts dataCell'>"+savedRecord.starts+"</span> ";
 			    }
+			    var hobbsTotal = (savedRecord.hobbsEnd-savedRecord.hobbsBegin);
+			    monthlyHobbsTotal = Number(monthlyHobbsTotal) + Number(hobbsTotal);
+			    $('.monthly-hobbs-total').html(monthlyHobbsTotal.toFixed(2));
+			    
 			    newRecord += 
 			    	"<span class='location dataCell'>"+savedRecord.location.name+"</span> " +
 			    	"<span class='hobbsBegin dataCell'>"+savedRecord.hobbsBegin+"</span> " +
 			    	"<span class='hobbsEnd dataCell'>"+savedRecord.hobbsEnd+"</span> " +
-			    	"<span class='hobbsTotal dataCell'>"+(savedRecord.hobbsEnd-savedRecord.hobbsBegin).toFixed(2)+"</span> " +
+			    	"<span class='hobbsTotal dataCell'>"+hobbsTotal.toFixed(2)+"</span> " +
 			    	"<span class='operation dataCell'>"+savedRecord.operation.name+"</span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 			    	"<span class='userId cell hidden'>"+savedRecord.user.id+"</span> " +
@@ -131,6 +136,9 @@
 	    		elementBefore.last().after( newRecord );  
 	    		if(savedRecord.hobbsEnd > maxHobbsEnd) {
 	    			maxHobbsEnd = savedRecord.hobbsEnd;
+	    		}
+	    		if(showStarts) {
+		    		totalStartsByYear();
 	    		}
     		} else {
     			window.location.href = $("#monthLink"+(flightLogMonth+1)).attr("href");
@@ -146,10 +154,17 @@
 	    		if(showStarts) {
 		    		editedRow.find('.starts').html(savedRecord.starts);
 	    		}
+	    		
+			    var hobbsTotal = (savedRecord.hobbsEnd-savedRecord.hobbsBegin);
+			    var oldHobbsTotal = editedRow.find('.hobbsTotal').html();
+			    var hobbsDiff = Number(hobbsTotal)-Number(oldHobbsTotal);
+			    monthlyHobbsTotal = Number(monthlyHobbsTotal) + Number(hobbsDiff);
+			    $('.monthly-hobbs-total').html(monthlyHobbsTotal.toFixed(2));
+	    		
 	    		editedRow.find('.location').html(savedRecord.location.name);
-	    		editedRow.find('.hobbsBegin').html(savedRecord.hobbsBegin);
-	    		editedRow.find('.hobbsEnd').html(savedRecord.hobbsEnd);
-	    		editedRow.find('.hobbsTotal').html((savedRecord.hobbsEnd-savedRecord.hobbsBegin).toFixed(2));
+	    		editedRow.find('.hobbsBegin').html(savedRecord.hobbsBegin.toFixed(2));
+	    		editedRow.find('.hobbsEnd').html(savedRecord.hobbsEnd.toFixed(2));
+	    		editedRow.find('.hobbsTotal').html(hobbsTotal.toFixed(2));
 	    		editedRow.find('.operation').html(savedRecord.operation.name);
 	    		editedRow.find('.id').html(savedRecord.id);
 	    		editedRow.find('.userId').html(savedRecord.user.id);
@@ -160,6 +175,9 @@
 	    			maxHobbsEnd = savedRecord.hobbsEnd;
 	    		} else {
 	    			findMaxHobbsEndByAircraft();
+	    			if(showStarts) {
+		    			totalStartsByYear();
+	    			}
 	    		}
     		} else {
     			window.location.href = $("#monthLink"+(flightLogMonth+1)).attr("href");
@@ -192,11 +210,19 @@
     		$('#addEditForm').find('#locationId').val(editSpan.nextAll('span.locationId').first().html());
     		$('#addEditForm').find('#operationId').val(editSpan.nextAll('span.operationId').first().html());
     	}
+    	var hobbsToDelete;
     	function findDeleteName(deleteLink){
-    		return $(deleteLink).closest('span.dataCell').nextAll('span.date').first().html();
+    		var dataCell = $(deleteLink).closest('span.dataCell');
+    		hobbsToDelete = dataCell.nextAll('span.hobbsTotal').first().html();
+    		return dataCell.nextAll('span.date').first().html();
     	}
     	function postDeleteAction() {
     		findMaxHobbsEndByAircraft();
+    		if(showStarts) {
+	    		totalStartsByYear();
+    		}
+		    monthlyHobbsTotal = Number(monthlyHobbsTotal) - Number(hobbsToDelete);
+		    $('.monthly-hobbs-total').html(monthlyHobbsTotal.toFixed(2));
     	}
     	function findMaxHobbsEndByAircraft() {
     		$.ajax({
@@ -208,6 +234,18 @@
 				},
 				error: function() {
 					//alert("error getting maxHobbsEnd");
+				}
+			});
+    	}
+    	function totalStartsByYear() {
+    		$.ajax({
+				url: baseUrl+"/flightLogs/yearlyStarts/"+aircraft.id,
+				dataType: 'json',
+				success: function(data) {
+					$('.yearly-starts').html(data);
+				},
+				error: function() {
+					//alert("error getting totalStartsByYear");
 				}
 			});
     	}
@@ -259,7 +297,7 @@
 		<br/>
 		<div class="no-print">
 			<a id="monthLink1" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=1)}"><button type="button" class="month-button" role="button" th:classappend="(${month}==0?'button-on':'button-off')"><span class="button-text">Jan</span></button></a>
-			<a id="monthLink2" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=2)}"><button type="button" class="month-button" role="button" th:classappend="(${month}==1?'button-on':'button-off')"><span class="button-text">Jan</span></button></a>
+			<a id="monthLink2" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=2)}"><button type="button" class="month-button" role="button" th:classappend="(${month}==1?'button-on':'button-off')"><span class="button-text">Feb</span></button></a>
 			<a id="monthLink3" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=3)}"><button type="button" class="month-button" role="button" th:classappend="(${month}==2?'button-on':'button-off')"><span class="button-text">Mar</span></button></a>
 			<a id="monthLink4" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=4)}"><button type="button" class="month-button" role="button" th:classappend="(${month}==3?'button-on':'button-off')"><span class="button-text">Apr</span></button></a>
 			<a id="monthLink5" href="flightLog.html?id=0" th:href="@{flightLog.html(id=${aircraft.id},month=5)}"><button type="button" class="month-button" role="button" th:classappend="(${month}==4?'button-on':'button-off')"><span class="button-text">May</span></button></a>
@@ -313,11 +351,11 @@
 				<span class="emptyCell"></span>
 				<span class="emptyCell" th:if="!${aircraft.model.showStarts}"></span>
 				<span class="dataCell log-totals" th:if="${aircraft.model.showStarts}">Total Starts:</span>
-				<span class="dataCell log-totals" th:if="${aircraft.model.showStarts}">456</span>
+				<span class="dataCell log-totals yearly-starts" th:text="${yearlyStarts}" th:if="${aircraft.model.showStarts}">456</span>
 				<span class="emptyCell"></span>
 				<span class="emptyCell"></span>
 				<span class="dataCell log-totals">Monthly Total:</span>
-				<span class="dataCell log-totals">123</span>
+				<span class="dataCell log-totals monthly-hobbs-total" th:text="${monthlyHobbsTotal}">123</span>
 				<span class="emptyCell"></span>
 			</div>
 		</div>

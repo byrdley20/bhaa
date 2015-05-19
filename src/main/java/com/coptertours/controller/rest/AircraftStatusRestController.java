@@ -14,7 +14,7 @@ import com.coptertours.repository.MaintenanceLogRepository;
 
 @RestController
 @RequestMapping(value = "/aircraftStatus")
-public class AircraftStatusRestController {
+public class AircraftStatusRestController extends BaseRestController {
 	@Autowired
 	private MaintenanceLogRepository maintenanceLogRepository;
 	@Autowired
@@ -29,6 +29,7 @@ public class AircraftStatusRestController {
 	@RequestMapping(value = "/complyWithAd", method = RequestMethod.POST)
 	@ResponseBody
 	AdComplianceLog complyWithAd(@RequestBody AdComplianceLog adComplianceLog) {
+		this.resetRole(adComplianceLog.getPilot());
 		return this.adComplianceLogRepository.save(adComplianceLog);
 	}
 }

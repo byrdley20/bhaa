@@ -21,19 +21,25 @@ public class DateUtil {
 	}
 
 	public static int findDaysBetweenDates(Date date1, Date date2) {
-		BigDecimal diff = new BigDecimal(date2.getTime() - date1.getTime());
+		BigDecimal diff = new BigDecimal(findDayStart(date2).getTime() - findDayStart(date1).getTime());
 		BigDecimal result = diff.divide(new BigDecimal(1000 * 60 * 60 * 24l), 0, RoundingMode.CEILING);
 		return result.intValue();
 	}
 
-	public static Calendar findMonthEndDate(Integer month) {
-		Calendar endDateCal = Calendar.getInstance();
+	public static Date findYearStartDate(Date date) {
+		Calendar startDateCal = createCalendar(date);
+		startDateCal.set(Calendar.MONTH, startDateCal.getActualMinimum(Calendar.MONTH));
+		startDateCal.set(Calendar.DAY_OF_MONTH, 1);
+		startDateCal.setTime(findDayStart(startDateCal.getTime()));
+		return startDateCal.getTime();
+	}
+
+	public static Date findYearEndDate(Date date) {
+		Calendar endDateCal = createCalendar(date);
+		endDateCal.set(Calendar.MONTH, endDateCal.getActualMaximum(Calendar.MONTH));
 		endDateCal.set(Calendar.DAY_OF_MONTH, endDateCal.getActualMaximum(Calendar.DAY_OF_MONTH));
-		if (month != null) {
-			endDateCal.set(Calendar.MONTH, month - 1);
-		}
 		endDateCal.setTime(findDayEnd(endDateCal.getTime()));
-		return endDateCal;
+		return endDateCal.getTime();
 	}
 
 	public static Calendar findMonthStartDate(Integer month) {
@@ -44,6 +50,16 @@ public class DateUtil {
 		}
 		startDateCal.setTime(findDayStart(startDateCal.getTime()));
 		return startDateCal;
+	}
+
+	public static Calendar findMonthEndDate(Integer month) {
+		Calendar endDateCal = Calendar.getInstance();
+		endDateCal.set(Calendar.DAY_OF_MONTH, endDateCal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		if (month != null) {
+			endDateCal.set(Calendar.MONTH, month - 1);
+		}
+		endDateCal.setTime(findDayEnd(endDateCal.getTime()));
+		return endDateCal;
 	}
 
 	public static Date findDayStart(Date date) {
