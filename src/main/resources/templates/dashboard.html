@@ -88,7 +88,7 @@
 	<div id="main-content">
 		<br/><br/>
 		<div class="dashboard-grid">
-			<div class="col" th:each="a : ${aircrafts}" th:classappend="${aStat.even}?'cleared'" th:with="currentHobbs=(${a.hobbs}+${a.hobbsOffset})">
+			<div class="col" th:each="a : ${aircrafts}" th:classappend="${aStat.even}?'cleared'" th:with="currentHobbs=(${a.hobbs})">
 				<div class="leftColumn">
 					<div class="emph" th:text="${a.name}">Name</div>
 					<div class="image">

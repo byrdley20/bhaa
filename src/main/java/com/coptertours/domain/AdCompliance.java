@@ -27,7 +27,7 @@ public class AdCompliance extends BaseDomain {
 	@Column(columnDefinition = "varchar(800)")
 	String description;
 
-	@ManyToOne(targetEntity = Model.class, cascade = { CascadeType.REFRESH, CascadeType.PERSIST })
+	@ManyToOne(targetEntity = Model.class, cascade = { CascadeType.REFRESH })
 	@JoinColumn(name = "MODEL_ID")
 	@Expose
 	private Model model;

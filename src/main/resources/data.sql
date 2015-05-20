@@ -40,14 +40,14 @@ INSERT INTO MODEL(NAME, SHOW_STARTS) values('Bell 47G2A1', false);
 INSERT INTO MODEL(NAME, SHOW_STARTS) values('Bell 47G3B1', false);
 INSERT INTO MODEL(NAME, SHOW_STARTS) values('Bell 206', true);
 
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N175KM','N121AH', (select id from MODEL where name='Robinson R44'), '12106', 'N175KM.png', 1, 99.0, 0, 99.0, 0);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N441ML','N710MY', (select id from MODEL where name='Robinson R44'), '10465', 'N441ML.png', 2, 15.0, 76, 124, 130);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N4344J','N4344J', (select id from MODEL where name='Robinson R44'), '12818', 'N4344J.png', 3, 15.0, 76, 124, 130);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N86SL','N241AU', (select id from MODEL where name='Robinson R44'), '10375', 'N86SL.png', 4, 15.0, 76, 124, 130);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('47 G3-B1','N32FG', (select id from MODEL where name='Bell 47G3B1'), '3838', 'N32FG.png', 5, 15.0, 76, 124, 130);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N118TV','N118TV', (select id from MODEL where name='Bell 206'), '2844', 'N118TV.png', 6, 15.0, 76, 124, 130);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('47 G2-A1','N8505F', (select id from MODEL where name='Bell 47G2A1'), '', 'N8505F.png', 7, 15.0, 76, 124, 130);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs, hobbs_offset, engine_total_time, engine_total_time_offset) values('N586SC','N586SC', (select id from MODEL where name='Bell 206'), '2033', 'N586SC.png', 8, 15.0, 76, 124, 130);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs) values('N175KM','N121AH', (select id from MODEL where name='Robinson R44'), '12106', 'N175KM.png', 1, 99.0);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs) values('N441ML','N710MY', (select id from MODEL where name='Robinson R44'), '10465', 'N441ML.png', 2, 265.0);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs) values('N4344J','N4344J', (select id from MODEL where name='Robinson R44'), '12818', 'N4344J.png', 3, 34.0);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs) values('N86SL','N241AU', (select id from MODEL where name='Robinson R44'), '10375', 'N86SL.png', 4, 42.0);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs) values('47 G3-B1','N32FG', (select id from MODEL where name='Bell 47G3B1'), '3838', 'N32FG.png', 5, 897.0);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs) values('N118TV','N118TV', (select id from MODEL where name='Bell 206'), '2844', 'N118TV.png', 6, 543.0);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs) values('47 G2-A1','N8505F', (select id from MODEL where name='Bell 47G2A1'), '', 'N8505F.png', 7, 29.0);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering, hobbs) values('N586SC','N586SC', (select id from MODEL where name='Bell 206'), '2033', 'N586SC.png', 8, 18.0);
 
 INSERT INTO LOCATION(NAME) values('BHAA');
 INSERT INTO LOCATION(NAME) values('Badlands');
@@ -105,3 +105,9 @@ INSERT INTO AD_COMPLIANCE_LOG(COMPLY_WITH_DATE, COMPLY_WITH_HOBBS, PILOT_ID, AIR
 INSERT INTO AD_COMPLIANCE_LOG(COMPLY_WITH_DATE, COMPLY_WITH_HOBBS, PILOT_ID, AIRCRAFT_ID, AD_COMPLIANCE_ID) values (TIMESTAMP('2015-04-25 00:00:00'), 111, (select ID from APP_USER where username='smithjack'), (select id from AIRCRAFT where name='N118TV'), (select ID from AD_COMPLIANCE where NAME='Mast thrust bearing AD 62-23-02 (N/A)'));
 INSERT INTO AD_COMPLIANCE_LOG(COMPLY_WITH_DATE, COMPLY_WITH_HOBBS, PILOT_ID, AIRCRAFT_ID, AD_COMPLIANCE_ID) values (TIMESTAMP('2015-03-05 00:00:00'), 15.00, (select ID from APP_USER where username='adamspaul'), (select id from AIRCRAFT where name='N4344J'), (select ID from AD_COMPLIANCE where NAME='Stabilizer Bar AD 74-08-02'));
 INSERT INTO AD_COMPLIANCE_LOG(COMPLY_WITH_DATE, COMPLY_WITH_HOBBS, PILOT_ID, AIRCRAFT_ID, AD_COMPLIANCE_ID) values (TIMESTAMP('2014-04-01 00:00:00'), 63.00, (select ID from APP_USER where username='adamspaul'), (select id from AIRCRAFT where name='N4344J'), (select ID from AD_COMPLIANCE where NAME='Stabilizer Bar AD 74-08-02'));
+
+INSERT INTO RESET_LOG(DATE, RESET_ITEM, HOBBS, AIRCRAFT_ID) values (TIMESTAMP('2014-02-19 00:00:00'), 'HOBBS', 11.22, (select id from AIRCRAFT where name='N121AH'));
+INSERT INTO RESET_LOG(DATE, RESET_ITEM, HOBBS, AIRCRAFT_ID) values (TIMESTAMP('2015-05-19 00:00:00'), 'HOBBS', 77.16, (select id from AIRCRAFT where name='N121AH'));
+INSERT INTO RESET_LOG(DATE, RESET_ITEM, HOBBS, AIRCRAFT_ID) values (TIMESTAMP('2015-01-03 00:00:00'), 'ENGINE', 55.75, (select id from AIRCRAFT where name='N121AH'));
+INSERT INTO RESET_LOG(DATE, RESET_ITEM, HOBBS, AIRCRAFT_ID) values (TIMESTAMP('2014-05-03 00:00:00'), 'HOBBS', 14.33, (select id from AIRCRAFT where name='N710MY'));
+INSERT INTO RESET_LOG(DATE, RESET_ITEM, HOBBS, AIRCRAFT_ID) values (TIMESTAMP('2015-02-07 00:00:00'), 'ENGINE', 42.30, (select id from AIRCRAFT where name='N4344J'));

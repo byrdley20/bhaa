@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 import com.coptertours.common.AppConstants;
@@ -36,12 +38,20 @@ public class Aircraft extends BaseDomain {
 	private int ordering;
 	@Expose
 	private BigDecimal hobbs = BigDecimal.ZERO;
+
+	@Transient
 	@Expose
 	private BigDecimal hobbsOffset = BigDecimal.ZERO;
-	@Expose
-	private BigDecimal engineTotalTime = BigDecimal.ZERO;
+
+	@Transient
 	@Expose
 	private BigDecimal engineTotalTimeOffset = BigDecimal.ZERO;
+
+	@OneToMany(mappedBy = "aircraftId")
+	@OrderBy("resetItem, date")
+	@Expose
+	private List<ResetLog> resetLogs;
+
 	@Transient
 	@Expose
 	private int totalStarts;
@@ -93,18 +103,6 @@ public class Aircraft extends BaseDomain {
 		return hobbs;
 	}
 
-	public BigDecimal getHobbsOffset() {
-		return hobbsOffset;
-	}
-
-	public BigDecimal getEngineTotalTime() {
-		return engineTotalTime;
-	}
-
-	public BigDecimal getEngineTotalTimeOffset() {
-		return engineTotalTimeOffset;
-	}
-
 	public List<MaintenanceType> getFlightHourMaintenanceTypes() {
 		return flightHourMaintenanceTypes;
 	}
@@ -151,6 +149,26 @@ public class Aircraft extends BaseDomain {
 
 	public void setAdComplied(boolean adComplied) {
 		this.adComplied = adComplied;
+	}
+
+	public List<ResetLog> getResetLogs() {
+		return resetLogs;
+	}
+
+	public BigDecimal getHobbsOffset() {
+		return hobbsOffset;
+	}
+
+	public void setHobbsOffset(BigDecimal hobbsOffset) {
+		this.hobbsOffset = hobbsOffset;
+	}
+
+	public BigDecimal getEngineTotalTimeOffset() {
+		return engineTotalTimeOffset;
+	}
+
+	public void setEngineTotalTimeOffset(BigDecimal engineTotalTimeOffset) {
+		this.engineTotalTimeOffset = engineTotalTimeOffset;
 	}
 
 }

@@ -14,7 +14,7 @@
     	/*<![CDATA[*/
 
 		var aircraft = /*[[${aircraft}]]*/;
-    	var currentHobbs = /*[[${aircraft.hobbs}+${aircraft.hobbsOffset}]]*/;
+    	var currentHobbs = /*[[${aircraft.hobbs}]]*/;
 
 		/*]]>*/
     </script>
@@ -142,7 +142,7 @@
     	}
     </style>
 </head>
-<body th:with="currentHobbs=(${aircraft.hobbs}+${aircraft.hobbsOffset}),engineTotalTime=(${aircraft.engineTotalTime}+${aircraft.engineTotalTimeOffset}),aircraftTotalTime=(${aircraft.hobbs}+${aircraft.hobbsOffset}+${aircraft.engineTotalTime}+${aircraft.engineTotalTimeOffset})">
+<body th:with="currentHobbs=(${aircraft.hobbs}),engineTotalTime=(${aircraft.hobbs}+${aircraft.hobbsOffset}),aircraftTotalTime=(${aircraft.hobbs}+${aircraft.hobbsOffset}+${aircraft.engineTotalTimeOffset})">
 
 	<div th:replace="includes/header :: header">...</div>
 
@@ -243,8 +243,8 @@
 				<span class="adComplianceId cell hidden" th:text="${adCompliance.id}">Hidden AD Compliance ID</span>
 			</div>
 		</div>
-		<span><a href="flightLog.html?id=1" th:href="@{resetTime.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Hobbs Meter</span></button></a></span>
-		<span><a href="flightLog.html?id=1" th:href="@{resetTime.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Engine Time</span></button></a></span>
+		<span><a href="resetLog.html?i=hobbs" th:href="@{resetLog.html(id=${aircraft.id}, i=hobbs)}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Hobbs Meter</span></button></a></span>
+		<span><a href="resetLog.html?i=engine" th:href="@{resetLog.html(id=${aircraft.id}, i=engine)}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Engine Time</span></button></a></span>
 	</div>	
 </body>
 </html>

@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Black Hills Aerial Adventures | Reset Hobbs/Engine Time</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
+	<link rel="stylesheet" href="css/main.css" />
+    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script th:inline="javascript">
+    	/*<![CDATA[*/
+    	           
+		function buildOptions(){
+		
+		}
+		var resetItem = /*[[${resetItem.name()}]]*/;
+		var aircraftId = /*[[${aircraft.id}]]*/;
+		
+		/*]]>*/
+    </script>
+    <script type="text/javascript">
+  		//<![CDATA[
+  		 
+  		var dateValidation = [];
+		var numberValidation = [];
+		
+    	$(function() {
+    		var id = $( "#id" ),
+    		date = $( "#date" ),
+        	hobbs = $( "#hobbs" );
+    		
+        	allFields = $( [] ).add( id ).add( date ).add( hobbs );
+        	addUpdatePath = "/resetLogs";
+        	deletePath = "/resetLogs";
+    		
+    		createDialog();
+    		
+    		$( "#date" ).datepicker();
+    		
+    		dateValidation[dateValidation.length] = createDateValidationObject(date, "'Date'");
+    		numberValidation[numberValidation.length] = createNumberValidationObject(hobbs, "'Reset Hobbs'");
+    	});
+    	function writeCreatedRecord(savedRecord){
+	    	$( ".records-rows" ).last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
+	    			"<span class='dataCell'>" +
+			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+			    	"</span>" +
+			    	"<span class='date dataCell'>"+savedRecord.dateDisplay+"</span> " +
+			    	"<span class='date dataCell'>"+savedRecord.hobbs+"</span> " +
+			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
+		    	"</div>" );    		
+    	}
+    	function writeEditRecord(savedRecord){
+    		var editedRow = $(".id"+savedRecord.id);
+    		editedRow.find('.date').html(savedRecord.dateDisplay);
+    		editedRow.find('.hobbs').html(savedRecord.hobbs);
+    		editedRow.find('.id').html(savedRecord.id);
+    	}
+    	function populateCreateForm(editLink){
+    		$('#date').datepicker("setDate", new Date() );
+    	}
+    	function populateEditForm(editLink){
+    		var editSpan = $(editLink).closest('span.dataCell');
+    		$('#addEditForm').find('#date').val(editSpan.nextAll('span.date').first().html());
+    		$('#addEditForm').find('#hobbs').val(editSpan.nextAll('span.hobbs').first().html());
+    		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
+    	}
+    	function setExtraValues(formData) {
+    		formData["aircraftId"] = aircraftId;
+    		formData["resetItem"] = resetItem;
+    	}
+    	function findDeleteName(deleteLink){
+    		return $(deleteLink).closest('span.dataCell').nextAll('span.date').first().html();
+    	}
+    	//]]>
+    </script>
+</head>
+<body>
+
+	<div th:replace="includes/header :: header">...</div>
+
+	<div id="main-content">
+		<H1 th:text="'Reset '+${resetItem.name}+' Hours'">Reset</H1>
+		<div id="dialog-form" th:title="'Reset '+${resetItem.name}+' Hours'">
+			<p class="validateTips"></p>
+			<form id="addEditForm" action="/resetLogs" method="post">
+				<fieldset>
+					<label for="date">Date</label>
+					<input type="text" name="date" id="date" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
+					<label for="hobbs">Hobbs When Replaced</label>
+					<input type="text" name="hobbs" id="hobbs" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="id" id="id" class="hidden"/>
+					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+				</fieldset>
+			</form>
+		</div>
+		<div>
+			<span class="table-upper-caption" th:text="${aircraft.aircraftNumber}">ID</span>
+			&nbsp;&nbsp;
+			<span><a href="aircraftStatus.html?id=1" th:href="@{aircraftStatus.html(id=${aircraft.id})}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Status</span></button></a></span>
+			<span><a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>
+			<span><a href="adCompliance.html?id=1" th:href="@{adComplianceLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">AD Compliance</span></button></a></span>
+		</div>
+		<br/>
+		<div th:text="'Current Hobbs: '+${aircraft.hobbs}"></div>
+		<br/>
+		<div class="table">
+			<div class="records-header">
+				<span class="edit delete icon"></span>
+			    <span class="headerCell dataCell">Date</span>
+			    <span class="headerCell dataCell">Hobbs When Replaced</span>
+			</div>
+			<div class="records-rows" th:each="rl : ${aircraft.resetLogs}" th:if="${rl.resetItem}==${resetItem}" th:classappend="|id${rl.id}">
+				<span class="dataCell">
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${rl.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${rl.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+				</span>
+				<span class="date dataCell" th:text="${rl.dateDisplay}">Date</span>
+				<span class="hobbs dataCell" th:text="${rl.hobbs}">Hobbs</span>
+				<span class="id cell hidden" th:text="${rl.id}">Hidden PK ID</span>
+			</div>
+		</div>
+		<button id="create-record">Create New</button>
+	</div>
+</body>
+</html>

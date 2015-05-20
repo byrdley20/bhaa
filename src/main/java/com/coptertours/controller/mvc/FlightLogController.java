@@ -23,6 +23,8 @@ import com.coptertours.repository.LocationRepository;
 import com.coptertours.repository.OperationRepository;
 import com.coptertours.repository.UserRepository;
 import com.coptertours.util.DateUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class FlightLogController extends BaseController {
@@ -39,9 +41,8 @@ public class FlightLogController extends BaseController {
 	FlightLogRepository flightLogRepository;
 
 	@RequestMapping("/flightLog.html")
-	String flightLog(Model model, @RequestParam Long id, @RequestParam(required = false) Integer month) {
+	String flightLog(Model model, @RequestParam Long id, @RequestParam(required = false) Integer month) throws JsonProcessingException {
 		Aircraft aircraft = this.aircraftRepository.findOne(id);
-		model.addAttribute("aircraft", aircraft);
 
 		Calendar startDateCal = DateUtil.findMonthStartDate(month);
 		Calendar endDateCal = DateUtil.findMonthEndDate(month);
@@ -59,6 +60,9 @@ public class FlightLogController extends BaseController {
 		if (aircraft.getModel().getShowStarts()) {
 			model.addAttribute("yearlyStarts", this.flightLogRepository.findTotalStartsByAircraftAndDateBetween(aircraft, yearStart, yearEnd));
 		}
+		model.addAttribute("aircraft", aircraft);
+		ObjectMapper mapper = new ObjectMapper();
+		model.addAttribute("aircraftJSON", mapper.writeValueAsString(aircraft));
 		model.addAttribute("monthlyHobbsTotal", monthlyHobbsTotal);
 		model.addAttribute("flightLogs", flightLogs);
 		model.addAttribute("allUsers", findUsersByRole(Role.PILOT));

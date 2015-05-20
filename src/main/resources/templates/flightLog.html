@@ -34,7 +34,7 @@
 			}
 		}
 		
-		var aircraft = /*[[${aircraft}]]*/;
+		var aircraft = JSON.parse(/*[[${aircraftJSON}]]*/);
 		var month = /*[[${month}]]*/;
 		var maxHobbsEnd = /*[[${maxHobbsEnd}]]*/;
 		var showStarts = /*[[${aircraft.model.showStarts}]]*/;
@@ -122,8 +122,8 @@
 			    
 			    newRecord += 
 			    	"<span class='location dataCell'>"+savedRecord.location.name+"</span> " +
-			    	"<span class='hobbsBegin dataCell'>"+savedRecord.hobbsBegin+"</span> " +
-			    	"<span class='hobbsEnd dataCell'>"+savedRecord.hobbsEnd+"</span> " +
+			    	"<span class='hobbsBegin dataCell'>"+savedRecord.hobbsBegin.toFixed(2)+"</span> " +
+			    	"<span class='hobbsEnd dataCell'>"+savedRecord.hobbsEnd.toFixed(2)+"</span> " +
 			    	"<span class='hobbsTotal dataCell'>"+hobbsTotal.toFixed(2)+"</span> " +
 			    	"<span class='operation dataCell'>"+savedRecord.operation.name+"</span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +

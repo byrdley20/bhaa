@@ -20,27 +20,33 @@ public class FlightLog extends BaseDomain {
 	@GeneratedValue
 	@Expose
 	private Long id;
+
 	@ManyToOne(targetEntity = Aircraft.class, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
 	@JoinColumn(name = "AIRCRAFT_ID")
 	@Expose
 	private Aircraft aircraft;
+
 	@ManyToOne(targetEntity = User.class, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
 	@JoinColumn(name = "USER_ID")
 	@Expose
 	private User user;
+
 	@Expose
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy", timezone = "GMT-06:00")
 	private Date date;
+
 	@Expose
 	private int starts;
 	@ManyToOne(targetEntity = Location.class, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
 	@JoinColumn(name = "LOCATION_ID")
+
 	@Expose
 	private Location location;
 	@Expose
 	private BigDecimal hobbsBegin;
 	@Expose
 	private BigDecimal hobbsEnd;
+
 	@ManyToOne(targetEntity = Operation.class, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
 	@JoinColumn(name = "OPERATION_ID")
 	@Expose

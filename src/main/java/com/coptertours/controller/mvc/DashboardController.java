@@ -1,5 +1,6 @@
 package com.coptertours.controller.mvc;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import com.coptertours.domain.AdComplianceLog;
 import com.coptertours.domain.Aircraft;
 import com.coptertours.domain.MaintenanceLog;
 import com.coptertours.domain.MaintenanceType;
+import com.coptertours.options.ResetItem;
 import com.coptertours.repository.AdComplianceLogRepository;
 import com.coptertours.repository.AdComplianceRepository;
 import com.coptertours.repository.AircraftRepository;
@@ -28,7 +30,7 @@ import com.coptertours.util.DateUtil;
 @Controller
 public class DashboardController extends BaseController {
 	@Autowired
-	AircraftRepository aircraftRepository;
+	private AircraftRepository aircraftRepository;
 	@Autowired
 	private MaintenanceTypeRepository maintenanceTypeRepository;
 	@Autowired
@@ -69,35 +71,52 @@ public class DashboardController extends BaseController {
 			}
 			aircraft.setMaintenanceTypes(clonedMaintenanceTypes);
 
+			setOffsets(aircraft);
+
 			Integer totalStarts = this.flightLogRepository.findTotalStartsByAircraftAndDateBetween(aircraft, yearStart, yearEnd);
 			if (totalStarts != null) {
 				aircraft.setTotalStarts(totalStarts);
 			}
 			com.coptertours.domain.Model aircraftModel = aircraft.getModel();
 
-			List<AdCompliance> adCompliancesForModel = modelToAdCompliances.get(aircraftModel.getId());
-			if (adCompliancesForModel == null) {
-				adCompliancesForModel = this.adComplianceRepository.findByModelAndDaily(aircraftModel, true, sortByNameAsc());
-				if (!CollectionUtils.isEmpty(adCompliancesForModel)) {
-					aircraftModel.setHasAdCompliances(true);
-				}
-				modelToAdCompliances.put(aircraftModel.getId(), adCompliancesForModel);
-			} else if (!CollectionUtils.isEmpty(adCompliancesForModel)) {
-				aircraftModel.setHasAdCompliances(true);
-			}
-
-			List<AdComplianceLog> adComplianceLogsForToday = new ArrayList<AdComplianceLog>();
-			for (AdCompliance adCompliance : adCompliancesForModel) {
-				adComplianceLogsForToday.addAll(this.adComplianceLogRepository.findByAircraftIdAndAdComplianceIdAndComplyWithDateBetween(aircraft.getId(), adCompliance.getId(), todayStart, todayEnd, sortByComplyWithDate()));
-			}
-			// if all of the AD Compliances for this model have not been complied with today
-			if (CollectionUtils.isEmpty(adComplianceLogsForToday) || adComplianceLogsForToday.size() != adCompliancesForModel.size()) {
-				aircraft.setAdComplied(false);
-			}
+			configureAdCompliances(modelToAdCompliances, todayStart, todayEnd, aircraft, aircraftModel);
 		}
 
 		model.addAttribute("aircrafts", aircrafts);
 		model.addAttribute("today", new Date());
 		return "dashboard";
+	}
+
+	private void configureAdCompliances(Map<Long, List<AdCompliance>> modelToAdCompliances, Date todayStart, Date todayEnd, Aircraft aircraft, com.coptertours.domain.Model aircraftModel) {
+		List<AdCompliance> adCompliancesForModel = modelToAdCompliances.get(aircraftModel.getId());
+		if (adCompliancesForModel == null) {
+			adCompliancesForModel = this.adComplianceRepository.findByModelAndDaily(aircraftModel, true, sortByNameAsc());
+			if (!CollectionUtils.isEmpty(adCompliancesForModel)) {
+				aircraftModel.setHasAdCompliances(true);
+			}
+			modelToAdCompliances.put(aircraftModel.getId(), adCompliancesForModel);
+		} else if (!CollectionUtils.isEmpty(adCompliancesForModel)) {
+			aircraftModel.setHasAdCompliances(true);
+		}
+
+		List<AdComplianceLog> adComplianceLogsForToday = new ArrayList<AdComplianceLog>();
+		for (AdCompliance adCompliance : adCompliancesForModel) {
+			adComplianceLogsForToday.addAll(this.adComplianceLogRepository.findByAircraftIdAndAdComplianceIdAndComplyWithDateBetween(aircraft.getId(), adCompliance.getId(), todayStart, todayEnd, sortByComplyWithDate()));
+		}
+		// if all of the AD Compliances for this model have not been complied with today
+		if (CollectionUtils.isEmpty(adComplianceLogsForToday) || adComplianceLogsForToday.size() != adCompliancesForModel.size()) {
+			aircraft.setAdComplied(false);
+		}
+	}
+
+	private void setOffsets(Aircraft aircraft) {
+		BigDecimal hobbsOffset = this.aircraftRepository.findTotalOffsetByAircraftAndItem(aircraft.getId(), ResetItem.HOBBS);
+		if (hobbsOffset != null) {
+			aircraft.setHobbsOffset(hobbsOffset);
+		}
+		BigDecimal engineOffset = this.aircraftRepository.findTotalOffsetByAircraftAndItem(aircraft.getId(), ResetItem.ENGINE);
+		if (engineOffset != null) {
+			aircraft.setEngineTotalTimeOffset(engineOffset);
+		}
 	}
 }
