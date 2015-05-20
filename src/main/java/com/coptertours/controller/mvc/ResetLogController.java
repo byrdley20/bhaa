@@ -18,6 +18,7 @@ public class ResetLogController extends BaseController {
 	@RequestMapping("/resetLog.html")
 	String resetLog(Model model, @RequestParam Long id, @RequestParam String i) {
 		Aircraft aircraft = this.aircraftRepository.findOne(id);
+		setCurrentHobbsAndOffsets(aircraft);
 		model.addAttribute("aircraft", aircraft);
 		model.addAttribute("resetItem", ResetItem.byName(i));
 		return "resetLog";

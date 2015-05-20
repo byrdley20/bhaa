@@ -36,7 +36,7 @@
 		
 		var aircraft = JSON.parse(/*[[${aircraftJSON}]]*/);
 		var month = /*[[${month}]]*/;
-		var maxHobbsEnd = /*[[${maxHobbsEnd}]]*/;
+		var mostRecentHobbsEnd = /*[[${mostRecentHobbsEnd}]]*/;
 		var showStarts = /*[[${aircraft.model.showStarts}]]*/;
 		var monthlyHobbsTotal = /*[[${monthlyHobbsTotal}]]*/;
 		/*]]>*/
@@ -134,9 +134,7 @@
 	    		"</div>";
 	    		
 	    		elementBefore.last().after( newRecord );  
-	    		if(savedRecord.hobbsEnd > maxHobbsEnd) {
-	    			maxHobbsEnd = savedRecord.hobbsEnd;
-	    		}
+	    		findMostRecentHobbsEndByAircraft();
 	    		if(showStarts) {
 		    		totalStartsByYear();
 	    		}
@@ -171,20 +169,17 @@
 	    		editedRow.find('.locationId').html(savedRecord.location.id);
 	    		editedRow.find('.operationId').html(savedRecord.operation.id);
 	    		editedRow.find('.dateDisplay').html(savedRecord.dateDisplay);
-	    		if(savedRecord.hobbsEnd > maxHobbsEnd) {
-	    			maxHobbsEnd = savedRecord.hobbsEnd;
-	    		} else {
-	    			findMaxHobbsEndByAircraft();
-	    			if(showStarts) {
-		    			totalStartsByYear();
-	    			}
-	    		}
+
+	    		findMostRecentHobbsEndByAircraft();
+    			if(showStarts) {
+	    			totalStartsByYear();
+    			}
     		} else {
     			window.location.href = $("#monthLink"+(flightLogMonth+1)).attr("href");
     		}
     	}
     	function populateCreateForm(editLink){
-    		$('#addEditForm').find('#hobbsBegin').val(maxHobbsEnd);
+    		$('#addEditForm').find('#hobbsBegin').val(mostRecentHobbsEnd);
     		$('#date').datepicker("setDate", new Date() );
     	}
     	function populateEditForm(editLink){
@@ -217,23 +212,23 @@
     		return dataCell.nextAll('span.date').first().html();
     	}
     	function postDeleteAction() {
-    		findMaxHobbsEndByAircraft();
+    		findMostRecentHobbsEndByAircraft();
     		if(showStarts) {
 	    		totalStartsByYear();
     		}
 		    monthlyHobbsTotal = Number(monthlyHobbsTotal) - Number(hobbsToDelete);
 		    $('.monthly-hobbs-total').html(monthlyHobbsTotal.toFixed(2));
     	}
-    	function findMaxHobbsEndByAircraft() {
+    	function findMostRecentHobbsEndByAircraft() {
     		$.ajax({
-				url: baseUrl+"/flightLog/maxHobbsEnd/"+aircraft.id,
+				url: baseUrl+"/flightLogs/mostRecentHobbsEnd/"+aircraft.id,
 				dataType: 'json',
 				success: function(data) {
 					//alert(data);
-					maxHobbsEnd=data;
+					mostRecentHobbsEnd=data;
 				},
 				error: function() {
-					//alert("error getting maxHobbsEnd");
+					//alert("error getting mostRecentHobbsEnd");
 				}
 			});
     	}
@@ -360,6 +355,11 @@
 			</div>
 		</div>
 		<button id="create-record">Create New</button>
+		<br/><br/><br/>
+		<div>
+			<span><a href="resetLog.html?i=hobbs" th:href="@{resetLog.html(id=${aircraft.id}, i=hobbs)}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Hobbs Meter</span></button></a></span>
+			<span><a href="resetLog.html?i=engine" th:href="@{resetLog.html(id=${aircraft.id}, i=engine)}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Engine Time</span></button></a></span>
+		</div>
 	</div>
 </body>
 </html>

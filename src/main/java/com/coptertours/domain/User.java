@@ -26,10 +26,12 @@ public class User extends BaseDomain {
 	private String firstName;
 	@Expose
 	private String lastName;
-	@ManyToOne(targetEntity = Rating.class, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
+
+	@ManyToOne(targetEntity = Rating.class, cascade = { CascadeType.REFRESH })
 	@JoinColumn(name = "RATING_ID")
 	@Expose
 	private Rating rating;
+
 	@Expose
 	private String username;
 	@Expose

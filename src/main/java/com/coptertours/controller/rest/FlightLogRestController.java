@@ -1,5 +1,6 @@
 package com.coptertours.controller.rest;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 
@@ -48,6 +49,14 @@ public class FlightLogRestController extends BaseRestController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	void deleteFlightLog(@PathVariable Long id) {
 		this.flightLogRepository.delete(id);
+	}
+
+	@RequestMapping(value = "/mostRecentHobbsEnd/{aircraftId}", method = RequestMethod.GET)
+	@ResponseBody
+	public BigDecimal findMostRecentHobbsEndByAircraft(@PathVariable(value = "aircraftId") Long aircraftId) {
+		Aircraft aircraft = new Aircraft();
+		aircraft.setId(aircraftId);
+		return this.flightLogRepository.findMostRecentHobbsEndByAircraft(aircraft);
 	}
 
 	@RequestMapping(value = "/yearlyStarts/{aircraftId}", method = RequestMethod.GET)

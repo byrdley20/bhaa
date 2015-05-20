@@ -8,11 +8,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.coptertours.domain.Aircraft;
 import com.coptertours.domain.FlightLog;
@@ -69,15 +66,7 @@ public class FlightLogController extends BaseController {
 		model.addAttribute("allLocations", this.locationRepository.findAll(sortByNameAsc()));
 		model.addAttribute("allOperations", this.operationRepository.findAll(sortByNameAsc()));
 		model.addAttribute("month", startDateCal.get(Calendar.MONTH));
-		model.addAttribute("maxHobbsEnd", this.flightLogRepository.findMaxHobbsEndByAircraft(aircraft));
+		model.addAttribute("mostRecentHobbsEnd", this.flightLogRepository.findMostRecentHobbsEndByAircraft(aircraft));
 		return "flightLog";
-	}
-
-	@RequestMapping(value = "/flightLog/maxHobbsEnd/{aircraftId}", method = RequestMethod.GET)
-	@ResponseBody
-	public BigDecimal findMaxHobbsEndByAircraft(@PathVariable(value = "aircraftId") Long aircraftId) {
-		Aircraft aircraft = new Aircraft();
-		aircraft.setId(aircraftId);
-		return this.flightLogRepository.findMaxHobbsEndByAircraft(aircraft);
 	}
 }

@@ -36,6 +36,8 @@ public class Aircraft extends BaseDomain {
 	private String imagePath = AppConstants.PLACEHOLDER_IMAGE;
 	@Expose
 	private int ordering;
+
+	@Transient
 	@Expose
 	private BigDecimal hobbs = BigDecimal.ZERO;
 
@@ -169,6 +171,10 @@ public class Aircraft extends BaseDomain {
 
 	public void setEngineTotalTimeOffset(BigDecimal engineTotalTimeOffset) {
 		this.engineTotalTimeOffset = engineTotalTimeOffset;
+	}
+
+	public void setHobbs(BigDecimal hobbs) {
+		this.hobbs = hobbs;
 	}
 
 }

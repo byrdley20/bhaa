@@ -123,7 +123,7 @@
 				<span class="id cell hidden" th:text="${rl.id}">Hidden PK ID</span>
 			</div>
 		</div>
-		<button id="create-record">Create New</button>
+		<button id="create-record" th:text="'Reset '+${resetItem.name}">Reset Hours</button>
 	</div>
 </body>
 </html>

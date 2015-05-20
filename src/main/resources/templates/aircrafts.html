@@ -65,7 +65,15 @@
     	}
     	function writeCreatedRecord(savedRecord){
     		var imagePath=(savedRecord.imagePath !=null ? savedRecord.imagePath : '');
-	    	$( ".records-rows" ).last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
+    		
+    		var elementBefore;
+    		if($(".records-rows").length){
+    			elementBefore = $(".records-rows");
+    		} else {
+    			elementBefore = $(".records-header");
+    		}
+    		
+    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
 	    			"<span class='dataCell'>" +
 			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
 			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +

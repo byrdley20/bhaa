@@ -1,6 +1,5 @@
 package com.coptertours.controller.mvc;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,7 +18,6 @@ import com.coptertours.domain.Aircraft;
 import com.coptertours.domain.MaintenanceLog;
 import com.coptertours.domain.MaintenanceType;
 import com.coptertours.options.MaintenanceCategory;
-import com.coptertours.options.ResetItem;
 import com.coptertours.options.Role;
 import com.coptertours.repository.AdComplianceLogRepository;
 import com.coptertours.repository.AdComplianceRepository;
@@ -81,7 +79,7 @@ public class AircraftStatusController extends BaseController {
 			adCompliances.add(adComplianceForModel);
 		}
 
-		setOffsets(aircraft);
+		setCurrentHobbsAndOffsets(aircraft);
 
 		model.addAttribute("aircraft", aircraft);
 		model.addAttribute("flightHourMaintTypes", flightHourMaintTypes);
@@ -90,16 +88,5 @@ public class AircraftStatusController extends BaseController {
 		model.addAttribute("allPilots", findUsersByRole(Role.PILOT));
 		model.addAttribute("today", new Date());
 		return "aircraftStatus";
-	}
-
-	private void setOffsets(Aircraft aircraft) {
-		BigDecimal hobbsOffset = this.aircraftRepository.findTotalOffsetByAircraftAndItem(aircraft.getId(), ResetItem.HOBBS);
-		if (hobbsOffset != null) {
-			aircraft.setHobbsOffset(hobbsOffset);
-		}
-		BigDecimal engineOffset = this.aircraftRepository.findTotalOffsetByAircraftAndItem(aircraft.getId(), ResetItem.ENGINE);
-		if (engineOffset != null) {
-			aircraft.setEngineTotalTimeOffset(engineOffset);
-		}
 	}
 }

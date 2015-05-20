@@ -1,6 +1,5 @@
 package com.coptertours.controller.mvc;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,7 +17,6 @@ import com.coptertours.domain.AdComplianceLog;
 import com.coptertours.domain.Aircraft;
 import com.coptertours.domain.MaintenanceLog;
 import com.coptertours.domain.MaintenanceType;
-import com.coptertours.options.ResetItem;
 import com.coptertours.repository.AdComplianceLogRepository;
 import com.coptertours.repository.AdComplianceRepository;
 import com.coptertours.repository.AircraftRepository;
@@ -71,7 +69,7 @@ public class DashboardController extends BaseController {
 			}
 			aircraft.setMaintenanceTypes(clonedMaintenanceTypes);
 
-			setOffsets(aircraft);
+			setCurrentHobbsAndOffsets(aircraft);
 
 			Integer totalStarts = this.flightLogRepository.findTotalStartsByAircraftAndDateBetween(aircraft, yearStart, yearEnd);
 			if (totalStarts != null) {
@@ -106,17 +104,6 @@ public class DashboardController extends BaseController {
 		// if all of the AD Compliances for this model have not been complied with today
 		if (CollectionUtils.isEmpty(adComplianceLogsForToday) || adComplianceLogsForToday.size() != adCompliancesForModel.size()) {
 			aircraft.setAdComplied(false);
-		}
-	}
-
-	private void setOffsets(Aircraft aircraft) {
-		BigDecimal hobbsOffset = this.aircraftRepository.findTotalOffsetByAircraftAndItem(aircraft.getId(), ResetItem.HOBBS);
-		if (hobbsOffset != null) {
-			aircraft.setHobbsOffset(hobbsOffset);
-		}
-		BigDecimal engineOffset = this.aircraftRepository.findTotalOffsetByAircraftAndItem(aircraft.getId(), ResetItem.ENGINE);
-		if (engineOffset != null) {
-			aircraft.setEngineTotalTimeOffset(engineOffset);
 		}
 	}
 }
