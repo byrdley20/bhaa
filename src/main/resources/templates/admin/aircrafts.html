@@ -4,11 +4,11 @@
 <head>
     <title>Black Hills Aerial Adventures | Aircrafts</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
-	<link rel="stylesheet" href="css/main.css" />
-    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
-	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
+	<link rel="stylesheet" href="/css/jqueryui/1.11.3/jquery-ui.css" />
+	<link rel="stylesheet" href="/css/main.css" />
+    <script type="text/javascript" src="/js/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/js/main.js"></script>
     <script th:inline="javascript">
     	/*<![CDATA[*/
 
@@ -39,8 +39,8 @@
     		ordering = $( "#ordering" );
     		
         	allFields = $( [] ).add( id ).add( aircraftNumber ).add( name ).add( model ).add( serialNum ).add( imagePath ).add( ordering );
-        	addUpdatePath = "/aircrafts";
-        	deletePath = "/aircrafts";
+        	addUpdatePath = "/admin/aircrafts";
+        	deletePath = "/admin/aircrafts";
     		
     		createDialog();
     		
@@ -75,8 +75,8 @@
     		
     		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
 	    			"<span class='dataCell'>" +
-			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
-			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='/images/edit.png' width='15' height='15'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='/images/delete.png' width='15' height='15'/></a></span> " +
 			    	"</span>" +
 			    	"<span class='aircraftNumber dataCell'>"+savedRecord.aircraftNumber+"</span> " +
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
@@ -162,15 +162,15 @@
 			</div>
 			<div class="records-rows" th:each="a : ${aircrafts}" th:classappend="|id${a.id}">
 				<span class="dataCell">
-					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${a.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${a.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${a.id}"><img border="0" alt="Edit" src="/images/edit.png" width="15" height="15"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${a.id}"><img border="0" alt="Delete" src="/images/delete.png" width="15" height="15"/></a></span>
 				</span>
 				<span class="aircraftNumber dataCell" th:text="${a.aircraftNumber}">Number</span>
 				<span class="name dataCell" th:text="${a.name}">Name</span>
 				<span class="model dataCell" th:text="${a.model.name}">Model</span>
 				<span class="serialNum dataCell" th:text="${a.serialNum}">Serial Number</span>
 				<span class="imagePath dataCell" th:text="${a.imagePath}">Image</span>
-				<span class="image"><img src="" th:src="'images/aircrafts/' + @{${a.imagePath}}" /></span>
+				<span class="image"><img src="" th:src="'/images/aircrafts/' + @{${a.imagePath}}" /></span>
 				<span class="id cell hidden" th:text="${a.id}">Hidden PK ID</span>
 				<span class="modelId cell hidden" th:text="${a.model.id}">Hidden Model Id</span>
 			</div>

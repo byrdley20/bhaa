@@ -12,9 +12,9 @@ public class LocationController extends BaseController {
 	@Autowired
 	LocationRepository locationRepository;
 
-	@RequestMapping("/locations.html")
+	@RequestMapping("/admin/locations.html")
 	String locations(Model model) {
 		model.addAttribute("locations", this.locationRepository.findAll(sortByNameAsc()));
-		return "locations";
+		return "admin/locations";
 	}
 }

@@ -16,7 +16,7 @@ import com.coptertours.domain.MaintenanceType;
 import com.coptertours.repository.MaintenanceTypeRepository;
 
 @RestController
-@RequestMapping(value = "/maintenanceTypes")
+@RequestMapping(value = "/admin/maintenanceTypes")
 public class MaintenanceTypeRestController {
 	@Autowired
 	MaintenanceTypeRepository maintenanceTypeRepository;

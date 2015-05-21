@@ -16,7 +16,7 @@ import com.coptertours.domain.Operation;
 import com.coptertours.repository.OperationRepository;
 
 @RestController
-@RequestMapping(value = "/operations")
+@RequestMapping(value = "/admin/operations")
 public class OperationRestController {
 	@Autowired
 	OperationRepository operationRepository;

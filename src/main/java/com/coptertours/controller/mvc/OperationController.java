@@ -12,9 +12,9 @@ public class OperationController extends BaseController {
 	@Autowired
 	OperationRepository operationRepository;
 
-	@RequestMapping("/operations.html")
+	@RequestMapping("/admin/operations.html")
 	String operations(Model model) {
 		model.addAttribute("operations", this.operationRepository.findAll(sortByNameAsc()));
-		return "operations";
+		return "admin/operations";
 	}
 }

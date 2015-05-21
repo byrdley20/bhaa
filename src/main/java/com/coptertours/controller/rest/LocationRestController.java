@@ -16,7 +16,7 @@ import com.coptertours.domain.Location;
 import com.coptertours.repository.LocationRepository;
 
 @RestController
-@RequestMapping(value = "/locations")
+@RequestMapping(value = "/admin/locations")
 public class LocationRestController {
 	@Autowired
 	LocationRepository locationRepository;

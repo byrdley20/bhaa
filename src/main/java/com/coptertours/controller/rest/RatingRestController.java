@@ -16,7 +16,7 @@ import com.coptertours.domain.Rating;
 import com.coptertours.repository.RatingRepository;
 
 @RestController
-@RequestMapping(value = "/ratings")
+@RequestMapping(value = "/admin/ratings")
 public class RatingRestController {
 	@Autowired
 	RatingRepository ratingRepository;

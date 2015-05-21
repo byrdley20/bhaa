@@ -16,7 +16,7 @@ import com.coptertours.domain.User;
 import com.coptertours.repository.UserRepository;
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/admin/users")
 public class UserRestController {
 	@Autowired
 	UserRepository userRepository;

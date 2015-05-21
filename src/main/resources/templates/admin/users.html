@@ -1,14 +1,15 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <title>Black Hills Aerial Adventures | Users</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
-	<link rel="stylesheet" href="css/main.css" />
-    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
-	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
+	<link rel="stylesheet" href="/css/jqueryui/1.11.3/jquery-ui.css" />
+	<link rel="stylesheet" href="/css/main.css" />
+    <script type="text/javascript" src="/js/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/js/main.js"></script>
     <script th:inline="javascript">
     	/*<![CDATA[*/
 
@@ -47,8 +48,8 @@
     		role = $( "#role" );
     		
         	allFields = $( [] ).add( id ).add( userId ).add( firstName ).add( lastName).add( rating ).add( username ).add( password ).add( role );
-        	addUpdatePath = "/users";
-        	deletePath = "/users";
+        	addUpdatePath = "/admin/users";
+        	deletePath = "/admin/users";
     		
     		createDialog();
     		
@@ -76,8 +77,8 @@
     		
     		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
 	    			"<span class='dataCell'>" +
-			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
-			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='/images/edit.png' width='15' height='15'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='/images/delete.png' width='15' height='15'/></a></span> " +
 			    	"</span>" +
 			    	"<span class='userId dataCell'>"+savedRecord.userId+"</span> " +
 			    	"<span class='name dataCell'>"+savedRecord.firstName+" "+savedRecord.lastName+"</span> " +
@@ -169,8 +170,8 @@
 			</div>
 			<div class="records-rows" th:each="u : ${users}" th:classappend="|id${u.id}">
 				<span class="dataCell">
-					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${u.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${u.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${u.id}"><img border="0" alt="Edit" src="/images/edit.png" width="15" height="15"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${u.id}"><img border="0" alt="Delete" src="/images/delete.png" width="15" height="15"/></a></span>
 				</span>
 				<span class="userId dataCell" th:text="${u.userId}">ID</span>
 				<span class="name dataCell" th:text="${u.displayName}">Name</span>

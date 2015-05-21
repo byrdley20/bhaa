@@ -15,14 +15,12 @@
 .alert-button {
 	color: #FF0000;
 }
-/*
-.admin-button {
+.admin-admin-button {
 	position: absolute;
 	float: right;
-	right: 38px;
-	bottom: 11px;
+	right: 90px;
+	bottom: 23px;
 }
-*/
 .table-upper-caption {
 	font-size: 1.4em;
 	font-weight: bold;

@@ -16,18 +16,18 @@ public class AdComplianceController extends BaseController {
 	@Autowired
 	ModelRepository modelRepository;
 
-	@RequestMapping("/adComplianceChooseModel.html")
+	@RequestMapping("/admin/adComplianceChooseModel.html")
 	String adCompliance(Model model) {
 		model.addAttribute("models", this.modelRepository.findAll(sortByNameAsc()));
-		return "adComplianceChooseModel";
+		return "admin/adComplianceChooseModel";
 	}
 
-	@RequestMapping("/adCompliance.html")
+	@RequestMapping("/admin/adCompliance.html")
 	String adCompliance(Model model, @RequestParam Long id) {
 		com.coptertours.domain.Model aircraftModel = this.modelRepository.findById(id);
 
 		model.addAttribute("model", aircraftModel);
 		model.addAttribute("adCompliances", this.adComplianceRepository.findByModel(aircraftModel, sortByNameAsc()));
-		return "adCompliance";
+		return "admin/adCompliance";
 	}
 }

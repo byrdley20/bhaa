@@ -16,7 +16,7 @@ import com.coptertours.domain.Model;
 import com.coptertours.repository.ModelRepository;
 
 @RestController
-@RequestMapping(value = "/models")
+@RequestMapping(value = "/admin/models")
 public class ModelRestController {
 	@Autowired
 	ModelRepository modelRepository;

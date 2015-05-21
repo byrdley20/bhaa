@@ -20,7 +20,7 @@ import com.coptertours.domain.Aircraft;
 import com.coptertours.repository.AircraftRepository;
 
 @RestController
-@RequestMapping(value = "/aircrafts")
+@RequestMapping(value = "/admin/aircrafts")
 public class AircraftRestController {
 	@Autowired
 	AircraftRepository aircraftRepository;

@@ -12,9 +12,9 @@ public class ModelController extends BaseController {
 	@Autowired
 	ModelRepository modelRepository;
 
-	@RequestMapping("/models.html")
+	@RequestMapping("/admin/models.html")
 	String models(Model model) {
 		model.addAttribute("models", this.modelRepository.findAll(sortByNameAsc()));
-		return "models";
+		return "admin/models";
 	}
 }

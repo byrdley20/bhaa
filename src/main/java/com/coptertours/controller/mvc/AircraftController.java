@@ -20,11 +20,11 @@ public class AircraftController extends BaseController {
 	@Autowired
 	private MaintenanceTypeRepository maintenanceTypeRepository;
 
-	@RequestMapping("/aircrafts.html")
+	@RequestMapping("/admin/aircrafts.html")
 	String aircafts(Model model) {
 		model.addAttribute("aircrafts", this.aircraftRepository.findAll());
 		List<com.coptertours.domain.Model> allModels = this.modelRepository.findAll(sortByNameAsc());
 		model.addAttribute("allModels", allModels);
-		return "aircrafts";
+		return "admin/aircrafts";
 	}
 }

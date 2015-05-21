@@ -16,11 +16,11 @@ public class UserController extends BaseController {
 	@Autowired
 	RatingRepository ratingRepository;
 
-	@RequestMapping("/users.html")
+	@RequestMapping("/admin/users.html")
 	String users(Model model) {
 		model.addAttribute("users", this.userRepository.findAll());
 		model.addAttribute("allRatings", this.ratingRepository.findAll(sortByNameAsc()));
 		model.addAttribute("roleList", Role.asKeyValueList());
-		return "users";
+		return "admin/users";
 	}
 }

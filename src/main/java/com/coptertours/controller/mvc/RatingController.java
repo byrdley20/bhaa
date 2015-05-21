@@ -12,9 +12,9 @@ public class RatingController extends BaseController {
 	@Autowired
 	RatingRepository ratingRepository;
 
-	@RequestMapping("/ratings.html")
+	@RequestMapping("/admin/ratings.html")
 	String ratings(Model model) {
 		model.addAttribute("ratings", this.ratingRepository.findAll(sortByNameAsc()));
-		return "ratings";
+		return "admin/ratings";
 	}
 }

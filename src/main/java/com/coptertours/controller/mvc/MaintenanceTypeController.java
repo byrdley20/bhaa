@@ -25,14 +25,14 @@ public class MaintenanceTypeController extends BaseController {
 	@Autowired
 	private ModelRepository modelRepository;
 
-	@RequestMapping("/maintenanceTypes.html")
+	@RequestMapping("/admin/maintenanceTypes.html")
 	String maintenanceTypes(Model model) {
 		List<com.coptertours.domain.Model> models = this.modelRepository.findAll(sortByNameAsc());
 		model.addAttribute("models", models);
-		return "maintenanceTypes";
+		return "admin/maintenanceTypes";
 	}
 
-	@RequestMapping("/modelMaintenanceTypes.html")
+	@RequestMapping("/admin/modelMaintenanceTypes.html")
 	String modelMaintenanceTypes(Model model, @RequestParam Long id) {
 		com.coptertours.domain.Model aircraftModel = this.modelRepository.findById(id);
 		Map<MaintenanceCategory, List<MaintenanceType>> maintCategoryToMaintTypes = new HashMap<MaintenanceCategory, List<MaintenanceType>>();
@@ -55,7 +55,7 @@ public class MaintenanceTypeController extends BaseController {
 		model.addAttribute("maintCategoryToMaintTypes", maintCategoryToMaintTypes);
 		model.addAttribute("maintenanceCategoryList", MaintenanceCategory.asKeyValueList());
 		model.addAttribute("actionList", Action.asKeyValueList());
-		return "modelMaintenanceTypes";
+		return "admin/modelMaintenanceTypes";
 	}
 
 	// UNUSED RIGHT NOW

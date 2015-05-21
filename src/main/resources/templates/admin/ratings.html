@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Black Hills Aerial Adventures | Operations</title>
+    <title>Black Hills Aerial Adventures | Ratings</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
-	<link rel="stylesheet" href="css/main.css" />
-    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
-	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
+	<link rel="stylesheet" href="/css/jqueryui/1.11.3/jquery-ui.css" />
+	<link rel="stylesheet" href="/css/main.css" />
+    <script type="text/javascript" src="/js/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/js/main.js"></script>
     <script th:inline="javascript">
     	/*<![CDATA[*/
     	           
@@ -28,8 +28,8 @@
         	name = $( "#name" )
     		
         	allFields = $( [] ).add( id ).add( name );
-        	addUpdatePath = "/operations";
-        	deletePath = "/operations";
+        	addUpdatePath = "/admin/ratings";
+        	deletePath = "/admin/ratings";
     		
     		createDialog();
     		
@@ -47,9 +47,9 @@
     		}
     		
     		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
-	    			"<span class='dataCell'>" +
-			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
-			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+			    	"<span class='dataCell'>" +
+	    			"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='/images/edit.png' width='15' height='15'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='/images/delete.png' width='15' height='15'/></a></span> " +
 			    	"</span>" +
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
@@ -75,13 +75,13 @@
 
 	<div th:replace="includes/header :: header">...</div>
 	<div id="main-content">
-		<H1>Operations</H1>
-		<div id="dialog-form" title="Operation">
+		<H1>Ratings</H1>
+		<div id="dialog-form" title="Rating">
 			<p class="validateTips"></p>
-			<form id="addEditForm" action="/operations" method="post">
+			<form id="addEditForm" action="/ratings" method="post">
 				<fieldset>
 					<label for="name">Name</label>
-					<input type="text" name="name" id="name" value="Tours" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="name" id="name" value="New Rating" class="text ui-widget-content ui-corner-all"/>
 					<input type="text" name="id" id="id" class="hidden"/>
 					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 				</fieldset>
@@ -92,13 +92,13 @@
 				<span class="edit delete icon"></span>
 			    <span class="headerCell dataCell">Name</span>
 			</div>
-			<div class="records-rows" th:each="o : ${operations}" th:classappend="|id${o.id}">
+			<div class="records-rows" th:each="r : ${ratings}" th:classappend="|id${r.id}">
 				<span class="dataCell">
-					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${o.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${o.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${r.id}"><img border="0" alt="Edit" src="/images/edit.png" width="15" height="15"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${r.id}"><img border="0" alt="Delete" src="/images/delete.png" width="15" height="15"/></a></span>
 				</span>
-				<span class="name dataCell" th:text="${o.name}">Name</span>
-				<span class="id cell hidden" th:text="${o.id}">Hidden PK ID</span>
+				<span class="name dataCell" th:text="${r.name}">Name</span>
+				<span class="id cell hidden" th:text="${r.id}">Hidden PK ID</span>
 			</div>
 		</div>
 		<button id="create-record">Create New</button>

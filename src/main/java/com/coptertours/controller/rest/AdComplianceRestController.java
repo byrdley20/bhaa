@@ -16,7 +16,7 @@ import com.coptertours.domain.AdCompliance;
 import com.coptertours.repository.AdComplianceRepository;
 
 @RestController
-@RequestMapping(value = "/adCompliances")
+@RequestMapping(value = "/admin/adCompliances")
 public class AdComplianceRestController {
 	@Autowired
 	AdComplianceRepository adComplianceRepository;
