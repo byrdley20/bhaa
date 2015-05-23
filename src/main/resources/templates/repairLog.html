@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <title>Black Hills Aerial Adventures | Squawks</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -307,7 +308,7 @@
 			</div>
 			<div class="records-rows" th:each="s : ${openSquawks}" th:classappend="|id${s.id}">
 				<span class="dataCell">
-					<span class="repair icon"><a href="#" class="repairLink" th:attr="data-id=${s.id}"><img border="0" alt="Repair" src="images/repair.png" width="15" height="15"/></a></span>
+					<span class="repair icon" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="repairLink" th:attr="data-id=${s.id}"><img border="0" alt="Repair" src="images/repair.png" width="15" height="15"/></a></span>
 					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${s.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
 					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${s.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
 				</span>

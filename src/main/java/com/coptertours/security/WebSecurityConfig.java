@@ -10,20 +10,6 @@ import org.springframework.security.config.annotation.web.servlet.configuration.
 @Configuration
 @EnableWebMvcSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	// @Override
-	// protected void configure(HttpSecurity http) throws Exception {
-	// http
-	// .authorizeRequests()
-	// .antMatchers("/", "/users").permitAll()
-	// .anyRequest().authenticated()
-	// .and()
-	// .formLogin()
-	// .loginPage("/login")
-	// .permitAll()
-	// .and()
-	// .logout()
-	// .permitAll();
-	// }
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -33,7 +19,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.hasRole("ADMIN")
 				// .authenticated()
 				.and()
-				.formLogin();
+				.formLogin()
+				.loginPage("/login.html")
+				.and()
+				.logout()
+				.logoutSuccessUrl("/");
 	}
 
 	@Autowired

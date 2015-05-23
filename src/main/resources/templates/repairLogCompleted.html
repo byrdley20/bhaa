@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <title>Black Hills Aerial Adventures | Squawks</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -191,7 +192,7 @@
 	
 		<div class="table">
 			<div class="records-header">
-				<span class="edit delete icon"></span>
+				<span class="edit delete icon" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"></span>
 			    <span class="headerCell dataCell">Date Reported</span>
 			    <span class="headerCell dataCell">Pilot</span>
 			    <span class="headerCell dataCell">Aircraft</span>
@@ -201,7 +202,7 @@
 			    <span class="headerCell dataCell">Repair Notes</span>
 			</div>
 			<div class="records-rows" th:each="s : ${completedSquawks}" th:classappend="|id${s.id}">
-				<span class="dataCell">
+				<span class="dataCell" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')">
 					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${s.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
 					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${s.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
 				</span>
