@@ -139,6 +139,13 @@ button.login-button:hover {
 .repair {
 	padding-right: 10px;
 }
+.editLink img,
+.deleteLink img,
+.repairLink img,
+.complyWith img {
+	width: 15px;
+	height: 15px;
+}
 .dataCell {
     display: table-cell;
     padding: 3px 10px;
@@ -192,7 +199,7 @@ div#users-contain { width: 350px; margin: 20px 0; }
 div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
 div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 .ui-dialog .ui-state-error { padding: .3em; }
-.validateTips { border: 1px solid transparent; padding: 0.3em; display:none; }
+.validateTips { border: 1px solid transparent; padding: 0.3em; display:none; font-size:0.7em;}
 .hidden { display:none; }
 .error {
 	font-weight: bold;
@@ -215,7 +222,15 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 .dueSoon {
 	background-color: #f9df00;
 }
-
+.aircraft-image {
+	width: 300px;
+}
+.new-row {
+	background: #fbf9ee url("images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x;
+}
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}
 @media print {
 	.header-left,
 	.header-right,

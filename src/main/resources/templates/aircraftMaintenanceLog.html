@@ -76,9 +76,9 @@
     		} else {
     			elementBefore = $("."+savedRecord.maintenanceCategory).siblings(".records-header");
     		}
-    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
-			    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
-			    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+" new-row'>" +
+			    	"<span class='edit'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png'/></a></span> " +
+			    	"<span class='delete'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png'/></a></span> " +
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='timeBeforeAction dataCell'>"+savedRecord.timeBeforeAction+"</span> " +
 			    	"<span class='manualNumber dataCell'>"+savedRecord.manualNumber+"</span> " +
@@ -107,6 +107,7 @@
 	    		editedRow.find('.id').html(savedRecord.id);
 	    		editedRow.find('.maintenanceCategoryValue').html(savedRecord.maintenanceCategory);
 	    		editedRow.find('.actionValue').html(savedRecord.action);
+	    		editedRow.addClass('new-row');
     		}
     	}
     	function populateEditForm(editLink){
@@ -185,8 +186,8 @@
 			    <span class="headerCell dataCell">Action</span>
 			</div>
 			<div class="records-rows" th:each="m : ${mctmt.value}" th:classappend="|id${m.id}">
-				<span class="edit"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-				<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+				<span class="edit"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="images/edit.png"/></a></span>
+				<span class="delete"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="images/delete.png"/></a></span>
 				<span class="name dataCell" th:text="${m.name}">Name</span>
 				<span class="timeBeforeAction dataCell" th:text="${m.timeBeforeAction}">TBO</span>
 				<span class="manualNumber dataCell" th:text="${m.manualNumber}">Manual Number</span>

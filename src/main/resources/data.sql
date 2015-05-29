@@ -40,14 +40,23 @@ INSERT INTO MODEL(NAME, SHOW_STARTS) values('Bell 47G2A1', false);
 INSERT INTO MODEL(NAME, SHOW_STARTS) values('Bell 47G3B1', false);
 INSERT INTO MODEL(NAME, SHOW_STARTS) values('Bell 206', true);
 
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N175KM','N121AH', (select id from MODEL where name='Robinson R44'), '12106', 'N175KM.png', 1);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N441ML','N710MY', (select id from MODEL where name='Robinson R44'), '10465', 'N441ML.png', 2);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N4344J','N4344J', (select id from MODEL where name='Robinson R44'), '12818', 'N4344J.png', 3);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N86SL','N241AU', (select id from MODEL where name='Robinson R44'), '10375', 'N86SL.png', 4);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('47 G3-B1','N32FG', (select id from MODEL where name='Bell 47G3B1'), '3838', 'N32FG.png', 5);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N118TV','N118TV', (select id from MODEL where name='Bell 206'), '2844', 'N118TV.png', 6);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('47 G2-A1','N8505F', (select id from MODEL where name='Bell 47G2A1'), '', 'N8505F.png', 7);
-INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N586SC','N586SC', (select id from MODEL where name='Bell 206'), '2033', 'N586SC.png', 8);
+--INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N175KM','N121AH', (select id from MODEL where name='Robinson R44'), '12106', 'http://www.deviantsart.com/91j5c7.png', 1);
+--INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N441ML','N710MY', (select id from MODEL where name='Robinson R44'), '10465', 'http://www.deviantsart.com/302nnkf.png', 2);
+--INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N4344J','N4344J', (select id from MODEL where name='Robinson R44'), '12818', 'http://www.deviantsart.com/7t964k.png', 3);
+--INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N86SL','N241AU', (select id from MODEL where name='Robinson R44'), '10375', 'http://www.deviantsart.com/18i3dp3.png', 4);
+--INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('47 G3-B1','N32FG', (select id from MODEL where name='Bell 47G3B1'), '3838', 'http://www.deviantsart.com/14jnmmb.png', 5);
+--INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N118TV','N118TV', (select id from MODEL where name='Bell 206'), '2844', 'http://www.deviantsart.com/ng9r4g.png', 6);
+--INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('47 G2-A1','N8505F', (select id from MODEL where name='Bell 47G2A1'), '', 'http://www.deviantsart.com/1jce9vt.png', 7);
+--INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N586SC','N586SC', (select id from MODEL where name='Bell 206'), '2033', 'http://www.deviantsart.com/d5rgkd.png', 8);
+
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N175KM','N121AH', (select id from MODEL where name='Robinson R44'), '12106', 'http://www.deviantsart.com/36b8top.png', 1);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N441ML','N710MY', (select id from MODEL where name='Robinson R44'), '10465', 'http://www.deviantsart.com/1818b27.png', 2);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N4344J','N4344J', (select id from MODEL where name='Robinson R44'), '12818', 'http://www.deviantsart.com/2eakteu.png', 3);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N86SL','N241AU', (select id from MODEL where name='Robinson R44'), '10375', 'http://www.deviantsart.com/5u9u3t.png', 4);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('47 G3-B1','N32FG', (select id from MODEL where name='Bell 47G3B1'), '3838', 'http://www.deviantsart.com/1u5g3lu.png', 5);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N118TV','N118TV', (select id from MODEL where name='Bell 206'), '2844', 'http://www.deviantsart.com/3ipch9l.png', 6);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('47 G2-A1','N8505F', (select id from MODEL where name='Bell 47G2A1'), '', 'http://www.deviantsart.com/3h0tnp.png', 7);
+INSERT INTO AIRCRAFT (aircraft_number, name, model_id, serial_num, image_path, ordering) values('N586SC','N586SC', (select id from MODEL where name='Bell 206'), '2033', 'http://www.deviantsart.com/3p9cfll.png', 8);
 
 INSERT INTO LOCATION(NAME) values('BHAA');
 INSERT INTO LOCATION(NAME) values('Badlands');

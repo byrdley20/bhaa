@@ -105,10 +105,10 @@
 	    			elementBefore = $(".records-header");
 	    		}
 	    		
-	    		var newRecord = "<div class='records-rows id"+savedRecord.id+"'>" +
+	    		var newRecord = "<div class='records-rows id"+savedRecord.id+" new-row'>" +
 					"<span class='dataCell'>" +
-				    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
-				    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+				    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png'/></a></span> " +
+				    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png'/></a></span> " +
 			    	"</span>" +
 			    	"<span class='date dataCell'>"+savedRecord.flightLogDateDisplay+"</span> " +
 			    	"<span class='user dataCell'>"+savedRecord.user.firstName+" "+savedRecord.user.lastName+"</span> ";
@@ -169,6 +169,7 @@
 	    		editedRow.find('.locationId').html(savedRecord.location.id);
 	    		editedRow.find('.operationId').html(savedRecord.operation.id);
 	    		editedRow.find('.dateDisplay').html(savedRecord.dateDisplay);
+	    		editedRow.addClass('new-row');
 
 	    		findMostRecentHobbsEndByAircraft();
     			if(showStarts) {
@@ -324,8 +325,8 @@
 			</div>
 			<div class="records-rows" th:each="fl : ${flightLogs}" th:classappend="|id${fl.id}">
 				<span class="dataCell no-print">
-					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${fl.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${fl.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${fl.id}"><img border="0" alt="Edit" src="images/edit.png"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${fl.id}"><img border="0" alt="Delete" src="images/delete.png"/></a></span>
 				</span>
 				<span class="date dataCell" th:text="${fl.flightLogDateDisplay}">Date</span>
 				<span class="user dataCell" th:text="${fl.user.firstName} + ' ' + ${fl.user.lastName}">Pilot</span>

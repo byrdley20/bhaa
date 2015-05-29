@@ -64,10 +64,10 @@
     			elementBefore = $(".records-header");
     		}
     		
-    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
+    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+" new-row'>" +
     				"<span class='dataCell'>" +
-			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='/images/edit.png' width='15' height='15'/></a></span> " +
-			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='/images/delete.png' width='15' height='15'/></a></span> " +
+			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='/images/edit.png'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='/images/delete.png'/></a></span> " +
 			    	"</span>" +
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='description dataCell'>"+savedRecord.description+"</span> " +
@@ -91,6 +91,7 @@
     		editedRow.find('.timeBeforeAction').html(tboValue);
     		
     		editedRow.find('.id').html(savedRecord.id);
+    		editedRow.addClass('new-row');
     	}
     	function populateCreateForm(editLink) {
     		$('#addEditForm').find('label[for="timeBeforeAction"]').show();
@@ -169,8 +170,8 @@
 			</div>
 			<div class="records-rows" th:each="adCompliance : ${adCompliances}" th:classappend="|id${adCompliance.id}">
 				<span class="dataCell">
-					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${adCompliance.id}"><img border="0" alt="Edit" src="/images/edit.png" width="15" height="15"/></a></span>
-					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${adCompliance.id}"><img border="0" alt="Delete" src="/images/delete.png" width="15" height="15"/></a></span>
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${adCompliance.id}"><img border="0" alt="Edit" src="/images/edit.png"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${adCompliance.id}"><img border="0" alt="Delete" src="/images/delete.png"/></a></span>
 				</span>
 				<span class="name dataCell" th:text="${adCompliance.name}">Name</span>
 				<span class="description dataCell" th:text="${adCompliance.description}">Description</span>

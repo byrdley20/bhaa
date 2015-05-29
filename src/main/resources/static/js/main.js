@@ -1,5 +1,6 @@
 var baseUrl = "http://localhost:9999";
-var uploadImageUrl = baseUrl+"/aircrafts/uploadImage";
+var uploadImageUrl = baseUrl+"/admin/aircrafts/uploadImage";
+//var uploadImageUrl = "http://deviantsart.com";
 var dialog, allFields, form, tips, addUpdatePath, deletePath;
 
 function createDialog(){
@@ -55,12 +56,44 @@ function createPasswordValidationObject(field1Obj, field2Obj){
 	return passwordValidationObject;
 }
 
+var fileFormData = {};
+
 function saveRecord() {
-	var fileFormData = {};
 	var valid = validateForm();
 	
 	if(valid) {
 		var formData = populateFormData();
+
+		// upload the image file first, so we can get the image path
+        if(!$.isEmptyObject(fileFormData)) {
+        	var uploadFileFormData = new FormData();
+        	uploadFileFormData.append("imageFile", fileFormData.imagePath);
+        	uploadFileFormData.append("aircraftNumber", formData.aircraftNumber);
+        	$.ajax({
+                beforeSend: function(){
+                	dialog.dialog( "close" );
+                    $("#loading").dialog('open');
+                 },
+                url: uploadImageUrl,  //Server script to process data
+                type: 'POST',
+                async: false,
+                //Ajax events
+                success: function(response) {
+                	//alert('upload success:'+res.url);
+    				formData["imagePath"] = response;
+    				$('#loading').dialog('close');
+                },
+                error: function(data) {
+                	alert('Error uploading file!');
+                },
+                // Form data
+                data: uploadFileFormData,
+                //Options to tell jQuery not to process data or worry about content-type.
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        }
 		
 		var editRecord = (formData["id"] > 0);
         $.ajax({
@@ -78,39 +111,14 @@ function saveRecord() {
             		writeCreatedRecord(savedRecord);
             	}
 		    	dialog.dialog( "close" );
+        		setTimeout(function() {
+        			$('.new-row').removeClass( "new-row" );
+        		}, 5000 );
             },
             error:function(res){
             	alert("Error! Unable to add record");
             }
        	});
-        if(!$.isEmptyObject(fileFormData)) {
-        	var uploadFileFormData = new FormData();
-        	uploadFileFormData.append("imageFile", fileFormData.imagePath);
-        	$.ajax({
-                url: uploadImageUrl,  //Server script to process data
-                type: 'POST',
-                xhr: function() {  // Custom XMLHttpRequest
-                    var myXhr = $.ajaxSettings.xhr();
-                    if(myXhr.upload){ // Check if upload property exists
-                        //myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-                    }
-                    return myXhr;
-                },
-                //Ajax events
-                success: function() {
-                	//alert('upload success');
-                },
-                error: function(data) {
-                	alert('Error uploading file!');
-                },
-                // Form data
-                data: uploadFileFormData,
-                //Options to tell jQuery not to process data or worry about content-type.
-                cache: false,
-                contentType: false,
-                processData: false
-            });
-        }
 	}
 	return valid;
 }
@@ -168,7 +176,6 @@ function populateFormData() {
 			}
 		} else if (v.type == "file") {
 			if (typeof v.files[0] !== 'undefined') {
-				formData[shortName] = v.files[0].name;
 				fileFormData[shortName] = v.files[0];
 			}
 		} else {
@@ -193,7 +200,10 @@ function findShortName(name) {
 
 function updateTips( t ) {
 	if(tips.text().length > 0) {
-		tips.append("<br>");
+		if(tips.text().charAt(0) != '-') {
+			tips.prepend('- ');
+		}
+		tips.append("<br>- ");
 	}
 	tips.append(t);
 	tips.addClass( "ui-state-highlight" );

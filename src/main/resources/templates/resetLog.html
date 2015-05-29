@@ -43,10 +43,10 @@
     		numberValidation[numberValidation.length] = createNumberValidationObject(hobbs, "'Reset Hobbs'");
     	});
     	function writeCreatedRecord(savedRecord){
-	    	$( ".records-rows" ).last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
+	    	$( ".records-rows" ).last().after( "<div class='records-rows id"+savedRecord.id+" new-row'>" +
 	    			"<span class='dataCell'>" +
-			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
-			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png'/></a></span> " +
 			    	"</span>" +
 			    	"<span class='date dataCell'>"+savedRecord.dateDisplay+"</span> " +
 			    	"<span class='date dataCell'>"+savedRecord.hobbs+"</span> " +
@@ -58,6 +58,7 @@
     		editedRow.find('.date').html(savedRecord.dateDisplay);
     		editedRow.find('.hobbs').html(savedRecord.hobbs);
     		editedRow.find('.id').html(savedRecord.id);
+    		editedRow.addClass('new-row');
     	}
     	function populateCreateForm(editLink){
     		$('#date').datepicker("setDate", new Date() );
@@ -115,8 +116,8 @@
 			</div>
 			<div class="records-rows" th:each="rl : ${aircraft.resetLogs}" th:if="${rl.resetItem}==${resetItem}" th:classappend="|id${rl.id}">
 				<span class="dataCell">
-					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${rl.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${rl.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${rl.id}"><img border="0" alt="Edit" src="images/edit.png"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${rl.id}"><img border="0" alt="Delete" src="images/delete.png"/></a></span>
 				</span>
 				<span class="date dataCell" th:text="${rl.dateDisplay}">Date</span>
 				<span class="hobbs dataCell" th:text="${rl.hobbs}">Hobbs</span>

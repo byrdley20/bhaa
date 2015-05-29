@@ -28,7 +28,7 @@
 				var mechanic = allMechanics[i];
 				mechanics[mechanic.id] = mechanic;
 			}
-			var allAircrafts = /*[[${allAircrafts}]]*/;
+			var allAircrafts = JSON.parse(/*[[${allAircraftsJSON}]]*/);
 			for(var i=0; i < allAircrafts.length; i++) {
 				var aircraft = allAircrafts[i];
 				aircrafts[aircraft.id] = aircraft;
@@ -121,6 +121,7 @@
 	    		editedRow.find('.pilotId').html(savedRecord.pilot.id);
 	    		editedRow.find('.aircraftId').html(savedRecord.aircraft.id);
 	    		editedRow.find('.mechanicId').html(savedRecord.mechanic.id);
+	    		editedRow.addClass('new-row');
     		}
     	}
     	function populateEditForm(editLink){
@@ -203,8 +204,8 @@
 			</div>
 			<div class="records-rows" th:each="s : ${completedSquawks}" th:classappend="|id${s.id}">
 				<span class="dataCell" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')">
-					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${s.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${s.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${s.id}"><img border="0" alt="Edit" src="images/edit.png"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${s.id}"><img border="0" alt="Delete" src="images/delete.png"/></a></span>
 				</span>
 				<span class="reportDate dataCell" th:text="${#dates.format(s.reportDate, 'MM/dd/yyyy')}">Date Reported</span>
 				<span class="pilot dataCell" th:text="${s.pilot.displayName}">Pilot</span>

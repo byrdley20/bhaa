@@ -44,6 +44,11 @@
     		
     		createDialog();
     		
+    		$("#loading").dialog({
+    			dialogClass: "no-close",
+    			autoOpen: false
+    		});
+    		
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(aircraftNumber, "'Aircraft Number'", 1, 10);
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(name, "'Aircraft Name'", 1, 10);
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(serialNum, "'Serial Number'", 1, 20);
@@ -73,16 +78,16 @@
     			elementBefore = $(".records-header");
     		}
     		
-    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
+    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+" new-row'>" +
 	    			"<span class='dataCell'>" +
-			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='/images/edit.png' width='15' height='15'/></a></span> " +
-			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='/images/delete.png' width='15' height='15'/></a></span> " +
+			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='/images/edit.png'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='/images/delete.png'/></a></span> " +
 			    	"</span>" +
 			    	"<span class='aircraftNumber dataCell'>"+savedRecord.aircraftNumber+"</span> " +
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='model dataCell'>"+savedRecord.model.name+"</span> " +
 			    	"<span class='serialNum dataCell'>"+savedRecord.serialNum+"</span> " +
-			    	"<span class='imagePath dataCell'>"+imagePath+"</span> " +
+			    	"<span class='aircraftImage dataCell'><img class='aircraft-image' src='"+imagePath+"'/></span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 			    	"<span class='modelId cell hidden'>"+savedRecord.model.id+"</span> " +
 		    	"</div>" );    		
@@ -94,17 +99,18 @@
     		editedRow.find('.model').html(savedRecord.model.name);
     		editedRow.find('.serialNum').html(savedRecord.serialNum);
     		if(savedRecord.imagePath != null){
-    			editedRow.find('.imagePath').html(savedRecord.imagePath);
+    			editedRow.find('img.aircraft-image').attr("src", savedRecord.imagePath);
     		} else {
-    			editedRow.find('.imagePath').html(oldImagePath);
+    			editedRow.find('img.aircraft-image').attr("src", oldImagePath);
     		}
     		editedRow.find('.id').html(savedRecord.id);
+    		editedRow.addClass('new-row');
     	}
     	function populateEditForm(editLink){
     		$('#addEditForm').find("option:selected").removeAttr("selected");
     		var editSpan = $(editLink).closest('span.dataCell');
     		
-    		oldImagePath = editSpan.nextAll('span.imagePath').first().html();
+    		oldImagePath = editSpan.nextAll('.aircraftImage').first().find('.aircraft-image').attr('src');
     		
     		$('#addEditForm').find('#aircraftNumber').val(editSpan.nextAll('span.aircraftNumber').first().html());
     		$('#addEditForm').find('#name').val(editSpan.nextAll('span.name').first().html());
@@ -119,6 +125,11 @@
     	}
     	//]]>
     </script>
+    <style>
+    	.aircraftImage {
+    		width: 300px;
+    	}
+    </style>
 </head>
 <body>
 
@@ -126,6 +137,9 @@
 
 	<div id="main-content">
 		<H1>Aircrafts</H1>
+		<div id="loading"> 
+		    <p>Image Uploading...</p>
+		</div>
 		<div id="dialog-form" title="Aircraft">
 			<p class="validateTips"></p>
 			<form id="addEditForm" action="/aircrafts" method="post">
@@ -141,7 +155,6 @@
 					<label for="serialNum">Serial Number</label>
 					<input type="text" name="serialNum" id="serialNum" value="12818" class="text ui-widget-content ui-corner-all"/>
 					<label for="imagePath">Image</label>
-					<!--<input type="text" name="imagePath" id="imagePath" value="C:/Users/byrdj/Pictures/image.png" class="text ui-widget-content ui-corner-all"/>-->
 					<button type="button" id="chooseImage" class="hidden ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button">
 						<span class="ui-button-text">Choose Image</span>
 					</button>
@@ -158,19 +171,18 @@
 			    <span class="headerCell dataCell">Name</span>
 			    <span class="headerCell dataCell">Model</span>
 			    <span class="headerCell dataCell">Serial Number</span>
-			    <span class="headerCell dataCell">Image Path</span>
+			    <span class="headerCell dataCell">Image</span>
 			</div>
 			<div class="records-rows" th:each="a : ${aircrafts}" th:classappend="|id${a.id}">
 				<span class="dataCell">
-					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${a.id}"><img border="0" alt="Edit" src="/images/edit.png" width="15" height="15"/></a></span>
-					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${a.id}"><img border="0" alt="Delete" src="/images/delete.png" width="15" height="15"/></a></span>
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${a.id}"><img border="0" alt="Edit" src="/images/edit.png"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${a.id}"><img border="0" alt="Delete" src="/images/delete.png"/></a></span>
 				</span>
 				<span class="aircraftNumber dataCell" th:text="${a.aircraftNumber}">Number</span>
 				<span class="name dataCell" th:text="${a.name}">Name</span>
 				<span class="model dataCell" th:text="${a.model.name}">Model</span>
 				<span class="serialNum dataCell" th:text="${a.serialNum}">Serial Number</span>
-				<span class="imagePath dataCell" th:text="${a.imagePath}">Image</span>
-				<span class="image"><img src="" th:src="'/images/aircrafts/' + @{${a.imagePath}}" /></span>
+				<span class="aircraftImage"><img class="aircraft-image" src="" th:src="'data:image/jpeg;base64,'+@{${imageMap[a.aircraftNumber]}}" /></span>
 				<span class="id cell hidden" th:text="${a.id}">Hidden PK ID</span>
 				<span class="modelId cell hidden" th:text="${a.model.id}">Hidden Model Id</span>
 			</div>

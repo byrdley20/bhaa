@@ -73,6 +73,10 @@ public class Aircraft extends BaseDomain {
 	@Expose
 	private List<MaintenanceType> monthMaintenanceTypes;
 
+	@Transient
+	@Expose
+	private BigDecimal yearlyHours;
+
 	public Long getId() {
 		return id;
 	}
@@ -175,6 +179,14 @@ public class Aircraft extends BaseDomain {
 
 	public void setHobbs(BigDecimal hobbs) {
 		this.hobbs = hobbs;
+	}
+
+	public BigDecimal getYearlyHours() {
+		return yearlyHours;
+	}
+
+	public void setYearlyHours(BigDecimal yearlyHours) {
+		this.yearlyHours = yearlyHours;
 	}
 
 }

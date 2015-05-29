@@ -4,6 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <title>Black Hills Aerial Adventures | Squawks</title>
+    <meta th:replace="includes/header :: head"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
 	<link rel="stylesheet" href="css/main.css" />
@@ -16,6 +17,7 @@
 		var pilots = {};
 		var mechanics = {};
     	var aircrafts = {};
+    	
     	           
 		function buildOptions(){
 			var allPilots = /*[[${allPilots}]]*/;
@@ -28,13 +30,23 @@
 				var mechanic = allMechanics[i];
 				mechanics[mechanic.id] = mechanic;
 			}
-			var allAircrafts = /*[[${allAircrafts}]]*/;
+			var allAircrafts = JSON.parse(/*[[${allAircraftsJSON}]]*/);
 			for(var i=0; i < allAircrafts.length; i++) {
 				var aircraft = allAircrafts[i];
 				aircrafts[aircraft.id] = aircraft;
 			}
 		}
 		/*]]>*/
+    </script>
+    <script type="text/javascript" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')">
+		function buildRepairIcon(savedRecord) {
+			return '<span class="repair icon"><a href="#" class="repairLink" data-id="'+savedRecord.id+'"><img border="0" alt="Repair" src="images/repair.png"/></a></span> ';
+		}
+    </script>
+	<script type="text/javascript" sec:authorize="!hasRole('ROLE_MECHANIC') and !hasRole('ROLE_ADMIN')">
+		function buildRepairIcon(savedRecord) {
+			return "";
+		}
     </script>
     <script type="text/javascript">
   		//<![CDATA[
@@ -117,11 +129,11 @@
     			elementBefore = $(".records-header");
     		}
     		
-    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
+    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+" new-row'>" +
 	    			"<span class='dataCell'>" +
-	    			"<span class='repair icon'><a href='#' class='repairLink' data-id='"+savedRecord.id+"'><img border='0' alt='Repair' src='images/repair.png' width='15' height='15'/></a></span> " +
-	    			"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png' width='15' height='15'/></a></span> " +
-			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png' width='15' height='15'/></a></span> " +
+	    			buildRepairIcon(savedRecord) +
+	    			"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png'/></a></span> " +
 			    	"</span>" +
 			    	"<span class='reportDate dataCell'>"+savedRecord.reportDate+"</span> " +
 			    	"<span class='pilot dataCell'>"+savedRecord.pilot.displayName+"</span> " +
@@ -141,6 +153,7 @@
     		editedRow.find('.id').html(savedRecord.id);
     		editedRow.find('.pilotId').html(savedRecord.pilot.id);
     		editedRow.find('.aircraftId').html(savedRecord.aircraft.id);
+    		editedRow.addClass('new-row');
     	}
     	function populateCreateForm(editLink){
     		setRegularValidation()
@@ -222,7 +235,7 @@
     	            dataType: 'json',
     	            contentType: "application/json; charset=utf-8",
     	            success:function(resObj, status, fullResponse){
-    	            	window.location.href = "squawks-completed.html?id="+fullResponse.id;
+    	            	window.location.href = "squawks-completed.html";
     	            	repairDialog.dialog( "close" );
     	            },
     	            error:function(res){
@@ -308,9 +321,9 @@
 			</div>
 			<div class="records-rows" th:each="s : ${openSquawks}" th:classappend="|id${s.id}">
 				<span class="dataCell">
-					<span class="repair icon" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="repairLink" th:attr="data-id=${s.id}"><img border="0" alt="Repair" src="images/repair.png" width="15" height="15"/></a></span>
-					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${s.id}"><img border="0" alt="Edit" src="images/edit.png" width="15" height="15"/></a></span>
-					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${s.id}"><img border="0" alt="Delete" src="images/delete.png" width="15" height="15"/></a></span>
+					<span class="repair icon" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="repairLink" th:attr="data-id=${s.id}"><img border="0" alt="Repair" src="images/repair.png"/></a></span>
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${s.id}"><img border="0" alt="Edit" src="images/edit.png"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${s.id}"><img border="0" alt="Delete" src="images/delete.png"/></a></span>
 				</span>
 				<span class="reportDate dataCell" th:text="${#dates.format(s.reportDate, 'MM/dd/yyyy')}">Date Reported</span>
 				<span class="pilot dataCell" th:text="${s.pilot.displayName}">Pilot</span>

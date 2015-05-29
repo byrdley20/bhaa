@@ -75,10 +75,10 @@
     			elementBefore = $(".records-header");
     		}
     		
-    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+"'>" +
+    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+" new-row'>" +
 	    			"<span class='dataCell'>" +
-			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='/images/edit.png' width='15' height='15'/></a></span> " +
-			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='/images/delete.png' width='15' height='15'/></a></span> " +
+			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='/images/edit.png'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='/images/delete.png'/></a></span> " +
 			    	"</span>" +
 			    	"<span class='userId dataCell'>"+savedRecord.userId+"</span> " +
 			    	"<span class='name dataCell'>"+savedRecord.firstName+" "+savedRecord.lastName+"</span> " +
@@ -103,6 +103,7 @@
     		editedRow.find('.lastName').html(savedRecord.lastName);
     		editedRow.find('.role').html(roles[savedRecord.role]);
     		editedRow.find('.roleValue').html(savedRecord.role);
+    		editedRow.addClass('new-row');
     	}
     	function populateEditForm(editLink){
     		$('#addEditForm').find("option:selected").removeAttr("selected");
@@ -170,8 +171,8 @@
 			</div>
 			<div class="records-rows" th:each="u : ${users}" th:classappend="|id${u.id}">
 				<span class="dataCell">
-					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${u.id}"><img border="0" alt="Edit" src="/images/edit.png" width="15" height="15"/></a></span>
-					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${u.id}"><img border="0" alt="Delete" src="/images/delete.png" width="15" height="15"/></a></span>
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${u.id}"><img border="0" alt="Edit" src="/images/edit.png"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${u.id}"><img border="0" alt="Delete" src="/images/delete.png"/></a></span>
 				</span>
 				<span class="userId dataCell" th:text="${u.userId}">ID</span>
 				<span class="name dataCell" th:text="${u.displayName}">Name</span>

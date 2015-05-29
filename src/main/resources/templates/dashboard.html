@@ -93,7 +93,8 @@
 					<div class="emph" th:text="${a.name}">Name</div>
 					<div class="image">
 						<div style="margin-bottom:5px;">
-							<img src="" th:src="'images/aircrafts/' + @{${a.imagePath}}" />
+							<!--<img src="" th:src="@{${a.imagePath}}" />-->
+							<img src="" th:src="'data:image/jpeg;base64,'+@{${imageMap[a.aircraftNumber]}}" />
 						</div>
 						<div>
 							<span><a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>
@@ -117,9 +118,14 @@
 						</div>
 					</div>
 					<br/>
-					<div class="starts-data" th:if="${a.model.showStarts}">
+					<div class="starts-data">
+						<div class="records-header">
+							<div class="dataCell" th:if="${a.model.showStarts}">Starts</div>
+				    		<div class="dataCell">Yearly</div>
+				    	</div>
 						<div class="data-row">
-							<div class="dataCell" th:text="'Total Starts: '+${a.totalStarts}"></div>
+							<div class="dataCell" th:if="${a.model.showStarts}" th:text="${a.totalStarts}"></div>
+							<div class="dataCell" th:text="${a.yearlyHours} + ' HR'">Yearly Hours</div>
 						</div>
 					</div>
 					<div class="cleared"></div>

@@ -3,6 +3,9 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
   <head>
+  	<meta th:fragment="head">
+	  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	</meta>
   </head>
   <body>
     <div th:fragment="header">
@@ -43,6 +46,7 @@
 			var idleDialog;
 			$(function() {
 				idleDialog = $( "#dialog" ).dialog({
+					  dialogClass: "no-close",
 				      modal: true,
 				      autoOpen: false
 				});				
