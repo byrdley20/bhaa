@@ -87,7 +87,7 @@
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='model dataCell'>"+savedRecord.model.name+"</span> " +
 			    	"<span class='serialNum dataCell'>"+savedRecord.serialNum+"</span> " +
-			    	"<span class='aircraftImage dataCell'><img class='aircraft-image' src='"+imagePath+"'/></span> " +
+			    	"<span class='aircraftImage dataCell'><img class='aircraft-image' src='data:image/jpeg;base64,"+imagePath+"'/></span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 			    	"<span class='modelId cell hidden'>"+savedRecord.model.id+"</span> " +
 		    	"</div>" );    		
@@ -99,7 +99,7 @@
     		editedRow.find('.model').html(savedRecord.model.name);
     		editedRow.find('.serialNum').html(savedRecord.serialNum);
     		if(savedRecord.imagePath != null){
-    			editedRow.find('img.aircraft-image').attr("src", savedRecord.imagePath);
+    			editedRow.find('img.aircraft-image').attr("src", 'data:image/jpeg;base64,'+savedRecord.imagePath);
     		} else {
     			editedRow.find('img.aircraft-image').attr("src", oldImagePath);
     		}
@@ -182,7 +182,7 @@
 				<span class="name dataCell" th:text="${a.name}">Name</span>
 				<span class="model dataCell" th:text="${a.model.name}">Model</span>
 				<span class="serialNum dataCell" th:text="${a.serialNum}">Serial Number</span>
-				<span class="aircraftImage"><img class="aircraft-image" src="" th:src="'data:image/jpeg;base64,'+@{${imageMap[a.aircraftNumber]}}" /></span>
+				<span class="aircraftImage"><img class="aircraft-image" src="" th:src="'data:image/jpeg;base64,'+@{${a.imagePath}}" /></span>
 				<span class="id cell hidden" th:text="${a.id}">Hidden PK ID</span>
 				<span class="modelId cell hidden" th:text="${a.model.id}">Hidden Model Id</span>
 			</div>

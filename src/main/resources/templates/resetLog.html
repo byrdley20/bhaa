@@ -43,7 +43,14 @@
     		numberValidation[numberValidation.length] = createNumberValidationObject(hobbs, "'Reset Hobbs'");
     	});
     	function writeCreatedRecord(savedRecord){
-	    	$( ".records-rows" ).last().after( "<div class='records-rows id"+savedRecord.id+" new-row'>" +
+    		var elementBefore;
+    		if($(".records-rows").length){
+    			elementBefore = $(".records-rows");
+    		} else {
+    			elementBefore = $(".records-header");
+    		}
+    		
+    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+" new-row'>" +
 	    			"<span class='dataCell'>" +
 			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png'/></a></span> " +
 			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png'/></a></span> " +

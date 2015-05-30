@@ -14,16 +14,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
-		// http.authorizeRequests()
-		// .antMatchers("/admin/**")
-		// .hasRole("ADMIN")
-		// // .authenticated()
-		// .and()
-		// .formLogin()
-		// .loginPage("/login.html")
-		// .and()
-		// .logout()
-		// .logoutSuccessUrl("/");
+		http.authorizeRequests()
+				.antMatchers("/admin/**")
+				.hasRole("ADMIN")
+				// .authenticated()
+				.and()
+				.formLogin()
+				.loginPage("/login.html")
+				.and()
+				.logout()
+				.logoutSuccessUrl("/");
 	}
 
 	@Autowired

@@ -358,8 +358,8 @@
 		<button id="create-record">Create New</button>
 		<br/><br/><br/>
 		<div>
-			<span><a href="resetLog.html?i=hobbs" th:href="@{resetLog.html(id=${aircraft.id}, i=hobbs)}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Hobbs Meter</span></button></a></span>
-			<span><a href="resetLog.html?i=engine" th:href="@{resetLog.html(id=${aircraft.id}, i=engine)}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Engine Time</span></button></a></span>
+			<span><a href="resetLog.html?i=hobbs" th:href="@{resetLog.html(id=${aircraft.id}, i=hobbs)}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Reset Hobbs Meter</span></button></a></span>
+			<span><a href="resetLog.html?i=engine" th:href="@{resetLog.html(id=${aircraft.id}, i=engine)}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Reset Engine Time</span></button></a></span>
 		</div>
 	</div>
 </body>

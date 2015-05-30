@@ -94,7 +94,7 @@
 					<div class="image">
 						<div style="margin-bottom:5px;">
 							<!--<img src="" th:src="@{${a.imagePath}}" />-->
-							<img src="" th:src="'data:image/jpeg;base64,'+@{${imageMap[a.aircraftNumber]}}" />
+							<img src="" th:src="'data:image/jpeg;base64,'+@{${a.imagePath}}" />
 						</div>
 						<div>
 							<span><a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>

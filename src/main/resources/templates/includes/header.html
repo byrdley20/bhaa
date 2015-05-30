@@ -25,7 +25,7 @@
 				<a href="/admin/ratings.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="ratings-button" class="admin-button" role="button"><span class="button-text">Ratings</span></button></a>
 				<a href="/admin/maintenanceTypes.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="maintenance-types-button" class="admin-button" role="button"><span class="button-text">Maintenance Types</span></button></a>
      		</div>
-     		<div class="admin-admin-button" sec:authorize="!hasRole('ROLE_ADMIN')">
+     		<div class="admin-admin-button" th:if="${#authentication} ? ${#authorization.expression('!isAuthenticated()')} : ${true}">
      			<a href="/login.html"><button type="button" id="admin-button" class="admin-button" role="button"><span class="button-text">Login</span></button></a>
      		</div>
      		<div class="logged-in" th:if="${#authentication} ? ${#authorization.expression('isAuthenticated()')} : ${false}">

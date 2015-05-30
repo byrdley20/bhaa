@@ -14,11 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.coptertours.common.AppConstants;
-import com.coptertours.common.ImageConverter;
 import com.coptertours.domain.AdCompliance;
 import com.coptertours.domain.AdComplianceLog;
 import com.coptertours.domain.Aircraft;
@@ -59,12 +56,6 @@ public class DashboardController extends BaseController {
 		Date yearStart = DateUtil.findYearStartDate(today);
 		Date yearEnd = DateUtil.findYearEndDate(today);
 
-		Map<String, String> imageMap = new HashMap<String, String>();
-		Object imageMapObj = request.getSession().getAttribute(AppConstants.IMAGE_MAP);
-		if(imageMapObj != null){
-			imageMap = (Map<String, String>) imageMapObj;
-		}
-		
 		for (Aircraft aircraft : aircrafts) {
 			List<MaintenanceLog> maintenanceLogs = this.maintenanceLogRepository.findByAircraftId(aircraft.getId());
 			Map<Long, MaintenanceLog> maintenanceTypeToLog = new HashMap<Long, MaintenanceLog>();
@@ -101,14 +92,7 @@ public class DashboardController extends BaseController {
 			com.coptertours.domain.Model aircraftModel = aircraft.getModel();
 
 			configureAdCompliances(modelToAdCompliances, todayStart, todayEnd, aircraft, aircraftModel);
-
-			if (!imageMap.containsKey(aircraft.getAircraftNumber()) && !StringUtils.isEmpty(aircraft.getImagePath())) {
-				imageMap.put(aircraft.getAircraftNumber(), ImageConverter.convertToBase64(aircraft.getImagePath()));
-			}
 		}
-		request.getSession().setAttribute(AppConstants.IMAGE_MAP, imageMap);
-
-		model.addAttribute("imageMap", imageMap);
 		model.addAttribute("aircrafts", aircrafts);
 		model.addAttribute("today", new Date());
 		return "dashboard";
