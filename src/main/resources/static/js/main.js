@@ -152,6 +152,8 @@ function validateForm() {
 	if (typeof extraValidation == 'function') { 
 		valid = extraValidation() && valid;
 	}
+	valid = checkSelects() && valid;
+	
 	return valid;
 }
 
@@ -251,6 +253,16 @@ function checkDate( o, n ){
 	updateTips( n + " must be a valid date in the mm/dd/yyyy format." );
 	return false;
 }
+function checkSelects() {
+	var valid = true;
+	$('#addEditForm select').each(function(){
+		if( $(this).has('option').length == 0 ) {
+			updateTips( "You must add a '"+this.name+"' before adding this record." );
+			valid = false;
+		}
+	});
+	return valid;
+}
 
 function getNewCheckboxValue(booleanValue) {
 	if(booleanValue) {
@@ -271,6 +283,10 @@ function dateDiffInDays(a, b) {
 
 $(function() {
 	tips = $( ".validateTips" );
+	
+	$('.repairLink').attr('title','Repair');
+	$('.editLink').attr('title','Edit');
+	$('.deleteLink').attr('title','Delete');
 	
 	if (typeof buildOptions == 'function') {
 		buildOptions();
@@ -294,7 +310,8 @@ $(function() {
 	$( "#create-record" ).button().on( "click", function() {
 		clearFormValidation();
 		$('#addEditForm').trigger("reset");
-		$('#addEditForm').show();
+		checkSelects();
+		$('#addEditForm').show();		
 		if (typeof populateCreateForm == 'function') {
 			populateCreateForm(this);
 		}

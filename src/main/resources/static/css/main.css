@@ -18,13 +18,29 @@
 .admin-admin-button {
 	position: absolute;
 	float: right;
-	right: 90px;
+	right: 50px;
 	bottom: 23px;
+}
+.help-button {
+	position: absolute;
+	float: right;
+	right: -5px;
+	bottom: 23px;
+}
+.help-topic {
+	margin-top:30px;
+}
+.help-header {
+	font-size: 1.17em;
+	font-weight: bold;
+}
+.help-text {
+	margin-left:25px;
 }
 .logged-in {
 	position: absolute;
 	float: right;
-	right: 90px;
+	right: 50px;
 	top: 5px;
 }
 .table-upper-caption {
@@ -82,7 +98,7 @@ button.login-button:hover {
 }
 .header-button .button-text,
 .admin-button .button-text {
-  padding: .4em 1em;
+  padding: .1em .1em;
   display: block;
 }
 .print-button {

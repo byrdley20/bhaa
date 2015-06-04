@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
+import com.coptertours.common.AppConstants;
 import com.google.gson.annotations.Expose;
 
 @Entity
@@ -35,9 +36,9 @@ public class Aircraft extends BaseDomain {
 	private String serialNum;
 
 	@Lob
-	@Column(name = "IMAGE_PATH")
+	@Column(name = "IMAGE_PATH", columnDefinition = "clob")
 	@Expose
-	private String imagePath;// = AppConstants.PLACEHOLDER_IMAGE;
+	private String imagePath = AppConstants.PLACEHOLDER_IMAGE;
 	@Expose
 	private int ordering;
 

@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,9 +37,6 @@ public class AircraftRestController {
 	@RequestMapping(value = "/admin/aircrafts", method = RequestMethod.POST)
 	@ResponseBody
 	Aircraft addAircraft(@RequestBody Aircraft aircraft, final HttpServletResponse response) {
-		if (!StringUtils.isEmpty(aircraft.getImagePath())) {
-			aircraft.setImagePath(aircraft.getImagePath());
-		}
 		return this.aircraftRepository.save(aircraft);
 	}
 

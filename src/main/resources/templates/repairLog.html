@@ -275,7 +275,7 @@
 						<option th:each="aircraft : ${allAircrafts}" th:text="${aircraft.name}" th:value="${aircraft.id}">${aircraft.name}</option>
 					</select>
 					<label for="issueNotes">Issue</label>
-					<input type="text" name="issueNotes" id="issueNotes" value="Broken" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="issueNotes" id="issueNotes" class="text ui-widget-content ui-corner-all"/>
 					<input type="text" name="id" id="id" class="hidden"/>
 					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 				</fieldset>

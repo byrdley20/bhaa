@@ -1,0 +1,684 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+  <head>
+    <title th:fragment="title">Black Hills Aerial Adventures | Help</title>
+	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
+	<link rel="stylesheet" href="css/main.css" />
+    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+  </head>
+  <body>
+  	<div th:replace="includes/header :: header">...</div>
+    <div id="main-content">
+    	<div>
+			<h1 style="font-size: 1.5em">Black Hills Aerial Adventures Application Help</h1>
+			<h3>Table of Contents</h3>
+			<ul>
+				<li><a href="#dashboard">Dashboard</a></li>
+				<li><a href="#squawks">Squawks</a></li>
+				<li><a href="#aircraftlog">Aircraft Log</a></li>
+				<li><a href="#aircraftstatus">Aircraft Status</a></li>
+				<li><a href="#adcompliances">AD Compliance</a></li>
+				<li><a href="#resethobbs">Reset Hobbs Meter</a></li>
+				<li><a href="#resetenginetime">Reset Engine Time</a></li>
+				
+				<li><a href="#mechanic">Mechanic</a>
+					<ul>
+						<li><a href="#repairsquawks">Repair Squawks</a></li>
+						<li><a href="#complywithmaintenance">Comply With Maintenance</a></li>
+					</ul>
+				</li>
+				
+				<li><a href="#admin">Admin</a>
+					<ul>
+						<li><a href="#users">Users</a></li>
+						<li><a href="#aircrafts">Aircrafts</a></li>
+						<li><a href="#models">Models</a></li>
+						<li><a href="#adcompliances">AD Compliances</a></li>
+						<li><a href="#locations">Locations</a></li>
+						<li><a href="#operations">Operations</a></li>
+						<li><a href="#ratings">Ratings</a></li>
+						<li><a href="#maintenancetypes">Maintenance Types</a></li>
+					</ul>
+				</li>		
+			</ul>
+		</div>
+		<br/><br/><br/>
+		<div class="help-topic">
+			<a id="dashboard" class="help-header">Dashboard</a>
+			<div class="help-text">
+				<ul>
+					<li>Navigate to the dashboard by clicking the <b>Dashboard</b> button in the header.</li>
+					<li>The dashboard shows all of the aircrafts and their current hobbs, notable maintenance statuses, number of starts (if applicable) and their yearly hours. There are also buttons to access the aircraft log, status and AD compliance.</li>
+					<li>
+						Maintenance tasks will show as follows:
+						<ul>
+							<li><b>Red</b> = Overdue or due very soon
+								<ul>
+									<li>Less than 10 hours remaining</li>
+									<li>Less than 5 days remaining</li>
+								</ul>
+							</li>
+							<li><b>Yellow</b> =  Due soon
+								<ul>
+									<li>Less than 20 hours remaining</li>
+									<li>Less than 15 days remaining</li>
+								</ul>
+							</li>
+							<li><b>White</b> = Not due for awhile</li>
+						</ul>
+					</li>
+					<li>To add a maintenance entry to the dashboard, an admin will need to check the <b>Show on Dashboard</b> box when adding/editing a <a href="#maintenancetypes">maintenance type</a>.</li>
+					<li>If a daily AD compliance has not been complied with for the current day, the button text will appear in red.</li>
+					<li>To show the starts for an aircraft, an administrator will need to check the <b>Track Starts</b> box when adding/editing a <a href="#models">model</a>.</li>
+				</ul>
+			</div>
+		</div>
+		<div class="help-topic">
+			<a id="squawks" class="help-header">Squawks</a>
+			<div class="help-text">
+				<ul>
+					<li>Navigate to the squawks page by clicking the <b>Squawks</b> button in the header.</li>
+					<li>To create a new squawk,
+						<ol>
+							<li>Click the <b>Create New</b> button</li>
+							<li>Populate the information
+								<ul>
+									<li>The <b>Date</b> will default to the current date</li>
+								</ul>
+							</li>
+							<li>Click <b>Save</b></li>
+							<li>The new squawk will be added to the <b>Open</b> list</li>
+						</ol>
+					</li>
+					<li>To edit a squawk in the list,
+						<ol>
+							<li>Click the <b>Edit</b> icon next to the entry to edit</li>
+							<li>Update the information</li>
+							<li>Click <b>Save</b></li>
+						</ol>
+					</li>
+					<li>To delete a squawk from the list,
+						<ol>
+							<li>Click the <b>Delete</b> icon next to the entry to delete</li>
+							<li>Click <b>OK</b> to confirm the deletion.</li>
+						</ol>					
+					</li>
+					<li>To mark a squawk as fixed, see <a href="#repairsquawks">Squawks</a>.</li>
+					<li>To see all the completed squawks, click the <b>Completed</b> button on the squawks page.</li>
+					<li>To edit, delete or un-complete a completed squawk, see <a href="#repairsquawks">Squawks</a>.</li>
+				</ul>
+			</div>
+		</div>
+		<div class="help-topic">
+			<a id="aircraftlog" class="help-header">Aircraft Log</a>
+			<div class="help-text">
+				<ul>
+					<li>Navigate to an aircraft's log page by doing one of the following:
+						<ul>
+							<li>Clicking the <b>Log</b> button under the aircraft image on the <a href="#dashboard">Dashboard</a>.</li>
+							<li>Clicking the <b>Log</b> button on the <a href="#aircraftstatus">Aircraft Status</a> page.</li>
+							<li>Clicking the <b>Log</b> button on the <a href="#adcompliances">Aircraft AD Compliance</a> page.</li>
+						</ul>
+					</li>
+					<li>The aircraft log page shows the daily logs for the selected aircraft.
+						<ul>
+							<li>One month is shown at a time.</li>
+							<li>If the aircraft model is selected to <b>Track Starts</b>, the total starts are shown.</li>
+							<li>The monthly hobbs total is shown at the bottom of the month.</li>
+						</ul>
+					</li>
+					<li>To create a new log entry,
+						<ol>
+							<li>Click the <b>Create New</b> button</li>
+							<li>Populate the information
+								<ul>
+									<li>The <b>Date</b> will default to the current date</li>
+									<li>The <b>Hobbs Begin</b> will default to the latest value of <b>Hobbs End</b>.</li>
+								</ul>
+							</li>
+							<li>Click <b>Save</b></li>
+						</ol>
+					</li>
+					<li>To edit a log entry in the list,
+						<ol>
+							<li>Click the <b>Edit</b> icon next to the entry to edit</li>
+							<li>Update the information</li>
+							<li>Click <b>Save</b></li>
+						</ol>
+					</li>
+					<li>To delete a log entry from the list,
+						<ol>
+							<li>Click the <b>Delete</b> icon next to the entry to delete</li>
+							<li>Click <b>OK</b> to confirm the deletion.</li>
+						</ol>					
+					</li>
+					<li>To view the logs for a different month, click the appropriate month button.</li>
+					<li>To print the month being viewed, click the <b>Print Month</b> button.</li>
+					<li>To navigate to the <a href="#aircraftstatus">Aircraft Status</a>, click the <b>Status</b> button.</li>
+					<li>To navigate to the <a href="#adcompliances">Aircraft AD Compliance</a>, click the <b>AD Compliance</b> button.</li>
+					<li>Also see <a href="#resethobbs">Reset Hobbs Meter</a> and <a href="#resetenginetime">Reset Engine Time</a>.</li>
+				</ul>
+			</div>
+		</div>
+		<div class="help-topic">
+			<a id="aircraftstatus" class="help-header">Aircraft Status</a>
+				<ul>
+					<li>Navigate to an aircraft's status page by doing one of the following:
+						<ul>
+							<li>Clicking the <b>Status</b> button under the aircraft image on the <a href="#dashboard">Dashboard</a>.</li>
+							<li>Clicking the <b>Status</b> button on the <a href="#aircraftlog">Aircraft Log</a> page.</li>
+							<li>Clicking the <b>Status</b> button on the <a href="#adcompliances">Aircraft AD Compliance</a> page.</li>
+						</ul>
+					</li>
+					<li>The aircraft status page shows the maintenance status for the selected aircraft, divided into 3 sections:
+						<ol>
+							<li>Flight Hours
+								<ul>
+									<li>Shows the maintenance due by flight hours</li>
+									<li>The entries will show as follows:
+										<ul>
+											<li><b>Red</b> = Overdue or due very soon
+												<ul>
+													<li>Less than 10 hours remaining</li>
+												</ul>
+											</li>
+											<li><b>Yellow</b> =  Due soon
+												<ul>
+													<li>Less than 20 hours remaining</li>
+												</ul>
+											</li>
+											<li><b>White</b> = Not due for awhile</li>
+										</ul>
+									</li>
+									<li>To comply with a maintenance task, see <a href="#complywithmaintenance">Comply With Maintenance</a></li>
+								</ul>
+							</li>
+							<li>Months
+								<ul>
+									<li>Shows the maintenance due by months</li>
+									<li>The entries will show as follows:
+										<ul>
+											<li><b>Red</b> = Overdue or due very soon
+												<ul>
+													<li>Less than 5 days remaining</li>
+												</ul>
+											</li>
+											<li><b>Yellow</b> =  Due soon
+												<ul>
+													<li>Less than 15 days remaining</li>
+												</ul>
+											</li>
+											<li><b>White</b> = Not due for awhile</li>
+										</ul>
+									</li>
+									<li>To comply with a maintenance task, see <a href="#complywithmaintenance">Comply With Maintenance</a></li>
+								</ul>							
+							</li>
+							<li>ADs
+								<ul>
+									<li>Shows the AD Compliances</li>
+									<li>The daily entries will be <b>Red</b> if they have not been complied with today.</li>
+									<li>The non-daily entries will show as follows:
+										<ul>
+											<li><b>Red</b> = Overdue or due very soon
+												<ul>
+													<li>Less than 10 hours remaining</li>
+												</ul>
+											</li>
+											<li><b>Yellow</b> =  Due soon
+												<ul>
+													<li>Less than 20 hours remaining</li>
+												</ul>
+											</li>
+											<li><b>White</b> = Not due for awhile</li>
+										</ul>
+									</li>
+									<li>To comply with a daily AD compliance,
+										<ol>
+											<li>Click on the <b>Comply With/Repair</b> icon next to the daily entry</li>
+											<li>See <a href="#adcompliances">AD Compliance</a> for the rest of the steps.</li>
+										</ol>
+									</li>
+									<li>To comply with a non-daily AD compliance, see <a href="#complywithmaintenance">Comply With Maintenance</a></li>
+								</ul>
+							</li>
+						</ol>
+					</li>
+
+					<li>To navigate to the <a href="#aircraftlog">Aircraft Log</a>, click the <b>Log</b> button.</li>
+					<li>To navigate to the <a href="#adcompliances">Aircraft AD Compliance</a>, click the <b>AD Compliance</b> button.</li>
+					<li>Also see <a href="#resethobbs">Reset Hobbs Meter</a> and <a href="#resetenginetime">Reset Engine Time</a>.</li>
+				</ul>
+		</div>
+		<div class="help-topic">
+			<a id="adcompliances" class="help-header">AD Compliance</a>
+				<ul>
+					<li>Navigate to an aircraft's AD Compliance page by doing one of the following:
+						<ul>
+							<li>Clicking the <b>AD Compliance</b> button under the aircraft image on the <a href="#dashboard">Dashboard</a>.</li>
+							<li>Clicking the <b>AD Compliance</b> button on the <a href="#aircraftlog">Aircraft Log</a> page.</li>
+							<li>Clicking the <b>AD Compliance</b> button on the <a href="#aircraftstatus">Aircraft Status</a> page.</li>
+						</ul>
+					</li>
+					<li>The aircraft AD Compliance page shows the AD Compliances for the selected aircraft.</li>
+					<li>If the aircraft has multiple AD Compliances, use the buttons under the aircraft model name to toggle between the different AD Compliances.</li>
+					<li>To view the AD Compliance logs for a different month, click the appropriate month button.</li>
+					<li>To comply with an AD,
+						<ol>
+							<li>Click the <b>Comply</b> button</li>
+							<li>Populate the information
+								<ul>
+									<li>The <b>Date</b> will default to the current date</li>
+								</ul>
+							</li>
+							<li>Click <b>Save</b></li>
+						</ol>
+					</li>							
+					<li>To navigate to the <a href="#aircraftlog">Aircraft Log</a>, click the <b>Log</b> button.</li>
+					<li>To navigate to the <a href="#aircraftstatus">Aircraft Status</a>, click the <b>Status</b> button.</li>
+					<li>Also see <a href="#resethobbs">Reset Hobbs Meter</a> and <a href="#resetenginetime">Reset Engine Time</a>.</li>
+				</ul>
+		</div>
+		<div class="help-topic">
+			<a id="resethobbs" class="help-header">Reset Hobbs Meter</a>
+			<ul>
+				<li>Use this function when a hobbs meter is replaced</li>
+				<li>Navigate to the <b>Reset Hobbs Meter</b> page by doing one of the following:
+					<ul>
+						<li>Clicking the <b>Reset Hobbs Meter</b> button on the <a href="#aircraftlog">Aircraft Log</a> page.</li>
+						<li>Clicking the <b>Reset Hobbs Meter</b> button on the <a href="#aircraftstatus">Aircraft Status</a> page.</li>
+					</ul>
+				</li>
+				<li>To create a new entry,
+					<ol>
+						<li>Click the <b>Reset Hobbs</b> button</li>
+						<li>Populate the information
+							<ul>
+								<li>The <b>Date</b> will default to the current date</li>
+							</ul>
+						</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To edit an entry in the list,
+					<ol>
+						<li>Click the <b>Edit</b> icon next to the entry to edit</li>
+						<li>Update the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To delete an entry from the list,
+					<ol>
+						<li>Click the <b>Delete</b> icon next to the entry to delete</li>
+						<li>Click <b>OK</b> to confirm the deletion.</li>
+					</ol>					
+				</li>
+				<li>After resetting the hobbs meter, you should start the aircraft logs back at zero(0) to reflect the new hobbs hours.</li>
+				<li>To navigate to the <a href="#aircraftlog">Aircraft Log</a>, click the <b>Log</b> button.</li>
+				<li>To navigate to the <a href="#aircraftstatus">Aircraft Status</a>, click the <b>Status</b> button.</li>
+				<li>To navigate to the <a href="#adcompliances">Aircraft AD Compliance</a>, click the <b>AD Compliance</b> button.</li>
+			</ul>
+		</div>
+		<div class="help-topic">
+			<a id="resetenginetime" class="help-header">Reset Engine Time</a>
+			<ul>
+				<li>Use this function when an engine is replaced</li>
+				<li>Navigate to the <b>Reset Engine Time</b> page by doing one of the following:
+					<ul>
+						<li>Clicking the <b>Reset Engine Time</b> button on the <a href="#aircraftlog">Aircraft Log</a> page.</li>
+						<li>Clicking the <b>Reset Engine Time</b> button on the <a href="#aircraftstatus">Aircraft Status</a> page.</li>
+					</ul>
+				</li>
+				<li>To create a new entry,
+					<ol>
+						<li>Click the <b>Reset Engine</b> button</li>
+						<li>Populate the information
+							<ul>
+								<li>The <b>Date</b> will default to the current date</li>
+							</ul>
+						</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To edit an entry in the list,
+					<ol>
+						<li>Click the <b>Edit</b> icon next to the entry to edit</li>
+						<li>Update the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To delete an entry from the list,
+					<ol>
+						<li>Click the <b>Delete</b> icon next to the entry to delete</li>
+						<li>Click <b>OK</b> to confirm the deletion.</li>
+					</ol>					
+				</li>
+				<li>To navigate to the <a href="#aircraftlog">Aircraft Log</a>, click the <b>Log</b> button.</li>
+				<li>To navigate to the <a href="#aircraftstatus">Aircraft Status</a>, click the <b>Status</b> button.</li>
+				<li>To navigate to the <a href="#adcompliances">Aircraft AD Compliance</a>, click the <b>AD Compliance</b> button.</li>
+			</ul>
+		</div>
+		
+		<div class="help-topic">
+			<div id="mechanic" class="help-header">Mechanic</div>
+			<ul>
+				<li>A mechanic can do everything a non-logged in person can do, plus:
+					<ul>
+						<li><a href="#repairsquawks">Repair Squawks</a></li>
+						<li><a href="#complywithmaintenance">Comply with Maintenance</a></li>
+					</ul>
+				</li>
+				<li>To login as a mechanic,
+					<ol>
+						<li>Click the <b>Login</b> button in the header</li>
+						<li>Select <b>mechanic</b> as the <b>User</b></li>
+						<li>Enter the password</li>
+						<li>Click <b>Login</b></li>
+					</ol>
+				</li>
+			</ul>
+		</div>
+		<div class="help-topic">
+			<a id="repairsquawks" class="help-header">Repair Squawks</a>
+			<ul>
+				<li>Only a <b>mechanic</b> or an <b>admin</b> can repair squawks</li>
+				<li>To repair a squawk,
+					<ol>
+						<li>On the <b>Open</b> tab, click on the <b>Repair</b> icon next to the open squawk</li>
+						<li>Populate the repair information
+							<ul>
+								<li>The <b>Repair Date</b> will default to the current date</li>
+							</ul>
+						</li>
+						<li>Click <b>Save</b></li>
+						<li>The entry will move to the <b>Completed</b> tab</li>
+					</ol>
+				</li>
+				<li>To edit a completed squawk,
+					<ol>
+						<li>Click on the <b>Edit</b> icon next the entry to edit</li>
+						<li>Update the information</li>
+							
+					</ol>
+				</li>
+				<li>To delete a completed squawk,
+					<ol>
+						<li>Click the <b>Delete</b> icon next to the entry to delete</li>
+						<li>Click <b>OK</b> to confirm the deletion.</li>
+					</ol>					
+				</li>
+				<li>To un-complete a completed squawk,
+					<ol>
+						<li>Click on the <b>Edit</b> icon next the entry to edit</li>
+						<li>Delete the <b>Repair Date</b> and <b>Repair Notes</b> values</li>
+						<li>Click <b>Save</b></li>
+						<li>The entry will move back to the <b>Open</b> tab</li>
+					</ol>					
+				</li>
+			</ul>
+		</div>
+		<div class="help-topic">
+			<a id="complywithmaintenance" class="help-header">Comply With Maintenance</a>
+			<ul>
+				<li>Only a <b>mechanic</b> or an <b>admin</b> can comply with maintenance</li>
+				<li>To comply with a Maintenance task or non-daily AD Compliance,
+					<ol>
+						<li>Navigate to the <a href="#aircraftstatus">Aircraft Status</a> page</li>
+						<li>Click the <b>Comply With/Repair</b> icon next to the maintenance entry</li>
+						<li>Populate the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+			</ul>
+		</div>
+		
+		<div class="help-topic">
+			<div id="admin" class="help-header">Admin</div>
+			<ul>
+				<li>An admin can do everything a non-logged in person and a mechanic can do, plus add/edit/delete the following:
+					<ul>
+						<li><a href="#users">Users</a></li>
+						<li><a href="#aircrafts">Aircrafts</a></li>
+						<li><a href="#models">Models</a></li>
+						<li><a href="#adminadcompliances">AD Compliances</a></li>
+						<li><a href="#locations">Locations</a></li>
+						<li><a href="#operations">Operations</a></li>
+						<li><a href="#ratings">Ratings</a></li>
+						<li><a href="#maintenancetypes">Maintenance Types</a></li>
+					</ul>
+				</li>
+				<li>To login as an admin,
+					<ol>
+						<li>Click the <b>Login</b> button in the header</li>
+						<li>Select <b>admin</b> as the <b>User</b></li>
+						<li>Enter the password</li>
+						<li>Click <b>Login</b></li>
+					</ol>
+				</li>
+			</ul>
+		</div>
+		<div class="help-topic">
+			<a id="users" class="help-header">Users</a>
+			<ul>
+				<li>Navigate to the users page by clicking the <b>Users</b> tab in the header</li>
+				<li>To create a new entry,
+					<ol>
+						<li>Click the <b>Create New</b> button</li>
+						<li>Populate the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To edit an entry in the list,
+					<ol>
+						<li>Click the <b>Edit</b> icon next to the entry to edit</li>
+						<li>Update the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To delete an entry from the list,
+					<ol>
+						<li>Click the <b>Delete</b> icon next to the entry to delete</li>
+						<li>Click <b>OK</b> to confirm the deletion.</li>
+					</ol>					
+				</li>
+			</ul>
+		</div>
+		<div class="help-topic">
+			<a id="aircrafts" class="help-header">Aircrafts</a>
+			<ul>
+				<li>Navigate to the aircrafts page by clicking the <b>Aircrafts</b> tab in the header</li>
+				<li>To create a new entry,
+					<ol>
+						<li>Click the <b>Create New</b> button</li>
+						<li>Populate the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To edit an entry in the list,
+					<ol>
+						<li>Click the <b>Edit</b> icon next to the entry to edit</li>
+						<li>Update the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To delete an entry from the list,
+					<ol>
+						<li>Click the <b>Delete</b> icon next to the entry to delete</li>
+						<li>Click <b>OK</b> to confirm the deletion.</li>
+					</ol>					
+				</li>
+			</ul>
+		</div>
+		<div class="help-topic">
+			<a id="models" class="help-header">Models</a>
+			<ul>
+				<li>Navigate to the models page by clicking the <b>Models</b> tab in the header</li>
+				<li>To create a new entry,
+					<ol>
+						<li>Click the <b>Create New</b> button</li>
+						<li>Populate the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To edit an entry in the list,
+					<ol>
+						<li>Click the <b>Edit</b> icon next to the entry to edit</li>
+						<li>Update the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To delete an entry from the list,
+					<ol>
+						<li>Click the <b>Delete</b> icon next to the entry to delete</li>
+						<li>Click <b>OK</b> to confirm the deletion.</li>
+					</ol>					
+				</li>
+			</ul>
+		</div>
+		<div class="help-topic">
+			<a id="adminadcompliances" class="help-header">AD Compliances</a>
+			<ul>
+				<li>Navigate to the AD compliances page by
+					<ol>
+						<li>Clicking the <b>AD Compliances</b> tab in the header</li>
+						<li>Selecting the model</li>
+					</ol>
+				</li>
+				<li>To create a new entry,
+					<ol>
+						<li>Click the <b>Create New</b> button</li>
+						<li>Populate the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To edit an entry in the list,
+					<ol>
+						<li>Click the <b>Edit</b> icon next to the entry to edit</li>
+						<li>Update the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To delete an entry from the list,
+					<ol>
+						<li>Click the <b>Delete</b> icon next to the entry to delete</li>
+						<li>Click <b>OK</b> to confirm the deletion.</li>
+					</ol>					
+				</li>
+			</ul>
+		</div>
+		<div class="help-topic">
+			<a id="locations" class="help-header">Locations</a>
+			<ul>
+				<li>Navigate to the locations page by clicking the <b>Locations</b> tab in the header</li>
+				<li>To create a new entry,
+					<ol>
+						<li>Click the <b>Create New</b> button</li>
+						<li>Populate the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To edit an entry in the list,
+					<ol>
+						<li>Click the <b>Edit</b> icon next to the entry to edit</li>
+						<li>Update the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To delete an entry from the list,
+					<ol>
+						<li>Click the <b>Delete</b> icon next to the entry to delete</li>
+						<li>Click <b>OK</b> to confirm the deletion.</li>
+					</ol>					
+				</li>
+			</ul>
+		</div>
+		<div class="help-topic">
+			<a id="operations" class="help-header">Operations</a>
+			<ul>
+				<li>Navigate to the operations page by clicking the <b>Operations</b> tab in the header</li>
+				<li>To create a new entry,
+					<ol>
+						<li>Click the <b>Create New</b> button</li>
+						<li>Populate the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To edit an entry in the list,
+					<ol>
+						<li>Click the <b>Edit</b> icon next to the entry to edit</li>
+						<li>Update the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To delete an entry from the list,
+					<ol>
+						<li>Click the <b>Delete</b> icon next to the entry to delete</li>
+						<li>Click <b>OK</b> to confirm the deletion.</li>
+					</ol>					
+				</li>
+			</ul>
+		</div>
+		<div class="help-topic">
+			<a id="ratings" class="help-header">Ratings</a>
+			<ul>
+				<li>Navigate to the ratings page by clicking the <b>Ratings</b> tab in the header</li>
+				<li>To create a new entry,
+					<ol>
+						<li>Click the <b>Create New</b> button</li>
+						<li>Populate the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To edit an entry in the list,
+					<ol>
+						<li>Click the <b>Edit</b> icon next to the entry to edit</li>
+						<li>Update the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To delete an entry from the list,
+					<ol>
+						<li>Click the <b>Delete</b> icon next to the entry to delete</li>
+						<li>Click <b>OK</b> to confirm the deletion.</li>
+					</ol>					
+				</li>
+			</ul>
+		</div>
+		<div class="help-topic">
+			<a id="maintenancetypes" class="help-header">Maintenance Types</a>
+			<ul>
+				<li>Navigate to the maintenance types page by
+					<ol>
+						<li>Clicking the <b>Maintenance Types</b> tab in the header</li>
+						<li>Selecting the model</li>
+					</ol>
+				</li>
+				<li>To create a new entry,
+					<ol>
+						<li>Click the <b>Create New</b> button</li>
+						<li>Populate the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To edit an entry in the list,
+					<ol>
+						<li>Click the <b>Edit</b> icon next to the entry to edit</li>
+						<li>Update the information</li>
+						<li>Click <b>Save</b></li>
+					</ol>
+				</li>
+				<li>To delete an entry from the list,
+					<ol>
+						<li>Click the <b>Delete</b> icon next to the entry to delete</li>
+						<li>Click <b>OK</b> to confirm the deletion.</li>
+					</ol>					
+				</li>
+			</ul>
+		</div>
+    </div>
+  </body>
+</html>

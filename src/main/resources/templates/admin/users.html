@@ -126,11 +126,11 @@
 			<form id="addEditForm" action="/users" method="post">
 				<fieldset>
 					<label for="name">ID</label>
-					<input type="text" name="userId" id="userId" value="5555" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="userId" id="userId" class="text ui-widget-content ui-corner-all"/>
 					<label for="name">First Name</label>
-					<input type="text" name="firstName" id="firstName" value="Jane" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="firstName" id="firstName" class="text ui-widget-content ui-corner-all"/>
 					<label for="name">Last Name</label>
-					<input type="text" name="lastName" id="lastName" value="Smith" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="lastName" id="lastName" class="text ui-widget-content ui-corner-all"/>
 					<label for="email">Rating</label>
 					<select id="rating" name="rating" class="ui-widget-content ui-corner-all">
 						<option th:each="rating : ${allRatings}" th:text="${rating.name}" th:value="${rating.id}">${rating.name}</option>

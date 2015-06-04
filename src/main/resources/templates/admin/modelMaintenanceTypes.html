@@ -165,15 +165,15 @@
 					  <option th:each="maintenanceCategory : ${T(com.coptertours.options.MaintenanceCategory).values()}" th:value="${maintenanceCategory}" th:text="${maintenanceCategory.name}"></option>
 					</select>
 					<label for="name">Name</label>
-					<input type="text" name="name" id="name" value="New Maintenance Type" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all"/>
 					<label for="timeBeforeAction">TBO</label>
-					<input type="text" name="timeBeforeAction" id="timeBeforeAction" value="50" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="timeBeforeAction" id="timeBeforeAction" class="text ui-widget-content ui-corner-all"/>
 					<label for="manualNumber">Manual Number</label>
-					<input type="text" name="manualNumber" id="manualNumber" value="Manual-123" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="manualNumber" id="manualNumber" class="text ui-widget-content ui-corner-all"/>
 					<label for="partNumber">Part Number</label>
-					<input type="text" name="partNumber" id="partNumber" value="Part-123" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="partNumber" id="partNumber" class="text ui-widget-content ui-corner-all"/>
 					<label for="serialNumber">Serial Number</label>
-					<input type="text" name="serialNumber" id="serialNumber" value="Serial-123" class="text ui-widget-content ui-corner-all"/>
+					<input type="text" name="serialNumber" id="serialNumber" class="text ui-widget-content ui-corner-all"/>
 					<label for="action">Action</label>
 					<select id="action" name="action" class="ui-widget-content ui-corner-all">
 					  <option th:each="action : ${T(com.coptertours.options.Action).values()}" th:value="${action}" th:text="${action.name}"></option>

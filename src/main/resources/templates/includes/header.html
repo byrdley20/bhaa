@@ -34,6 +34,9 @@
      		<div class="admin-admin-button" th:if="${#authentication} ? ${#authorization.expression('isAuthenticated()')} : ${false}">
      			<a href="/logout"><button type="button" id="admin-button" class="admin-button" role="button"><span class="button-text">Logout</span></button></a>
      		</div>
+     		<div class="help-button">
+     			<a href="/help.html"><button type="button" class="admin-button" role="button"><span class="button-text">Help</span></button></a>
+     		</div>
 	      	<!--<div>Mechanic: <a href="/maintenanceLog.html">Maintenance Log</a></div>-->
 		</div>
 		<div id="dialog" style="display:none;" title="Inactivity Detected" th:if="${#authentication} ? ${#authorization.expression('isAuthenticated()')} : ${false}">

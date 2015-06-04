@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class BhaaApplication {
 
 	public static void main(String[] args) {
+		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 		SpringApplication.run(BhaaApplication.class, args);
 	}
 }

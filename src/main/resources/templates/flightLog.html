@@ -264,7 +264,7 @@
 						<option th:each="user : ${allUsers}" th:text="${user.firstName} + ' ' + ${user.lastName}" th:value="${user.id}">${user.firstName} + ' ' + ${user.lastName}</option>
 					</select>
 					<label for="name" th:if="${aircraft.model.showStarts}">Starts</label>
-					<input type="text" name="starts" id="starts" value="2" class="text ui-widget-content ui-corner-all" th:if="${aircraft.model.showStarts}"/>
+					<input type="text" name="starts" id="starts" class="text ui-widget-content ui-corner-all" th:if="${aircraft.model.showStarts}"/>
 					<label for="location">Location</label>
 					<select id="location" name="location" class="ui-widget-content ui-corner-all">
 						<option th:each="location : ${allLocations}" th:text="${location.name}" th:value="${location.id}">${location.name}</option>

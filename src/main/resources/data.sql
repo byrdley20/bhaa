@@ -26,10 +26,10 @@ delete from REPAIR_LOG;
 --ALTER TABLE AIRCRAFT ADD COLUMN engine_total_time_offset DECIMAL;
 --ALTER TABLE AIRCRAFT DROP COLUMN SHOW_STARTS;
 
-ALTER TABLE AIRCRAFT ADD COLUMN tmp_image_path CLOB;
-UPDATE AIRCRAFT SET tmp_image_path=image_path;
-ALTER TABLE AIRCRAFT DROP COLUMN image_path;
-RENAME COLUMN AIRCRAFT.tmp_image_path TO image_path;
+--ALTER TABLE AIRCRAFT ADD COLUMN tmp_image_path CLOB;
+--UPDATE AIRCRAFT SET tmp_image_path=image_path;
+--ALTER TABLE AIRCRAFT DROP COLUMN image_path;
+--RENAME COLUMN AIRCRAFT.tmp_image_path TO image_path;
 
 INSERT INTO RATING (name) values ('Private');
 INSERT INTO RATING (name) values ('Commercial');

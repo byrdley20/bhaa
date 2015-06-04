@@ -81,7 +81,7 @@ public class ImageResizer {
 		try {
 		JAI.create(JAI_ENCODE_ACTION, resizedImage, encoderOutputStream, JAI_ENCODE_FORMAT_JPEG, null);
 		} catch (Exception e) {
-			System.out.println("NoClassDefFoundError caught" + e.getMessage());
+			System.out.println("NoClassDefFoundError caught: " + e.getMessage());
 		}
 		// Export to Byte Array
 		byte[] resizedImageByteArray = encoderOutputStream.toByteArray();
