@@ -61,6 +61,7 @@ public class AircraftStatusController extends BaseController {
 			}
 		}
 
+		boolean hasDailyAd = false;
 		List<AdCompliance> adCompliances = new ArrayList<AdCompliance>();
 		List<AdComplianceLog> adComplianceLogs = this.adComplianceLogRepository.findByAircraftId(id);
 		Map<Long, AdComplianceLog> adComplianceToLog = new HashMap<Long, AdComplianceLog>();
@@ -77,6 +78,9 @@ public class AircraftStatusController extends BaseController {
 		for (AdCompliance adComplianceForModel : adCompliancesForModel) {
 			adComplianceForModel.setAdComplianceLog(adComplianceToLog.get(adComplianceForModel.getId()));
 			adCompliances.add(adComplianceForModel);
+			if (adComplianceForModel.getDaily()) {
+				hasDailyAd = true;
+			}
 		}
 
 		setCurrentHobbsAndOffsets(aircraft);
@@ -87,6 +91,7 @@ public class AircraftStatusController extends BaseController {
 		model.addAttribute("adCompliances", adCompliances);
 		model.addAttribute("allPilots", findUsersByRole(Role.PILOT));
 		model.addAttribute("today", new Date());
+		model.addAttribute("hasDailyAd", hasDailyAd);
 		return "aircraftStatus";
 	}
 }

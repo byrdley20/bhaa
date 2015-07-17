@@ -284,10 +284,10 @@
 		</div>
 		<br/>
 		<div>
-			<span th:text="'Collective Flight Log ' + ${aircraft.aircraftNumber}">Flight Logs</span>
+			<span th:text="'Collective Flight Log ' + ${aircraft.name}">Flight Logs</span>
 			&nbsp;&nbsp;
 			<span><a href="aircraftStatus.html?id=1" th:href="@{aircraftStatus.html(id=${aircraft.id})}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Status</span></button></a></span>
-			<span><a href="adCompliance.html?id=1" th:href="@{adComplianceLog.html(id=${aircraft.id})}"><button type="button" class="month-button no-print" role="button"><span class="button-text">AD Compliance</span></button></a></span>
+			<span th:if="${hasDailyAd}"><a href="adCompliance.html?id=1" th:href="@{adComplianceLog.html(id=${aircraft.id})}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Daily AD Compliance</span></button></a></span>
 		</div>
 		<div th:text="'Model: ' + ${aircraft.model.name}">Aircraft Model</div>
 		<br/>
@@ -323,7 +323,7 @@
 			    <span class="headerCell dataCell">Hobbs Total</span>
 			    <span class="headerCell dataCell">Operation</span>
 			</div>
-			<div class="records-rows" th:each="fl : ${flightLogs}" th:classappend="|id${fl.id}">
+			<div class="records-rows" th:each="fl : ${flightLogs}" th:classappend="'id'+${fl.id} + (${flStat.odd} ? ' even' : '')">
 				<span class="dataCell no-print">
 					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${fl.id}"><img border="0" alt="Edit" src="images/edit.png"/></a></span>
 					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${fl.id}"><img border="0" alt="Delete" src="images/delete.png"/></a></span>

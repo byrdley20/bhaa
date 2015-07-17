@@ -7,7 +7,12 @@ import com.coptertours.common.KeyValue;
 
 public enum Action {
 
-	OVERHAUL("Overhaul"), RETIRE("Retire");
+	OVERHAUL("O/H"),
+	RETIRE("RT"),
+	INSP("INSP"),
+	HIS("HIS"),
+	UL("U/L"),
+	CS("CS");
 
 	private String name;
 

@@ -8,12 +8,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.coptertours.domain.AdCompliance;
 import com.coptertours.domain.Aircraft;
 import com.coptertours.domain.FlightLog;
 import com.coptertours.options.Role;
+import com.coptertours.repository.AdComplianceRepository;
 import com.coptertours.repository.AircraftRepository;
 import com.coptertours.repository.FlightLogRepository;
 import com.coptertours.repository.LocationRepository;
@@ -36,10 +39,14 @@ public class FlightLogController extends BaseController {
 	OperationRepository operationRepository;
 	@Autowired
 	FlightLogRepository flightLogRepository;
+	@Autowired
+	AdComplianceRepository adComplianceRepository;
 
 	@RequestMapping("/flightLog.html")
 	String flightLog(Model model, @RequestParam Long id, @RequestParam(required = false) Integer month) throws JsonProcessingException {
 		Aircraft aircraft = this.aircraftRepository.findOne(id);
+
+		List<AdCompliance> adCompliances = this.adComplianceRepository.findByModelAndDaily(aircraft.getModel(), true, sortByNameAsc());
 
 		Calendar startDateCal = DateUtil.findMonthStartDate(month);
 		Calendar endDateCal = DateUtil.findMonthEndDate(month);
@@ -67,6 +74,7 @@ public class FlightLogController extends BaseController {
 		model.addAttribute("allOperations", this.operationRepository.findAll(sortByNameAsc()));
 		model.addAttribute("month", startDateCal.get(Calendar.MONTH));
 		model.addAttribute("mostRecentHobbsEnd", this.flightLogRepository.findMostRecentHobbsEndByAircraft(aircraft));
+		model.addAttribute("hasDailyAd", !CollectionUtils.isEmpty(adCompliances));
 		return "flightLog";
 	}
 }

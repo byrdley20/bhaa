@@ -54,10 +54,10 @@ public class DateUtil {
 
 	public static Calendar findMonthEndDate(Integer month) {
 		Calendar endDateCal = Calendar.getInstance();
-		endDateCal.set(Calendar.DAY_OF_MONTH, endDateCal.getActualMaximum(Calendar.DAY_OF_MONTH));
 		if (month != null) {
 			endDateCal.set(Calendar.MONTH, month - 1);
 		}
+		endDateCal.set(Calendar.DAY_OF_MONTH, endDateCal.getActualMaximum(Calendar.DAY_OF_MONTH));
 		endDateCal.setTime(findDayEnd(endDateCal.getTime()));
 		return endDateCal;
 	}

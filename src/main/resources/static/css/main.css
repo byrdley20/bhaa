@@ -231,6 +231,9 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 .topButton{
 	margin-bottom: 20px;
 }
+.even {
+	background-color: #e6e6e6;
+}
 .dueNow {
 	background-color: #970102;
 	color: white;

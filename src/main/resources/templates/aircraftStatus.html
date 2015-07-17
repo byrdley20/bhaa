@@ -181,9 +181,9 @@
 			<span th:text="${aircraft.model.name}">Model Name</span>
 			&nbsp;&nbsp;
 			<span><a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>
-			<span><a href="adCompliance.html?id=1" th:href="@{adComplianceLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">AD Compliance</span></button></a></span>
+			<span th:if="${hasDailyAd}"><a href="adCompliance.html?id=1" th:href="@{adComplianceLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Daily AD Compliance</span></button></a></span>
 		</div>
-		<div th:text="${aircraft.aircraftNumber}">ID</div>
+		<div th:text="${aircraft.name}">ID</div>
 		<div th:text="'S/N: ' + ${aircraft.serialNum}">Serial Number</div>
 		<div th:text="'Hobbs: ' + ${currentHobbs}">Hobbs</div>
 		<div th:text="'Engine Total Time: ' + ${engineTotalTime}">Engine TT</div>
@@ -195,14 +195,22 @@
 			<div class="records-header">
 				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"></span>
 			    <span class="dataCell">Item</span>
-			    <span class="dataCell">C/W</span>
+			    <span class="dataCell">Serial Num</span>
+			    <span class="dataCell">Part Num</span>
+			    <span class="dataCell">Manual Num</span>
+			    <span class="dataCell">Action</span>
+			    <span class="dataCell">A/C Hrs C/W</span>
 			    <span class="dataCell">TBO Hours</span>
-			    <span class="dataCell">Hobbs Due</span>
+			    <span class="dataCell">A/C Hrs Due</span>
 			    <span class="dataCell">Remaining Hours</span>
 			</div>
-			<div class="records-rows maint-rows-hour" th:each="maintType : ${flightHourMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+((${remainingHours}!=null) ? ((${remainingHours} &lt; 10) ? 'dueNow' : ((${remainingHours} &lt; 20 ) ? 'dueSoon' : '')) : '')" th:with="complyWithHobbs=((${maintType.maintenanceLog}==null)?'0':${maintType.maintenanceLog.complyWithHobbs}),hobbsDue=(${complyWithHobbs}+${maintType.timeBeforeAction}),remainingHours=(${hobbsDue}-${currentHobbs})">
+			<div class="records-rows maint-rows-hour" th:each="maintType : ${flightHourMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingHours}!=null) ? ((${remainingHours} &lt; 10) ? 'dueNow' : ((${remainingHours} &lt; 20 ) ? 'dueSoon' : '')) : '')" th:with="complyWithHobbs=((${maintType.maintenanceLog}==null)?'0':${maintType.maintenanceLog.complyWithHobbs}),hobbsDue=(${complyWithHobbs}+${maintType.timeBeforeAction}),remainingHours=(${hobbsDue}-${aircraftTotalTime})">
 				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" title="Comply With" src="images/repair.png"/></a></span>
 				<span class="dataCell" th:text="${maintType.name}">Item Name</span>
+				<span class="dataCell" th:text="${maintType.serialNumber}">Serial Num</span>
+				<span class="dataCell" th:text="${maintType.partNumber}">Part Num</span>
+				<span class="dataCell" th:text="${maintType.manualNumber}">Manual Num</span>
+				<span class="dataCell" th:text="${maintType.action.name}">Action</span>
 				<span class="dataCell complyWithHobbs" th:text="${complyWithHobbs}">599.9</span>
 				<span class="dataCell tbo" th:text="${maintType.timeBeforeAction}">100.0</span>
 				<span class="dataCell hobbsDue" th:text="${hobbsDue}">699.9</span>
@@ -217,14 +225,22 @@
 			<div class="records-header">
 				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"></span>
 			    <span class="dataCell">Item</span>
+			    <span class="dataCell">Serial Num</span>
+			    <span class="dataCell">Part Num</span>
+			    <span class="dataCell">Manual Num</span>
+			    <span class="dataCell">Action</span>
 			    <span class="dataCell">C/W</span>
 			    <span class="dataCell">TBO Months</span>
 			    <span class="dataCell">Due Date</span>
 			    <span class="dataCell">Remaining Days</span>
 			</div>
-			<div class="records-rows maint-rows-month" th:each="maintType : ${monthMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+((${remainingDays}!='N/A') ? ((${remainingDays} &lt; 5) ? 'dueNow' : ((${remainingDays} &lt; 15) ? 'dueSoon' : '')) : 'dueNow')" th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),dueDate=((${maintType.maintenanceLog}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yyyy')}),remainingDays=((${maintType.maintenanceLog} == null)?'N/A':${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)})">
+			<div class="records-rows maint-rows-month" th:each="maintType : ${monthMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingDays}!='N/A') ? ((${remainingDays} &lt; 5) ? 'dueNow' : ((${remainingDays} &lt; 15) ? 'dueSoon' : '')) : 'dueNow')" th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),dueDate=((${maintType.maintenanceLog}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yyyy')}),remainingDays=((${maintType.maintenanceLog} == null)?'N/A':${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)})">
 				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" title="Comply With" src="images/repair.png"/></a></span>
 				<span class="dataCell" th:text="${maintType.name}">Item Name</span>
+				<span class="dataCell" th:text="${maintType.serialNumber}">Serial Num</span>
+				<span class="dataCell" th:text="${maintType.partNumber}">Part Num</span>
+				<span class="dataCell" th:text="${maintType.manualNumber}">Manual Num</span>
+				<span class="dataCell" th:text="${maintType.action.name}">Action</span>
 				<span class="dataCell complyWithDate" th:text="((${maintType.maintenanceLog} == null)?'N/A':${#dates.format(complyWithDate, 'MM/dd/yyyy')})">01/01/15</span>
 				<span class="dataCell tbo" th:text="${#numbers.formatInteger(maintType.timeBeforeAction,1)}">24</span>
 				<span class="dataCell dueDate" th:text="${dueDate}">1/1/9999</span>
@@ -244,7 +260,7 @@
 			    <span class="dataCell">Hobbs Due</span>
 			    <span class="dataCell">Remaining Hours</span>
 			</div>
-			<div class="records-rows maint-rows-ad" th:each="adCompliance : ${adCompliances}" th:classappend="'adComplianceId-'+${adCompliance.id}+' '+(${adCompliance.daily} ? ((${complyWithDate}!='N/A') ? ((${T(com.coptertours.util.DateUtil).findDaysBetweenDates(complyWithDate, today)} &gt; 0) ? 'dueNow') : 'dueNow') : ((${remainingHours}!=null) ? ((${remainingHours} &lt; 10) ? 'dueNow' : ((${remainingHours} &lt; 20 ) ? 'dueSoon' : '')) : ''))" th:with="complyWithHobbs=(!${adCompliance.daily}?((${adCompliance.adComplianceLog}==null)?'0':${adCompliance.adComplianceLog.complyWithHobbs})), hobbsDue=(!${adCompliance.daily} ? (${complyWithHobbs}+${adCompliance.timeBeforeAction})), remainingHours=(!${adCompliance.daily} ? (${hobbsDue}-${currentHobbs})), complyWithDate=((!${adCompliance.daily} or ${adCompliance.adComplianceLog} == null)?'N/A':${#dates.format(adCompliance.adComplianceLog.complyWithDate, 'MM/dd/yyyy')})">
+			<div class="records-rows maint-rows-ad" th:each="adCompliance : ${adCompliances}" th:classappend="'adComplianceId-'+${adCompliance.id}+' '+(${adComplianceStat.odd}?'even':'')+' '+(${adCompliance.daily} ? ((${complyWithDate}!='N/A') ? ((${T(com.coptertours.util.DateUtil).findDaysBetweenDates(complyWithDate, today)} &gt; 0) ? 'dueNow') : 'dueNow') : ((${remainingHours}!=null) ? ((${remainingHours} &lt; 10) ? 'dueNow' : ((${remainingHours} &lt; 20 ) ? 'dueSoon' : '')) : ''))" th:with="complyWithHobbs=(!${adCompliance.daily}?((${adCompliance.adComplianceLog}==null)?'0':${adCompliance.adComplianceLog.complyWithHobbs})), hobbsDue=(!${adCompliance.daily} ? (${complyWithHobbs}+${adCompliance.timeBeforeAction})), remainingHours=(!${adCompliance.daily} ? (${hobbsDue}-${currentHobbs})), complyWithDate=((!${adCompliance.daily} or ${adCompliance.adComplianceLog} == null)?'N/A':${#dates.format(adCompliance.adComplianceLog.complyWithDate, 'MM/dd/yyyy')})">
 				<span class="dataCell complyWith" th:if="${adCompliance.daily}"><a href="#" th:href="@{adComplianceLog.html(id=${aircraft.id},adComplianceId=${adCompliance.id})}"><img border="0" title="Comply With" src="images/repair.png"/></a></span>
 				<span class="dataCell complyWith editLink" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')" th:if="!${adCompliance.daily}" ><a href="#" th:attr="data-id=${adCompliance.id}"><img border="0" title="Comply With" src="images/repair.png"/></a></span>
 				<span class="dataCell complyWith" th:if="!${adCompliance.daily}" sec:authorize="!hasRole('ROLE_MECHANIC') and !hasRole('ROLE_ADMIN')"></span>
