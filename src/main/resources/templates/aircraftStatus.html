@@ -5,14 +5,15 @@
 <head>
     <title>Black Hills Aerial Adventures | Status</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<link rel="stylesheet" href="/css/jqueryui/1.11.3/jquery-ui.css" th:href="@{~/css/jqueryui/1.11.3/jquery-ui.css}"/>
-	<link rel="stylesheet" href="/css/main.css" th:href="@{~/css/main.css}"/>
-    <script type="text/javascript" src="/js/jquery/1.11.2/jquery.min.js" th:src="@{~/js/jquery/1.11.2/jquery.min.js}"></script>
-	<script type="text/javascript" src="/js/jqueryui/1.11.3/jquery-ui.min.js" th:src="@{~/js/jqueryui/1.11.3/jquery-ui.min.js}"></script>
-    <script type="text/javascript" src="/js/main.js" th:src="@{~/js/main.js}"></script>
-    <script type="text/javascript" src="js/date.js" th:src="@{~/js/date.js}"></script>
+	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
+	<link rel="stylesheet" href="css/main.css" />
+    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/date.js"></script>
     <script th:inline="javascript">
     	/*<![CDATA[*/
+
 		var aircraft = /*[[${aircraft}]]*/;
     	var currentHobbs = /*[[${aircraft.hobbs}]]*/;
 
@@ -113,11 +114,11 @@
     		var isAdCompliance = editSpan.parent('.maint-rows-ad').length;
     		
     		if(isAdCompliance) {
-	    		$("#addEditForm").attr("action", contextPath + "/aircraftStatus/complyWithAd");
-	    		addUpdatePath = contextPath + "/aircraftStatus/complyWithAd";
+	    		$("#addEditForm").attr("action", "/aircraftStatus/complyWithAd");
+	    		addUpdatePath = "/aircraftStatus/complyWithAd";
     		} else {
-    			$("#addEditForm").attr("action", contextPath + "/aircraftStatus/complyWith");
-    			addUpdatePath = contextPath + "/aircraftStatus/complyWith";
+    			$("#addEditForm").attr("action", "/aircraftStatus/complyWith");
+    			addUpdatePath = "/aircraftStatus/complyWith";
     		}    		
     		
 			$('#addEditForm').find('#complyWithDate').show();
@@ -161,7 +162,7 @@
 	<div id="main-content">
 		<div id="dialog-form" title="Comply With">
 			<p class="validateTips"></p>
-			<form id="addEditForm" action="/aircraftStatus/complyWith" th:action="@{~/aircraftStatus/complyWith}" method="post">
+			<form id="addEditForm" action="/aircraftStatus/complyWith" method="post">
 				<fieldset>
 					<label for="complyWithDate" class="complyWithDate">Comply With Date</label>
 					<input type="text" name="complyWithDate" id="complyWithDate" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
@@ -179,8 +180,8 @@
 		<div>
 			<span th:text="${aircraft.model.name}">Model Name</span>
 			&nbsp;&nbsp;
-			<span><a href="flightLog.html?id=1" th:href="@{~/flightLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>
-			<span th:if="${hasDailyAd}"><a href="adCompliance.html?id=1" th:href="@{~/adComplianceLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Daily AD Compliance</span></button></a></span>
+			<span><a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>
+			<span th:if="${hasDailyAd}"><a href="adCompliance.html?id=1" th:href="@{adComplianceLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Daily AD Compliance</span></button></a></span>
 		</div>
 		<div th:text="${aircraft.name}">ID</div>
 		<div th:text="'S/N: ' + ${aircraft.serialNum}">Serial Number</div>
@@ -204,7 +205,7 @@
 			    <span class="dataCell">Remaining Hours</span>
 			</div>
 			<div class="records-rows maint-rows-hour" th:each="maintType : ${flightHourMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingHours}!=null) ? ((${remainingHours} &lt; 10) ? 'dueNow' : ((${remainingHours} &lt; 20 ) ? 'dueSoon' : '')) : '')" th:with="complyWithHobbs=((${maintType.maintenanceLog}==null)?'0':${maintType.maintenanceLog.complyWithHobbs}),hobbsDue=(${complyWithHobbs}+${maintType.timeBeforeAction}),remainingHours=(${hobbsDue}-${aircraftTotalTime})">
-				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" title="Comply With" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
+				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" title="Comply With" src="images/repair.png"/></a></span>
 				<span class="dataCell" th:text="${maintType.name}">Item Name</span>
 				<span class="dataCell" th:text="${maintType.serialNumber}">Serial Num</span>
 				<span class="dataCell" th:text="${maintType.partNumber}">Part Num</span>
@@ -234,7 +235,7 @@
 			    <span class="dataCell">Remaining Days</span>
 			</div>
 			<div class="records-rows maint-rows-month" th:each="maintType : ${monthMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingDays}!='N/A') ? ((${remainingDays} &lt; 5) ? 'dueNow' : ((${remainingDays} &lt; 15) ? 'dueSoon' : '')) : 'dueNow')" th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),dueDate=((${maintType.maintenanceLog}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yyyy')}),remainingDays=((${maintType.maintenanceLog} == null)?'N/A':${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)})">
-				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" title="Comply With" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
+				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" title="Comply With" src="images/repair.png"/></a></span>
 				<span class="dataCell" th:text="${maintType.name}">Item Name</span>
 				<span class="dataCell" th:text="${maintType.serialNumber}">Serial Num</span>
 				<span class="dataCell" th:text="${maintType.partNumber}">Part Num</span>
@@ -260,8 +261,8 @@
 			    <span class="dataCell">Remaining Hours</span>
 			</div>
 			<div class="records-rows maint-rows-ad" th:each="adCompliance : ${adCompliances}" th:classappend="'adComplianceId-'+${adCompliance.id}+' '+(${adComplianceStat.odd}?'even':'')+' '+(${adCompliance.daily} ? ((${complyWithDate}!='N/A') ? ((${T(com.coptertours.util.DateUtil).findDaysBetweenDates(complyWithDate, today)} &gt; 0) ? 'dueNow') : 'dueNow') : ((${remainingHours}!=null) ? ((${remainingHours} &lt; 10) ? 'dueNow' : ((${remainingHours} &lt; 20 ) ? 'dueSoon' : '')) : ''))" th:with="complyWithHobbs=(!${adCompliance.daily}?((${adCompliance.adComplianceLog}==null)?'0':${adCompliance.adComplianceLog.complyWithHobbs})), hobbsDue=(!${adCompliance.daily} ? (${complyWithHobbs}+${adCompliance.timeBeforeAction})), remainingHours=(!${adCompliance.daily} ? (${hobbsDue}-${currentHobbs})), complyWithDate=((!${adCompliance.daily} or ${adCompliance.adComplianceLog} == null)?'N/A':${#dates.format(adCompliance.adComplianceLog.complyWithDate, 'MM/dd/yyyy')})">
-				<span class="dataCell complyWith" th:if="${adCompliance.daily}"><a href="#" th:href="@{~/adComplianceLog.html(id=${aircraft.id},adComplianceId=${adCompliance.id})}"><img border="0" title="Comply With" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
-				<span class="dataCell complyWith editLink" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')" th:if="!${adCompliance.daily}" ><a href="#" th:attr="data-id=${adCompliance.id}"><img border="0" title="Comply With" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
+				<span class="dataCell complyWith" th:if="${adCompliance.daily}"><a href="#" th:href="@{adComplianceLog.html(id=${aircraft.id},adComplianceId=${adCompliance.id})}"><img border="0" title="Comply With" src="images/repair.png"/></a></span>
+				<span class="dataCell complyWith editLink" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')" th:if="!${adCompliance.daily}" ><a href="#" th:attr="data-id=${adCompliance.id}"><img border="0" title="Comply With" src="images/repair.png"/></a></span>
 				<span class="dataCell complyWith" th:if="!${adCompliance.daily}" sec:authorize="!hasRole('ROLE_MECHANIC') and !hasRole('ROLE_ADMIN')"></span>
 				<span class="dataCell" th:text="${adCompliance.name}">Name</span>
 				<span class="dataCell" th:classappend="${adCompliance.daily} ? 'complyWithDate' : 'complyWithHobbs'" th:text="${adCompliance.daily} ? ${complyWithDate} : ${complyWithHobbs}">599.9</span>
@@ -273,8 +274,8 @@
 				<span class="adComplianceId cell hidden" th:text="${adCompliance.id}">Hidden AD Compliance ID</span>
 			</div>
 		</div>
-		<span><a href="resetLog.html?i=hobbs" th:href="@{~/resetLog.html(id=${aircraft.id}, i=hobbs)}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Hobbs Meter</span></button></a></span>
-		<span><a href="resetLog.html?i=engine" th:href="@{~/resetLog.html(id=${aircraft.id}, i=engine)}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Engine Time</span></button></a></span>
+		<span><a href="resetLog.html?i=hobbs" th:href="@{resetLog.html(id=${aircraft.id}, i=hobbs)}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Hobbs Meter</span></button></a></span>
+		<span><a href="resetLog.html?i=engine" th:href="@{resetLog.html(id=${aircraft.id}, i=engine)}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Engine Time</span></button></a></span>
 	</div>	
 </body>
 </html>

@@ -4,11 +4,11 @@
 <head>
     <title>Black Hills Aerial Adventures | Dashboard</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<link rel="stylesheet" href="/css/jqueryui/1.11.3/jquery-ui.css" th:href="@{~/css/jqueryui/1.11.3/jquery-ui.css}"/>
-	<link rel="stylesheet" href="/css/main.css" th:href="@{~/css/main.css}"/>
-    <script type="text/javascript" src="/js/jquery/1.11.2/jquery.min.js" th:src="@{~/js/jquery/1.11.2/jquery.min.js}"></script>
-	<script type="text/javascript" src="/js/jqueryui/1.11.3/jquery-ui.min.js" th:src="@{~/js/jqueryui/1.11.3/jquery-ui.min.js}"></script>
-    <script type="text/javascript" src="/js/main.js" th:src="@{~/js/main.js}"></script>
+	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
+	<link rel="stylesheet" href="css/main.css" />
+    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
     <script th:inline="javascript">
     	/*<![CDATA[*/
     	               	
@@ -97,9 +97,9 @@
 							<img src="" th:src="'data:image/jpeg;base64,'+@{${a.imagePath}}" />
 						</div>
 						<div>
-							<span><a href="flightLog.html?id=1" th:href="@{~/flightLog.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>
-							<span><a href="aircraftStatus.html?id=1" th:href="@{~/aircraftStatus.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Status</span></button></a></span>
-							<span th:if="${a.model.hasAdCompliances}"><a href="adComplianceLog.html?id=1" th:href="@{~/adComplianceLog.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text" th:classappend="!${a.adComplied}?'alert-button'">AD Compliance</span></button></a></span>
+							<span><a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>
+							<span><a href="aircraftStatus.html?id=1" th:href="@{aircraftStatus.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Status</span></button></a></span>
+							<span th:if="${a.model.hasAdCompliances}"><a href="adComplianceLog.html?id=1" th:href="@{adComplianceLog.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text" th:classappend="!${a.adComplied}?'alert-button'">AD Compliance</span></button></a></span>
 						</div>
 					</div>
 				</div>
