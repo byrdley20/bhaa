@@ -45,7 +45,8 @@ public class DashboardController extends BaseController {
 	@Autowired
 	private AdComplianceLogRepository adComplianceLogRepository;
 
-	@RequestMapping({ "/", "/dashboard.html" })
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/")
 	String dashboard(Model model, HttpServletRequest request) throws IOException {
 		Map<Long, List<AdCompliance>> modelToAdCompliances = new HashMap<Long, List<AdCompliance>>();
 		List<Aircraft> aircrafts = this.aircraftRepository.findAll();

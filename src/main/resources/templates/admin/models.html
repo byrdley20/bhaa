@@ -4,11 +4,11 @@
 <head>
     <title>Black Hills Aerial Adventures | Models</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<link rel="stylesheet" href="/css/jqueryui/1.11.3/jquery-ui.css" th:href="@{~/css/jqueryui/1.11.3/jquery-ui.css}"/>
-	<link rel="stylesheet" href="/css/main.css" th:href="@{~/css/main.css}"/>
-    <script type="text/javascript" src="/js/jquery/1.11.2/jquery.min.js" th:src="@{~/js/jquery/1.11.2/jquery.min.js}"></script>
-	<script type="text/javascript" src="/js/jqueryui/1.11.3/jquery-ui.min.js" th:src="@{~/js/jqueryui/1.11.3/jquery-ui.min.js}"></script>
-    <script type="text/javascript" src="/js/main.js" th:src="@{~/js/main.js}"></script>
+	<link rel="stylesheet" href="/css/jqueryui/1.11.3/jquery-ui.css" />
+	<link rel="stylesheet" href="/css/main.css" />
+    <script type="text/javascript" src="/js/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/js/main.js"></script>
     <script th:inline="javascript">
     	/*<![CDATA[*/
     	           
@@ -49,8 +49,8 @@
     		
     		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+" new-row'>" +
 	    			"<span class='dataCell'>" +
-			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='"+contextPath+"/images/edit.png'/></a></span> " +
-			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='"+contextPath+"/images/delete.png'/></a></span> " +
+			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='/images/edit.png'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='/images/delete.png'/></a></span> " +
 			    	"</span>" +
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='showStarts dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.showStarts)+" disabled='disabled'/></span> " +
@@ -86,7 +86,7 @@
 		<H1>Models</H1>
 		<div id="dialog-form" title="Model">
 			<p class="validateTips"></p>
-			<form id="addEditForm" action="/models" th:action="@{~/models}" method="post">
+			<form id="addEditForm" action="/models" method="post">
 				<fieldset>
 					<label for="name">Name</label>
 					<input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all"/>
@@ -105,8 +105,8 @@
 			</div>
 			<div class="records-rows" th:each="m : ${models}" th:classappend="|id${m.id}">
 				<span class="dataCell">
-					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="/images/edit.png" th:src="@{~/images/edit.png}"/></a></span>
-					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="/images/delete.png" th:src="@{~/images/delete.png}"/></a></span>
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${m.id}"><img border="0" alt="Edit" src="/images/edit.png"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${m.id}"><img border="0" alt="Delete" src="/images/delete.png"/></a></span>
 				</span>
 				<span class="name dataCell" th:text="${m.name}">Name</span>
 				<span class="showStarts dataCell"><input type="checkbox" th:value="${m.showStarts}" th:checked="${m.showStarts}" disabled="disabled"/></span>
