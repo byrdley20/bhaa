@@ -6,11 +6,11 @@
     <title>Black Hills Aerial Adventures | Squawks</title>
     <meta th:replace="includes/header :: head"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
-	<link rel="stylesheet" href="css/main.css" />
-    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
-	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
+	<link rel="stylesheet" href="/css/jqueryui/1.11.3/jquery-ui.css" th:href="@{~/css/jqueryui/1.11.3/jquery-ui.css}"/>
+	<link rel="stylesheet" href="/css/main.css" th:href="@{~/css/main.css}"/>
+    <script type="text/javascript" src="/js/jquery/1.11.2/jquery.min.js" th:src="@{~/js/jquery/1.11.2/jquery.min.js}"></script>
+	<script type="text/javascript" src="/js/jqueryui/1.11.3/jquery-ui.min.js" th:src="@{~/js/jqueryui/1.11.3/jquery-ui.min.js}"></script>
+    <script type="text/javascript" src="/js/main.js" th:src="@{~/js/main.js}"></script>
     <script th:inline="javascript">
     	/*<![CDATA[*/
 
@@ -40,7 +40,7 @@
     </script>
     <script type="text/javascript" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')">
 		function buildRepairIcon(savedRecord) {
-			return '<span class="repair icon"><a href="#" class="repairLink" data-id="'+savedRecord.id+'"><img border="0" alt="Repair" src="images/repair.png"/></a></span> ';
+			return '<span class="repair icon"><a href="#" class="repairLink" data-id="'+savedRecord.id+'"><img border="0" alt="Repair" src="'+contextPath+'/images/repair.png"/></a></span> ';
 		}
     </script>
 	<script type="text/javascript" sec:authorize="!hasRole('ROLE_MECHANIC') and !hasRole('ROLE_ADMIN')">
@@ -73,8 +73,8 @@
     		allFields = $( [] ).add( id ).add( reportDate ).add( pilot ).add( aircraft).add( issueNotes ).add( repair_reportDate ).add( repair_pilot ).add( repair_aircraft).add( repair_issueNotes ).add( repairDate ).add( mechanic ).add( repairNotes ).add( repair_id );
         	addEditFields = $( [] ).add( id ).add( reportDate ).add( pilot ).add( aircraft).add( issueNotes );
     		repairFields = $( [] ).add( repair_reportDate ).add( repair_pilot ).add( repair_aircraft ).add( repair_issueNotes ).add( repairDate ).add( mechanic ).add( repairNotes ).add( repair_id );
-        	addUpdatePath = "/squawks";
-        	deletePath = "/squawks";
+        	addUpdatePath = contextPath+"/squawks";
+        	deletePath = contextPath+"/squawks";
     		
     		createDialog();
     		createRepairDialog();
@@ -132,8 +132,8 @@
     		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+" new-row'>" +
 	    			"<span class='dataCell'>" +
 	    			buildRepairIcon(savedRecord) +
-	    			"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='images/edit.png'/></a></span> " +
-			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='images/delete.png'/></a></span> " +
+	    			"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='"+contextPath+"/images/edit.png'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='"+contextPath+"/images/delete.png'/></a></span> " +
 			    	"</span>" +
 			    	"<span class='reportDate dataCell'>"+savedRecord.reportDate+"</span> " +
 			    	"<span class='pilot dataCell'>"+savedRecord.pilot.displayName+"</span> " +
@@ -229,7 +229,7 @@
     			
     			var editRecord = (formData["id"] > 0);
     	        $.ajax({
-    	            url: baseUrl+addUpdatePath,
+    	            url: contextPath+addUpdatePath,
     	            type:'POST',
     	            data: JSON.stringify(formData),
     	            dataType: 'json',
@@ -262,7 +262,7 @@
 		<a href="squawks-completed.html"><button id="completed-squawks" class="topButton">Completed</button></a>
 		<div id="dialog-form" title="Squawk">
 			<p class="validateTips"></p>
-			<form id="addEditForm" action="/squawks" method="post">
+			<form id="addEditForm" action="/squawks" th:action="@{~/squawks}" method="post">
 				<fieldset>
 					<label for="reportDate">Date</label>
 					<input type="text" name="reportDate" id="reportDate" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
@@ -283,7 +283,7 @@
 		</div>
 		<div id="repair_dialog-form" title="Repair">
 			<p class="validateTips"></p>
-			<form id="repairForm" action="/squawks" method="post">
+			<form id="repairForm" action="/squawks" th:action="@{~/squawks}" method="post">
 				<fieldset>
 					<label for="repair_reportDate">Date Reported</label>
 					<input type="text" name="repair_reportDate" id="repair_reportDate" disabled="disabled" tabindex="-1" class="disabled text ui-widget-content ui-corner-all"/>
@@ -321,9 +321,9 @@
 			</div>
 			<div class="records-rows" th:each="s : ${openSquawks}" th:classappend="|id${s.id}">
 				<span class="dataCell">
-					<span class="repair icon" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="repairLink" th:attr="data-id=${s.id}"><img border="0" alt="Repair" src="images/repair.png"/></a></span>
-					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${s.id}"><img border="0" alt="Edit" src="images/edit.png"/></a></span>
-					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${s.id}"><img border="0" alt="Delete" src="images/delete.png"/></a></span>
+					<span class="repair icon" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="repairLink" th:attr="data-id=${s.id}"><img border="0" alt="Repair" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${s.id}"><img border="0" alt="Edit" src="images/edit.png" th:src="@{~/images/edit.png}"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${s.id}"><img border="0" alt="Delete" src="images/delete.png" th:src="@{~/images/delete.png}"/></a></span>
 				</span>
 				<span class="reportDate dataCell" th:text="${#dates.format(s.reportDate, 'MM/dd/yyyy')}">Date Reported</span>
 				<span class="pilot dataCell" th:text="${s.pilot.displayName}">Pilot</span>

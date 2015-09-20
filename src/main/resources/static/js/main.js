@@ -1,5 +1,3 @@
-var baseUrl = "http://localhost:9999";
-var uploadImageUrl = baseUrl+"/admin/aircrafts/uploadImage";
 //var uploadImageUrl = "http://deviantsart.com";
 var dialog, allFields, form, tips, addUpdatePath, deletePath;
 
@@ -66,6 +64,7 @@ function saveRecord() {
 
 		// upload the image file first, so we can get the image path
         if(!$.isEmptyObject(fileFormData)) {
+        	var uploadImageUrl = domain+"/admin/aircrafts/uploadImage";
         	var uploadFileFormData = new FormData();
         	uploadFileFormData.append("imageFile", fileFormData.imagePath);
         	uploadFileFormData.append("aircraftNumber", formData.aircraftNumber);
@@ -97,7 +96,7 @@ function saveRecord() {
 		
 		var editRecord = (formData["id"] > 0);
         $.ajax({
-            url: baseUrl+addUpdatePath,
+            url: contextPath+addUpdatePath,
             type:'POST',
             data: JSON.stringify(formData),
             dataType: 'json',
@@ -293,7 +292,7 @@ $(function() {
 	}
 	function deleteRecord(id){
         $.ajax({
-            url: baseUrl+deletePath+'/'+id,
+            url: domain+deletePath+'/'+id,
             type:'DELETE',
             success:function(response){
         		if (typeof postDeleteAction == 'function') {

@@ -5,9 +5,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class LoginController extends BaseController {
-	@RequestMapping({ "/login.html", "/bhaa-1.0.0/login.html" })
+public class AppLoginController extends BaseController {
+	@RequestMapping("/appLogin.html")
 	String login(Model model) {
-		return "login";
+		return "appLogin";
 	}
 }
