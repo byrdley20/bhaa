@@ -4,11 +4,11 @@
 <head>
     <title>Black Hills Aerial Adventures | Reset Hobbs/Engine Time</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<link rel="stylesheet" href="css/jqueryui/1.11.3/jquery-ui.css" />
-	<link rel="stylesheet" href="css/main.css" />
-    <script type="text/javascript" src="js/jquery/1.11.2/jquery.min.js"></script>
-	<script type="text/javascript" src="js/jqueryui/1.11.3/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
+	<link rel="stylesheet" href="/css/jqueryui/1.11.3/jquery-ui.css" th:href="@{~/css/jqueryui/1.11.3/jquery-ui.css}"/>
+	<link rel="stylesheet" href="/css/main.css" th:href="@{~/css/main.css}"/>
+    <script type="text/javascript" src="/js/jquery/1.11.2/jquery.min.js" th:src="@{~/js/jquery/1.11.2/jquery.min.js}"></script>
+	<script type="text/javascript" src="/js/jqueryui/1.11.3/jquery-ui.min.js" th:src="@{~/js/jqueryui/1.11.3/jquery-ui.min.js}"></script>
+    <script type="text/javascript" src="/js/main.js" th:src="@{~/js/main.js}"></script>
     <script th:inline="javascript">
     	/*<![CDATA[*/
     	           
@@ -94,7 +94,7 @@
 		<H1 th:text="'Reset '+${resetItem.name}+' Hours'">Reset</H1>
 		<div id="dialog-form" th:title="'Reset '+${resetItem.name}+' Hours'">
 			<p class="validateTips"></p>
-			<form id="addEditForm" action="/resetLogs" method="post">
+			<form id="addEditForm" action="/resetLogs" th:action="@{~/resetLogs}" method="post">
 				<fieldset>
 					<label for="date">Date</label>
 					<input type="text" name="date" id="date" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
@@ -108,9 +108,9 @@
 		<div>
 			<span class="table-upper-caption" th:text="${aircraft.name}">ID</span>
 			&nbsp;&nbsp;
-			<span><a href="aircraftStatus.html?id=1" th:href="@{aircraftStatus.html(id=${aircraft.id})}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Status</span></button></a></span>
-			<span><a href="flightLog.html?id=1" th:href="@{flightLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>
-			<span><a href="adCompliance.html?id=1" th:href="@{adComplianceLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">AD Compliance</span></button></a></span>
+			<span><a href="aircraftStatus.html?id=1" th:href="@{~/aircraftStatus.html(id=${aircraft.id})}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Status</span></button></a></span>
+			<span><a href="flightLog.html?id=1" th:href="@{~/flightLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>
+			<span><a href="adCompliance.html?id=1" th:href="@{~/adComplianceLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">AD Compliance</span></button></a></span>
 		</div>
 		<br/>
 		<div th:text="'Current Hobbs: '+${aircraft.hobbs}"></div>
@@ -123,8 +123,8 @@
 			</div>
 			<div class="records-rows" th:each="rl : ${aircraft.resetLogs}" th:if="${rl.resetItem}==${resetItem}" th:classappend="|id${rl.id}">
 				<span class="dataCell">
-					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${rl.id}"><img border="0" alt="Edit" src="images/edit.png"/></a></span>
-					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${rl.id}"><img border="0" alt="Delete" src="images/delete.png"/></a></span>
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${rl.id}"><img border="0" alt="Edit" src="images/edit.png" th:src="@{~/images/edit.png}"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${rl.id}"><img border="0" alt="Delete" src="images/delete.png" th:src="@{~/images/delete.png}"/></a></span>
 				</span>
 				<span class="date dataCell" th:text="${rl.dateDisplay}">Date</span>
 				<span class="hobbs dataCell" th:text="${rl.hobbs}">Hobbs</span>
