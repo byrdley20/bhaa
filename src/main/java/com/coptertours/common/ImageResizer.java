@@ -87,4 +87,8 @@ public class ImageResizer {
 		byte[] resizedImageByteArray = encoderOutputStream.toByteArray();
 		return resizedImageByteArray;
 	}
+
+	public void resizeImageAsJPG() {
+
+	}
 }
