@@ -189,7 +189,7 @@
 				<span class="name dataCell" th:text="${a.name}">Name</span>
 				<span class="model dataCell" th:text="${a.model.name}">Model</span>
 				<span class="serialNum dataCell" th:text="${a.serialNum}">Serial Number</span>
-				<span class="aircraftImage"><img class="aircraft-image" src="" th:src="'data:image/jpeg;base64,'+@{${a.imagePath}}" /></span>
+				<span class="aircraftImage"><img class="aircraft-image" src="" th:src="'data:image/jpeg;base64,'+${a.imagePath}" /></span>
 				<span class="id cell hidden" th:text="${a.id}">Hidden PK ID</span>
 				<span class="modelId cell hidden" th:text="${a.model.id}">Hidden Model Id</span>
 			</div>
