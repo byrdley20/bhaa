@@ -16,8 +16,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private static final String ADMIN_ROLE = "ADMIN";
 	private static final String MECHANIC_ROLE = "MECHANIC";
 
-	private static final String LOGIN_PAGE_URL = "http://flightlog.coptertours.com/login.html";
-	private static final String SUCCESSFUL_LOGIN_URL = "http://flightlog.coptertours.com";
+	private static final String LOGIN_PAGE_URL = "http://devflightlog.coptertours.com/login.html";
+	private static final String SUCCESSFUL_LOGIN_URL = "http://devflightlog.coptertours.com";
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
@@ -27,6 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// http.csrf().disable();
+
+		http.authorizeRequests().anyRequest().permitAll();
 
 		// http.authorizeRequests()
 		// .antMatchers("/login.html").permitAll()
@@ -42,13 +44,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// .logoutSuccessUrl("/");
 
 		// http.authorizeRequests()
+		// .antMatchers("/login.html").permitAll()
 		// .antMatchers("/admin/**")
 		// .hasRole(ADMIN_ROLE)
 		// .and()
 		// .formLogin()
-		// .loginPage(LOGIN_PAGE_URL)
+		// .loginPage(LOGIN_PAGE_URL).permitAll()
 		// // .loginPage("/login.html")
-		// .loginProcessingUrl("http://flightlog.coptertours.com/j_spring_security_check")
+		// .loginProcessingUrl(LOGIN_PAGE_URL).permitAll()
 		// // .defaultSuccessUrl(SUCCESSFUL_LOGIN_URL, true)
 		// .and()
 		// .logout()
