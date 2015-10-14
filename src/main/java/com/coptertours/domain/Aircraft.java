@@ -34,6 +34,8 @@ public class Aircraft extends BaseDomain {
 	private Model model;
 	@Expose
 	private String serialNum;
+	@Expose
+	private boolean inService;
 
 	@Lob
 	@Column(name = "IMAGE_PATH", columnDefinition = "clob")
@@ -192,6 +194,10 @@ public class Aircraft extends BaseDomain {
 
 	public void setYearlyHours(BigDecimal yearlyHours) {
 		this.yearlyHours = yearlyHours;
+	}
+
+	public boolean isInService() {
+		return inService;
 	}
 
 }
