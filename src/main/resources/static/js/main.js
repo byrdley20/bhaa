@@ -322,6 +322,7 @@ $(function() {
 		$('#addEditForm').show();
 		populateEditForm(this);
 		dialog.dialog( "open" );
+		return false;
 	});
 	$(document).on("click", ".deleteLink", function(){
 		var deleteName = findDeleteName(this);
