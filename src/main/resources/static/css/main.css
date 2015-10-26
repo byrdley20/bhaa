@@ -246,6 +246,7 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 }
 .new-row {
 	background: #fbf9ee url("images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x;
+	color: black;
 }
 .no-close .ui-dialog-titlebar-close {
   display: none;

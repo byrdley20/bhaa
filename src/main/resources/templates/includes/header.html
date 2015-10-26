@@ -12,8 +12,14 @@
     <div th:fragment="header">
 	    <script th:inline="javascript">
 	    	/*<![CDATA[*/
-				var contextPath = /*[[${session.contextPath}]]*/;	
-				var domain = /*[[${session.domain}]]*/;	
+				var contextPath = /*[[${session.contextPath}]]*/;
+	    		if(contextPath == null) {
+	    			contextPath = '';
+	    		}
+				var domain = /*[[${session.domain}]]*/;
+				if(domain == null) {
+					domain = '';
+				}
 			/*]]>*/
 	    </script>
     	<div class="header-left">
