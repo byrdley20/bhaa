@@ -65,6 +65,10 @@ public class BaseController {
 		return new Sort(Sort.Direction.ASC, "lastName");
 	}
 
+	protected Sort sortByUserLastNameAsc() {
+		return new Sort(Sort.Direction.ASC, "user.lastName");
+	}
+
 	protected Sort sortByModelAsc() {
 		return new Sort(Sort.Direction.ASC, "model.name");
 	}
