@@ -31,7 +31,7 @@ public class PilotHoursController extends BaseController {
 		Map<User, BigDecimal> noPilotHours = new LinkedHashMap<User, BigDecimal>();
 
 		Date beginningOfYear = DateUtil.findYearStartDate(new Date());
-		List<User> users = this.userRepository.findAll(sortByLastNameAsc());
+		List<User> users = this.userRepository.findAllByActiveTrue(sortByLastNameAsc());
 		for (User user : users) {
 			List<FlightLog> flightLogs = this.flightLogRepository.findByUserAndDateAfter(user, beginningOfYear);
 			BigDecimal flightTime = BigDecimal.ZERO;

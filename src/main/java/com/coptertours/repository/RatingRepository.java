@@ -2,10 +2,8 @@ package com.coptertours.repository;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.coptertours.domain.Rating;
 
-public interface RatingRepository extends JpaRepository<Rating, Long> {
+public interface RatingRepository extends BaseRepository<Rating> {
 	List<Rating> findByName(String name);
 }

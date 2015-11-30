@@ -18,7 +18,7 @@ public class AdComplianceController extends BaseController {
 
 	@RequestMapping("/admin/adComplianceChooseModel.html")
 	String adCompliance(Model model) {
-		model.addAttribute("models", this.modelRepository.findAll(sortByNameAsc()));
+		model.addAttribute("models", this.modelRepository.findAllByActiveTrue(sortByNameAsc()));
 		return "admin/adComplianceChooseModel";
 	}
 

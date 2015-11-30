@@ -48,7 +48,7 @@ public class DashboardController extends BaseController {
 	@RequestMapping({ "/", "/dashboard.html" })
 	String dashboard(Model model, HttpServletRequest request) throws IOException {
 		Map<Long, List<AdCompliance>> modelToAdCompliances = new HashMap<Long, List<AdCompliance>>();
-		List<Aircraft> aircrafts = this.aircraftRepository.findByInServiceTrue(sortByNameAsc());
+		List<Aircraft> aircrafts = this.aircraftRepository.findAllByActiveTrue(sortByNameAsc());
 		Date today = new Date();
 		Date todayStart = DateUtil.findDayStart(today);
 		Date todayEnd = DateUtil.findDayEnd(today);
@@ -62,7 +62,7 @@ public class DashboardController extends BaseController {
 				maintenanceTypeToLog.put(maintenanceLog.getMaintenanceTypeId(), maintenanceLog);
 			}
 
-			List<MaintenanceType> maintenanceTypes = maintenanceTypeRepository.findByModelAndShowOnDashboardTrue(aircraft.getModel(), sortByMaintCategoryThenName());
+			List<MaintenanceType> maintenanceTypes = maintenanceTypeRepository.findByModelAndShowOnDashboardTrueAndActiveTrue(aircraft.getModel(), sortByMaintCategoryThenName());
 			List<MaintenanceType> clonedMaintenanceTypes = new ArrayList<MaintenanceType>(maintenanceTypes.size());
 			for (MaintenanceType maintType : maintenanceTypes) {
 				MaintenanceLog log = maintenanceTypeToLog.get(maintType.getId());
@@ -100,7 +100,7 @@ public class DashboardController extends BaseController {
 	private void configureAdCompliances(Map<Long, List<AdCompliance>> modelToAdCompliances, Date todayStart, Date todayEnd, Aircraft aircraft, com.coptertours.domain.Model aircraftModel) {
 		List<AdCompliance> adCompliancesForModel = modelToAdCompliances.get(aircraftModel.getId());
 		if (adCompliancesForModel == null) {
-			adCompliancesForModel = this.adComplianceRepository.findByModelAndDaily(aircraftModel, true, sortByNameAsc());
+			adCompliancesForModel = this.adComplianceRepository.findByModelAndDailyAndActiveTrue(aircraftModel, true, sortByNameAsc());
 			if (!CollectionUtils.isEmpty(adCompliancesForModel)) {
 				aircraftModel.setHasAdCompliances(true);
 			}

@@ -41,6 +41,8 @@ public class User extends BaseDomain {
 	@JoinColumn(name = "ROLE")
 	@Expose
 	private Role role;
+	@Expose
+	private boolean active;
 
 	@Override
 	public User clone() {
@@ -99,5 +101,9 @@ public class User extends BaseDomain {
 
 	public void setRole(Role role) {
 		this.role = role;
+	}
+
+	public boolean isActive() {
+		return active;
 	}
 }

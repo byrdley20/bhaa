@@ -18,7 +18,6 @@ import com.coptertours.options.Role;
 import com.coptertours.repository.AdComplianceLogRepository;
 import com.coptertours.repository.AdComplianceRepository;
 import com.coptertours.repository.AircraftRepository;
-import com.coptertours.repository.UserRepository;
 import com.coptertours.util.DateUtil;
 
 @Controller
@@ -28,15 +27,13 @@ public class AdComplianceLogController extends BaseController {
 	@Autowired
 	private AdComplianceLogRepository adComplianceLogRepository;
 	@Autowired
-	private UserRepository userRepository;
-	@Autowired
 	private AircraftRepository aircraftRepository;
 
 	@RequestMapping("/adComplianceLog.html")
 	String adComplianceLog(Model model, @RequestParam Long id, @RequestParam(required = false) Long adComplianceId, @RequestParam(required = false) Integer month) {
 		Aircraft aircraft = this.aircraftRepository.findOne(id);
 
-		List<AdCompliance> adCompliances = this.adComplianceRepository.findByModelAndDaily(aircraft.getModel(), true, sortByNameAsc());
+		List<AdCompliance> adCompliances = this.adComplianceRepository.findByModelAndDailyAndActiveTrue(aircraft.getModel(), true, sortByNameAsc());
 
 		Calendar startDateCal = DateUtil.findMonthStartDate(month);
 		Calendar endDateCal = DateUtil.findMonthEndDate(month);

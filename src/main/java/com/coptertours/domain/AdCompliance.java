@@ -42,6 +42,9 @@ public class AdCompliance extends BaseDomain {
 	@Expose
 	private AdComplianceLog adComplianceLog;
 
+	@Expose
+	private boolean active;
+
 	public void clearModel() {
 		this.model = null;
 	}
@@ -80,5 +83,9 @@ public class AdCompliance extends BaseDomain {
 
 	public void setAdComplianceLog(AdComplianceLog adComplianceLog) {
 		this.adComplianceLog = adComplianceLog;
+	}
+
+	public boolean isActive() {
+		return active;
 	}
 }

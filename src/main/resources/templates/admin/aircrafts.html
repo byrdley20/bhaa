@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Black Hills Aerial Adventures | Aircrafts</title>
+    <title>Black Hills Aerial Adventures | Aircraft</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<link rel="stylesheet" href="/css/jqueryui/1.11.3/jquery-ui.css" th:href="@{~/css/jqueryui/1.11.3/jquery-ui.css}"/>
 	<link rel="stylesheet" href="/css/main.css" th:href="@{~/css/main.css}"/>
@@ -52,7 +52,7 @@
     		});
     		
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(aircraftNumber, "'Aircraft Number'", 1, 10);
-    		lengthValidation[lengthValidation.length] = createLengthValidationObject(name, "'Aircraft Name'", 1, 10);
+    		lengthValidation[lengthValidation.length] = createLengthValidationObject(name, "'Aircraft Name'", 1, 50);
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(serialNum, "'Serial Number'", 1, 20);
     		
         	$('#chooseImage').on('click', function() {
@@ -91,7 +91,7 @@
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='model dataCell'>"+savedRecord.model.name+"</span> " +
 			    	"<span class='serialNum dataCell'>"+savedRecord.serialNum+"</span> " +
-			    	"<span class='inService dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.inService)+" disabled='disabled'/></span> " +
+			    	"<span class='inService dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.active)+" disabled='disabled'/></span> " +
 			    	"<span class='aircraftImage dataCell'><img class='aircraft-image' src='"+imagePrefix+imagePath+"'/></span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 			    	"<span class='modelId cell hidden'>"+savedRecord.model.id+"</span> " +
@@ -103,7 +103,7 @@
     		editedRow.find('.name').html(savedRecord.name);
     		editedRow.find('.model').html(savedRecord.model.name);
     		editedRow.find('.serialNum').html(savedRecord.serialNum);
-    		editedRow.find('.inService input').prop('checked', savedRecord.inService);
+    		editedRow.find('.inService input').prop('checked', savedRecord.active);
     		if(savedRecord.imagePath != null){
     			editedRow.find('img.aircraft-image').attr("src", imagePrefix+savedRecord.imagePath);
     		} else {
@@ -155,7 +155,7 @@
 	<div th:replace="includes/header :: header">...</div>
 
 	<div id="main-content">
-		<H1>Aircrafts</H1>
+		<H1>Aircraft</H1>
 		<div id="loading"> 
 		    <p>Image Uploading...</p>
 		</div>
@@ -205,7 +205,7 @@
 				<span class="name dataCell" th:text="${a.name}">Name</span>
 				<span class="model dataCell" th:text="${a.model.name}">Model</span>
 				<span class="serialNum dataCell" th:text="${a.serialNum}">Serial Number</span>
-				<span class="inService dataCell"><input type="checkbox" th:value="${a.inService}" th:checked="${a.inService}" disabled="disabled"/></span>
+				<span class="inService dataCell"><input type="checkbox" th:value="${a.active}" th:checked="${a.active}" disabled="disabled"/></span>
 				<span class="aircraftImage"><img class="aircraft-image" src="" th:src="'data:image/jpeg;base64,'+${a.imagePath}" /></span>
 				<span class="id cell hidden" th:text="${a.id}">Hidden PK ID</span>
 				<span class="modelId cell hidden" th:text="${a.model.id}">Hidden Model Id</span>

@@ -51,6 +51,8 @@ public class MaintenanceType extends BaseDomain {
 
 	@Expose
 	private boolean showOnDashboard;
+	@Expose
+	private boolean active;
 
 	@Transient
 	@Expose
@@ -116,5 +118,9 @@ public class MaintenanceType extends BaseDomain {
 
 	public boolean getShowOnDashboard() {
 		return showOnDashboard;
+	}
+
+	public boolean isActive() {
+		return active;
 	}
 }

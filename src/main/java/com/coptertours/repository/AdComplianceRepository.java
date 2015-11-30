@@ -3,13 +3,14 @@ package com.coptertours.repository;
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.coptertours.domain.AdCompliance;
 import com.coptertours.domain.Model;
 
-public interface AdComplianceRepository extends JpaRepository<AdCompliance, Long> {
+public interface AdComplianceRepository extends BaseRepository<AdCompliance> {
 	List<AdCompliance> findByModel(Model model, Sort sort);
 
-	List<AdCompliance> findByModelAndDaily(Model model, Boolean daily, Sort sort);
+	List<AdCompliance> findByModelAndActiveTrue(Model model, Sort sort);
+
+	List<AdCompliance> findByModelAndDailyAndActiveTrue(Model model, Boolean daily, Sort sort);
 }

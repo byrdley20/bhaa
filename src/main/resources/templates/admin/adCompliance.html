@@ -31,9 +31,10 @@
         	name = $( "#name" ),
         	description = $( "#description" ),
         	daily = $( "#daily" ),
-        	timeBeforeAction = $( "#timeBeforeAction" );
+        	timeBeforeAction = $( "#timeBeforeAction" ),
+        	active = $( "#active" );
     		
-        	allFields = $( [] ).add( id ).add( name ).add( description ).add( daily ).add( timeBeforeAction );
+        	allFields = $( [] ).add( id ).add( name ).add( description ).add( daily ).add( timeBeforeAction ).add( active );
         	addUpdatePath = "/admin/adCompliances";
         	deletePath = "/admin/adCompliances";
     		
@@ -73,6 +74,7 @@
 			    	"<span class='description dataCell'>"+savedRecord.description+"</span> " +
 			    	"<span class='daily dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.daily)+" disabled='disabled'/></span> " +
 			    	"<span class='timeBeforeAction dataCell'>"+tboValue+"</span> " +
+			    	"<span class='active dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.active)+" disabled='disabled'/></span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 		    	"</div>" );
     	}
@@ -89,6 +91,7 @@
     			tboValue = 'N/A';
     		}
     		editedRow.find('.timeBeforeAction').html(tboValue);
+    		editedRow.find('.active input').prop('checked', savedRecord.active);
     		
     		editedRow.find('.id').html(savedRecord.id);
     		editedRow.addClass('new-row');
@@ -115,6 +118,11 @@
 
     		$('#addEditForm').find('#timeBeforeAction').val(tboValue);
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
+    		
+    		var activeValue = editSpan.nextAll('span.active').first().find("input").is(':checked');
+    		if(activeValue){
+        		$('#addEditForm').find('#active').prop('checked', true);	
+    		}
     	}
     	function findDeleteName(deleteLink){
     		return $(deleteLink).closest('span.dataCell').nextAll('span.name').first().html();
@@ -135,6 +143,9 @@
     	.showOnDashboard.dataCell {
     		padding-left: 60px;
 		}
+    	.active.dataCell {
+    		padding-left: 22px;
+		}
     </style>
 </head>
 <body>
@@ -154,6 +165,9 @@
 					<input style="display:inline; margin-bottom:15px;" type="checkbox" name="daily" id="daily"/>	
 					<label for="timeBeforeAction">TBO</label>
 					<input type="text" name="timeBeforeAction" id="timeBeforeAction" class="text ui-widget-content ui-corner-all"/>
+					<br/>
+					<label for="active" style="display:inline;">Active</label>
+					<input style="display:inline;" type="checkbox" name="active" id="active"/>
 					<input type="text" name="id" id="id" class="hidden"/>
 					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 				</fieldset>
@@ -167,6 +181,7 @@
 			    <span class="headerCell dataCell">Description</span>
 			    <span class="headerCell dataCell">Daily</span>
 			    <span class="headerCell dataCell">TBO</span>
+			    <span class="headerCell dataCell">Active</span>
 			</div>
 			<div class="records-rows" th:each="adCompliance : ${adCompliances}" th:classappend="|id${adCompliance.id}">
 				<span class="dataCell">
@@ -177,6 +192,7 @@
 				<span class="description dataCell" th:text="${adCompliance.description}">Description</span>
 				<span class="daily dataCell"><input type="checkbox" th:value="${adCompliance.daily}" th:checked="${adCompliance.daily}" disabled="disabled"/></span>
 				<span class="timeBeforeAction dataCell" th:text="${adCompliance.daily} ? ('N/A') : ${adCompliance.timeBeforeAction}">TBO</span>
+				<span class="active dataCell"><input type="checkbox" th:value="${adCompliance.active}" th:checked="${adCompliance.active}" disabled="disabled"/></span>
 				<span class="id cell hidden" th:text="${adCompliance.id}">Hidden PK ID</span>
 			</div>
 		</div>

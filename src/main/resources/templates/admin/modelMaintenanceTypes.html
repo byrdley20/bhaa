@@ -46,9 +46,10 @@
         	partNumber = $( "#partNumber" ),
         	serialNumber = $( "#serialNumber" ),
         	action = $( "#action" ),
-        	showOnDashboard = $( "#showOnDashboard" );
+        	showOnDashboard = $( "#showOnDashboard" ),
+        	active = $( "#active" );
     		
-        	allFields = $( [] ).add( id ).add( name ).add( maintenanceCategory ).add( timeBeforeAction ).add( manualNumber ).add( partNumber ).add( serialNumber ).add( action ).add( showOnDashboard );
+        	allFields = $( [] ).add( id ).add( name ).add( maintenanceCategory ).add( timeBeforeAction ).add( manualNumber ).add( partNumber ).add( serialNumber ).add( action ).add( showOnDashboard ).add( active );
         	addUpdatePath = "/admin/maintenanceTypes";
         	deletePath = "/admin/maintenanceTypes";
     		
@@ -56,9 +57,9 @@
     		
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(name, "'Name'", 1, 50);
     		numberValidation[numberValidation.length] = createNumberValidationObject(timeBeforeAction, "'TBO'");
-    		lengthValidation[lengthValidation.length] = createLengthValidationObject(manualNumber, "'Manual Number'", 1, 20);
-    		lengthValidation[lengthValidation.length] = createLengthValidationObject(partNumber, "'Part Number'", 1, 20);
-    		lengthValidation[lengthValidation.length] = createLengthValidationObject(serialNumber, "'Serial Number'", 1, 20);
+    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(manualNumber, "'Manual Number'", 1, 20);
+    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(partNumber, "'Part Number'", 1, 20);
+    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(serialNumber, "'Serial Number'", 1, 20);
    		
     	});
     	function setSelectValue(formData, element) {
@@ -91,6 +92,7 @@
 			    	"<span class='serialNumber dataCell'>"+savedRecord.serialNumber+"</span> " +
 			    	"<span class='action dataCell'>"+actions[savedRecord.action]+"</span> " +
 			    	"<span class='showOnDashboard dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.showOnDashboard)+" disabled='disabled'/></span> " +
+			    	"<span class='active dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.active)+" disabled='disabled'/></span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 			    	"<span class='maintenanceCategoryValue cell hidden'>"+savedRecord.maintenanceCategory+"</span> " +
 			    	"<span class='actionValue cell hidden'>"+savedRecord.action+"</span> " +
@@ -114,6 +116,7 @@
 	    		editedRow.find('.id').html(savedRecord.id);
 	    		editedRow.find('.maintenanceCategoryValue').html(savedRecord.maintenanceCategory);
 	    		editedRow.find('.actionValue').html(savedRecord.action);
+	    		editedRow.find('.active input').prop('checked', savedRecord.active);
 	    		editedRow.addClass('new-row');
     		}
     	}
@@ -139,6 +142,11 @@
     		}
     		
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
+    		
+    		var activeValue = editSpan.nextAll('span.active').first().find("input").is(':checked');
+    		if(activeValue){
+        		$('#addEditForm').find('#active').prop('checked', true);	
+    		}
     	}
     	function findDeleteName(deleteLink){
     		return $(deleteLink).closest('span.dataCell').nextAll('span.name').first().html();
@@ -148,6 +156,9 @@
     <style>
     	.showOnDashboard.dataCell {
     		padding-left: 60px;
+		}
+    	.active.dataCell {
+    		padding-left: 22px;
 		}
     </style>
 </head>
@@ -179,7 +190,10 @@
 					  <option th:each="action : ${T(com.coptertours.options.Action).values()}" th:value="${action}" th:text="${action.name}"></option>
 					</select>
 					<label for="showOnDashboard" style="display:inline;">Show on Dashboard</label>
-					<input style="display:inline;" type="checkbox" name="showOnDashboard" id="showOnDashboard"/>		
+					<input style="display:inline;" type="checkbox" name="showOnDashboard" id="showOnDashboard"/>
+					<br/>
+					<label for="active" style="display:inline;">Active</label>
+					<input style="display:inline;" type="checkbox" name="active" id="active"/>		
 					<input type="text" name="id" id="id" class="hidden"/>
 					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 				</fieldset>
@@ -198,6 +212,7 @@
 				    <span class="headerCell dataCell">Serial Number</span>
 				    <span class="headerCell dataCell">Action</span>
 				    <span class="headerCell dataCell">Show on Dashboard</span>
+				    <span class="headerCell dataCell">Active</span>
 				</div>
 				<div class="records-rows" th:each="m : ${mctmt.value}" th:classappend="|id${m.id}">
 					<span class="dataCell">
@@ -211,6 +226,7 @@
 					<span class="serialNumber dataCell" th:text="${m.serialNumber}">Serial Number</span>
 					<span class="action dataCell" th:text="${m.action.name}">Action</span>
 					<span class="showOnDashboard dataCell"><input type="checkbox" th:value="${m.showOnDashboard}" th:checked="${m.showOnDashboard}" disabled="disabled"/></span>
+					<span class="active dataCell"><input type="checkbox" th:value="${m.active}" th:checked="${m.active}" disabled="disabled"/></span>
 					<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
 					<span class="maintenanceCategoryValue cell hidden" th:text="${m.maintenanceCategory}">Hidden Maintenance Category</span>
 					<span class="actionValue cell hidden" th:text="${m.action}">Hidden Action</span>

@@ -21,7 +21,6 @@ import com.coptertours.repository.AircraftRepository;
 import com.coptertours.repository.FlightLogRepository;
 import com.coptertours.repository.LocationRepository;
 import com.coptertours.repository.OperationRepository;
-import com.coptertours.repository.UserRepository;
 import com.coptertours.util.DateUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,8 +30,6 @@ public class FlightLogController extends BaseController {
 
 	@Autowired
 	AircraftRepository aircraftRepository;
-	@Autowired
-	UserRepository userRepository;
 	@Autowired
 	LocationRepository locationRepository;
 	@Autowired
@@ -46,7 +43,7 @@ public class FlightLogController extends BaseController {
 	String flightLog(Model model, @RequestParam Long id, @RequestParam(required = false) Integer month) throws JsonProcessingException {
 		Aircraft aircraft = this.aircraftRepository.findOne(id);
 
-		List<AdCompliance> adCompliances = this.adComplianceRepository.findByModelAndDaily(aircraft.getModel(), true, sortByNameAsc());
+		List<AdCompliance> adCompliances = this.adComplianceRepository.findByModelAndDailyAndActiveTrue(aircraft.getModel(), true, sortByNameAsc());
 
 		Calendar startDateCal = DateUtil.findMonthStartDate(month);
 		Calendar endDateCal = DateUtil.findMonthEndDate(month);
@@ -70,8 +67,8 @@ public class FlightLogController extends BaseController {
 		model.addAttribute("monthlyHobbsTotal", monthlyHobbsTotal);
 		model.addAttribute("flightLogs", flightLogs);
 		model.addAttribute("allUsers", findUsersByRole(Role.PILOT));
-		model.addAttribute("allLocations", this.locationRepository.findAll(sortByNameAsc()));
-		model.addAttribute("allOperations", this.operationRepository.findAll(sortByNameAsc()));
+		model.addAttribute("allLocations", this.locationRepository.findAllByActiveTrue(sortByNameAsc()));
+		model.addAttribute("allOperations", this.operationRepository.findAllByActiveTrue(sortByNameAsc()));
 		model.addAttribute("month", startDateCal.get(Calendar.MONTH));
 		model.addAttribute("mostRecentHobbsEnd", this.flightLogRepository.findMostRecentHobbsEndByAircraft(aircraft));
 		model.addAttribute("hasDailyAd", !CollectionUtils.isEmpty(adCompliances));

@@ -18,8 +18,8 @@ public class UserController extends BaseController {
 
 	@RequestMapping("/admin/users.html")
 	String users(Model model) {
-		model.addAttribute("users", this.userRepository.findAll());
-		model.addAttribute("allRatings", this.ratingRepository.findAll(sortByNameAsc()));
+		model.addAttribute("users", this.userRepository.findAll(sortByLastNameAsc()));
+		model.addAttribute("allRatings", this.ratingRepository.findAllByActiveTrue(sortByNameAsc()));
 		model.addAttribute("roleList", Role.asKeyValueList());
 		return "admin/users";
 	}

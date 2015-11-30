@@ -14,6 +14,8 @@ public class Rating extends BaseDomain {
 	private Long id;
 	@Expose
 	private String name;
+	@Expose
+	private boolean active;
 
 	public Long getId() {
 		return id;
@@ -23,4 +25,7 @@ public class Rating extends BaseDomain {
 		return name;
 	}
 
+	public boolean isActive() {
+		return active;
+	}
 }

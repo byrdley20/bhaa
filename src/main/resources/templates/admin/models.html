@@ -26,9 +26,10 @@
     	$(function() {
     		var id = $( "#id" ),
         	name = $( "#name" ),
-        	showStarts = $( "#showStarts" );
+        	showStarts = $( "#showStarts" ),
+        	active = $( "#active" );
     		
-        	allFields = $( [] ).add( id ).add( name ).add( showStarts );
+        	allFields = $( [] ).add( id ).add( name ).add( showStarts ).add( active );
         	addUpdatePath = "/admin/models";
         	deletePath = "/admin/models";
     		
@@ -54,6 +55,7 @@
 			    	"</span>" +
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='showStarts dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.showStarts)+" disabled='disabled'/></span> " +
+			    	"<span class='active dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.active)+" disabled='disabled'/></span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 		    	"</div>" );    		
     	}
@@ -62,6 +64,7 @@
     		editedRow.find('.name').html(savedRecord.name);
     		editedRow.find('.showStarts input').prop('checked', savedRecord.showStarts);
     		editedRow.find('.id').html(savedRecord.id);
+    		editedRow.find('.active input').prop('checked', savedRecord.active);
     		editedRow.addClass('new-row');
     	}
     	function populateEditForm(editLink){
@@ -72,12 +75,22 @@
         		$('#addEditForm').find('#showStarts').prop('checked', true);	
     		}
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
+    		
+    		var activeValue = editSpan.nextAll('span.active').first().find("input").is(':checked');
+    		if(activeValue){
+        		$('#addEditForm').find('#active').prop('checked', true);	
+    		}
     	}
     	function findDeleteName(deleteLink){
     		return $(deleteLink).closest('span.dataCell').nextAll('span.name').first().html();
     	}
     	//]]>
     </script>
+    <style>
+    	.active.dataCell {
+    		padding-left: 22px;
+		}
+    </style>
 </head>
 <body>
 
@@ -92,6 +105,9 @@
 					<input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all"/>
 					<label style="display:inline;" for="showStarts">Track Starts</label>
 					<input style="display:inline;" type="checkbox" name="showStarts" id="showStarts"/>
+					<br/>
+					<label for="active" style="display:inline;">Active</label>
+					<input style="display:inline;" type="checkbox" name="active" id="active"/>
 					<input type="text" name="id" id="id" class="hidden"/>
 					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 				</fieldset>
@@ -102,6 +118,7 @@
 				<span class="edit delete icon"></span>
 			    <span class="headerCell dataCell">Name</span>
 			    <span class="headerCell dataCell">Track Starts</span>
+			    <span class="headerCell dataCell">Active</span>
 			</div>
 			<div class="records-rows" th:each="m : ${models}" th:classappend="|id${m.id}">
 				<span class="dataCell">
@@ -110,6 +127,7 @@
 				</span>
 				<span class="name dataCell" th:text="${m.name}">Name</span>
 				<span class="showStarts dataCell"><input type="checkbox" th:value="${m.showStarts}" th:checked="${m.showStarts}" disabled="disabled"/></span>
+				<span class="active dataCell"><input type="checkbox" th:value="${m.active}" th:checked="${m.active}" disabled="disabled"/></span>
 				<span class="id cell hidden" th:text="${m.id}">Hidden PK ID</span>
 			</div>
 		</div>

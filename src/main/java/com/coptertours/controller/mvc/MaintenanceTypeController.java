@@ -27,7 +27,7 @@ public class MaintenanceTypeController extends BaseController {
 
 	@RequestMapping("/admin/maintenanceTypes.html")
 	String maintenanceTypes(Model model) {
-		List<com.coptertours.domain.Model> models = this.modelRepository.findAll(sortByNameAsc());
+		List<com.coptertours.domain.Model> models = this.modelRepository.findAllByActiveTrue(sortByNameAsc());
 		model.addAttribute("models", models);
 		return "admin/maintenanceTypes";
 	}
@@ -61,9 +61,8 @@ public class MaintenanceTypeController extends BaseController {
 	// UNUSED RIGHT NOW
 	@RequestMapping("/allModelMaintenanceTypes.html")
 	String allModelMaintenanceTypes(Model model) {
-		model.addAttribute("maintenanceTypes",
-				this.maintenanceTypeRepository.findAll(sortByModelAsc()));
-		List<com.coptertours.domain.Model> allModels = this.modelRepository.findAll(sortByNameAsc());
+		model.addAttribute("maintenanceTypes", this.maintenanceTypeRepository.findAll(sortByModelAsc()));
+		List<com.coptertours.domain.Model> allModels = this.modelRepository.findAllByActiveTrue(sortByNameAsc());
 
 		Map<String, Map<MaintenanceCategory, List<MaintenanceType>>> modelToMaintTypes = new HashMap<String, Map<MaintenanceCategory, List<MaintenanceType>>>();
 		for (com.coptertours.domain.Model maintTypeModel : allModels) {

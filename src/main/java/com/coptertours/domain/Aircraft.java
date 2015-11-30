@@ -35,7 +35,7 @@ public class Aircraft extends BaseDomain {
 	@Expose
 	private String serialNum;
 	@Expose
-	private boolean inService;
+	private boolean active;
 
 	@Lob
 	@Column(name = "IMAGE_PATH", columnDefinition = "clob")
@@ -196,8 +196,7 @@ public class Aircraft extends BaseDomain {
 		this.yearlyHours = yearlyHours;
 	}
 
-	public boolean isInService() {
-		return inService;
+	public boolean isActive() {
+		return active;
 	}
-
 }

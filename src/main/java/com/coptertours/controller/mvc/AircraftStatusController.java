@@ -48,7 +48,7 @@ public class AircraftStatusController extends BaseController {
 			maintenanceTypeToLog.put(maintenanceLog.getMaintenanceTypeId(), maintenanceLog);
 		}
 
-		List<MaintenanceType> maintenanceTypes = this.maintenanceTypeRepository.findByModel(aircraft.getModel(), sortByMaintCategoryThenName());
+		List<MaintenanceType> maintenanceTypes = this.maintenanceTypeRepository.findByModelAndActiveTrue(aircraft.getModel(), sortByMaintCategoryThenName());
 
 		List<MaintenanceType> flightHourMaintTypes = new ArrayList<MaintenanceType>();
 		List<MaintenanceType> monthMaintTypes = new ArrayList<MaintenanceType>();
@@ -74,7 +74,7 @@ public class AircraftStatusController extends BaseController {
 				adComplianceToLog.put(key, adComplianceLog);
 			}
 		}
-		List<AdCompliance> adCompliancesForModel = this.adComplianceRepository.findByModel(aircraft.getModel(), sortByTimeBeforeAction());
+		List<AdCompliance> adCompliancesForModel = this.adComplianceRepository.findByModelAndActiveTrue(aircraft.getModel(), sortByTimeBeforeAction());
 		for (AdCompliance adComplianceForModel : adCompliancesForModel) {
 			adComplianceForModel.setAdComplianceLog(adComplianceToLog.get(adComplianceForModel.getId()));
 			adCompliances.add(adComplianceForModel);

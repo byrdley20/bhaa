@@ -30,7 +30,7 @@ public class RepairLogController extends BaseController {
 		model.addAttribute("allPilots", findUsersByRole(Role.PILOT));
 		model.addAttribute("allMechanics", findUsersByRole(Role.MECHANIC));
 		ObjectMapper mapper = new ObjectMapper();
-		List<Aircraft> allAircrafts = this.aircraftRepository.findAll(sortByNameAsc());
+		List<Aircraft> allAircrafts = this.aircraftRepository.findAllByActiveTrue(sortByNameAsc());
 		model.addAttribute("allAircrafts", allAircrafts);
 		model.addAttribute("allAircraftsJSON", mapper.writeValueAsString(allAircrafts));
 		model.addAttribute("openSquawks", this.repairLogRepository.findByRepairDateIsNull());
@@ -42,7 +42,7 @@ public class RepairLogController extends BaseController {
 		model.addAttribute("allPilots", findUsersByRole(Role.PILOT));
 		model.addAttribute("allMechanics", findUsersByRole(Role.MECHANIC));
 		ObjectMapper mapper = new ObjectMapper();
-		List<Aircraft> allAircrafts = this.aircraftRepository.findAll(sortByNameAsc());
+		List<Aircraft> allAircrafts = this.aircraftRepository.findAllByActiveTrue(sortByNameAsc());
 		model.addAttribute("allAircrafts", allAircrafts);
 		model.addAttribute("allAircraftsJSON", mapper.writeValueAsString(allAircrafts));
 		model.addAttribute("completedSquawks", this.repairLogRepository.findByRepairDateIsNotNull());

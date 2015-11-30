@@ -34,7 +34,7 @@ public class BaseController {
 	}
 
 	protected List<User> findUsersByRole(Role role) {
-		List<User> users = this.userRepository.findByRole(role, sortByLastNameAsc());
+		List<User> users = this.userRepository.findByRoleAndActiveTrue(role, sortByLastNameAsc());
 		List<User> clonedUsers = new ArrayList<User>(users.size());
 		for (User user : users) {
 			User clonedUser = user.clone();

@@ -24,11 +24,10 @@ public class AircraftController extends BaseController {
 	@Autowired
 	private MaintenanceTypeRepository maintenanceTypeRepository;
 
-	@SuppressWarnings("unchecked")
-	@RequestMapping("/admin/aircrafts.html")
+	@RequestMapping(value = { "/admin/aircrafts.html", "/admin/aircraft.html" })
 	String aircafts(Model model, HttpServletRequest request) throws IOException {
-		List<Aircraft> allAircrafts = this.aircraftRepository.findAll();
-		List<com.coptertours.domain.Model> allModels = this.modelRepository.findAll(sortByNameAsc());
+		List<Aircraft> allAircrafts = this.aircraftRepository.findAllByActiveTrue();
+		List<com.coptertours.domain.Model> allModels = this.modelRepository.findAllByActiveTrue(sortByNameAsc());
 		model.addAttribute("aircrafts", allAircrafts);
 		model.addAttribute("allModels", allModels);
 		return "admin/aircrafts";

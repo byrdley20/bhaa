@@ -14,13 +14,13 @@ public class MaintenanceLogController extends BaseController {
 
 	@RequestMapping("/maintenanceLog.html")
 	String maintenanceLog(Model model) {
-		model.addAttribute("aircrafts", this.aircraftRepository.findAll());
+		model.addAttribute("aircrafts", this.aircraftRepository.findAllByActiveTrue());
 		return "maintenanceLog";
 	}
 
 	@RequestMapping("/aircraftMaintenanceLog.html")
 	String aircraftMaintenanceLog(Model model) {
-		model.addAttribute("aircrafts", this.aircraftRepository.findAll());
+		model.addAttribute("aircrafts", this.aircraftRepository.findAllByActiveTrue());
 		return "aircraftMaintenanceLog";
 	}
 }

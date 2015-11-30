@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class BaseDomain implements Cloneable {
+public abstract class BaseDomain implements Cloneable {
 
 	protected static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
 

@@ -20,6 +20,8 @@ public class Model extends BaseDomain {
 	@Transient
 	@Expose
 	private boolean hasAdCompliances;
+	@Expose
+	private boolean active;
 
 	public Long getId() {
 		return id;
@@ -39,5 +41,9 @@ public class Model extends BaseDomain {
 
 	public void setHasAdCompliances(boolean hasAdCompliances) {
 		this.hasAdCompliances = hasAdCompliances;
+	}
+
+	public boolean isActive() {
+		return active;
 	}
 }

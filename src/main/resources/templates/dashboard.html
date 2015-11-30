@@ -90,7 +90,7 @@
 		<div class="dashboard-grid">
 			<div class="col" th:each="a : ${aircrafts}" th:classappend="${aStat.even}?'cleared'" th:with="currentHobbs=(${a.hobbs}), aircraftTotalTime=(${a.hobbs}+${a.hobbsOffset}+${a.engineTotalTimeOffset})">
 				<div class="leftColumn">
-					<div class="emph" th:text="${a.name}">Name</div>
+					<div class="emph" th:text="${a.aircraftNumber}">Number</div>
 					<div class="image">
 						<div style="margin-bottom:5px;">
 							<!--<img src="" th:src="@{${a.imagePath}}" />-->
