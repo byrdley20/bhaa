@@ -182,7 +182,7 @@
 			<span><a href="flightLog.html?id=1" th:href="@{~/flightLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>
 			<span th:if="${hasDailyAd}"><a href="adCompliance.html?id=1" th:href="@{~/adComplianceLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Daily AD Compliance</span></button></a></span>
 		</div>
-		<div th:text="${aircraft.name}">ID</div>
+		<div th:text="${aircraft.aircraftNumber}">Aircraft Number</div>
 		<div th:text="'S/N: ' + ${aircraft.serialNum}">Serial Number</div>
 		<div th:text="'Hobbs: ' + ${currentHobbs}">Hobbs</div>
 		<div th:text="'Engine Total Time: ' + ${engineTotalTime}">Engine TT</div>

@@ -38,9 +38,9 @@
         	serialNum = $( "#serialNum" ),
         	imagePath = $( "#imagePath" ),
     		ordering = $( "#ordering" ),
-    		inService = $( "#inService" );
+    		active = $( "#active" );
     		
-        	allFields = $( [] ).add( id ).add( aircraftNumber ).add( name ).add( model ).add( serialNum ).add( imagePath ).add( ordering ).add( inService );
+        	allFields = $( [] ).add( id ).add( aircraftNumber ).add( name ).add( model ).add( serialNum ).add( imagePath ).add( ordering ).add( active );
         	addUpdatePath = "/admin/aircrafts";
         	deletePath = "/admin/aircrafts";
     		
@@ -91,7 +91,7 @@
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='model dataCell'>"+savedRecord.model.name+"</span> " +
 			    	"<span class='serialNum dataCell'>"+savedRecord.serialNum+"</span> " +
-			    	"<span class='inService dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.active)+" disabled='disabled'/></span> " +
+			    	"<span class='active dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.active)+" disabled='disabled'/></span> " +
 			    	"<span class='aircraftImage dataCell'><img class='aircraft-image' src='"+imagePrefix+imagePath+"'/></span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 			    	"<span class='modelId cell hidden'>"+savedRecord.model.id+"</span> " +
@@ -103,7 +103,7 @@
     		editedRow.find('.name').html(savedRecord.name);
     		editedRow.find('.model').html(savedRecord.model.name);
     		editedRow.find('.serialNum').html(savedRecord.serialNum);
-    		editedRow.find('.inService input').prop('checked', savedRecord.active);
+    		editedRow.find('.active input').prop('checked', savedRecord.active);
     		if(savedRecord.imagePath != null){
     			editedRow.find('img.aircraft-image').attr("src", imagePrefix+savedRecord.imagePath);
     		} else {
@@ -129,9 +129,9 @@
     		$('#addEditForm').find(modelOptionStr).prop('selected','selected');
     		$('#addEditForm').find('#serialNum').val(editSpan.nextAll('span.serialNum').first().html());
     		
-    		var inServiceValue = editSpan.nextAll('span.inService').first().find("input").is(':checked');
-    		if(inServiceValue){
-        		$('#addEditForm').find('#inService').prop('checked', true);	
+    		var activeValue = editSpan.nextAll('span.active').first().find("input").is(':checked');
+    		if(activeValue){
+        		$('#addEditForm').find('#active').prop('checked', true);	
     		}
     		
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
@@ -145,7 +145,7 @@
     	.aircraftImage {
     		width: 300px;
     	}
-    	.inService.dataCell {
+    	.active.dataCell {
     		padding-left: 35px;
 		}
     </style>
@@ -173,8 +173,8 @@
 					</select>
 					<label for="serialNum">Serial Number</label>
 					<input type="text" name="serialNum" id="serialNum" class="text ui-widget-content ui-corner-all"/>
-					<label for="inService" style="display:inline;">In Service</label>
-					<input style="display:inline;" type="checkbox" name="inService" id="inService"/>
+					<label for="active" style="display:inline;">In Service</label>
+					<input style="display:inline;" type="checkbox" name="active" id="active"/>
 					<br/><br/>
 					<label for="imagePath">Image</label>
 					<button type="button" id="chooseImage" class="hidden ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button">
@@ -205,7 +205,7 @@
 				<span class="name dataCell" th:text="${a.name}">Name</span>
 				<span class="model dataCell" th:text="${a.model.name}">Model</span>
 				<span class="serialNum dataCell" th:text="${a.serialNum}">Serial Number</span>
-				<span class="inService dataCell"><input type="checkbox" th:value="${a.active}" th:checked="${a.active}" disabled="disabled"/></span>
+				<span class="active dataCell"><input type="checkbox" th:value="${a.active}" th:checked="${a.active}" disabled="disabled"/></span>
 				<span class="aircraftImage"><img class="aircraft-image" src="" th:src="'data:image/jpeg;base64,'+${a.imagePath}" /></span>
 				<span class="id cell hidden" th:text="${a.id}">Hidden PK ID</span>
 				<span class="modelId cell hidden" th:text="${a.model.id}">Hidden Model Id</span>

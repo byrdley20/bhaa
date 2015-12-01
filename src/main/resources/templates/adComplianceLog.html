@@ -142,7 +142,7 @@
 		</div>
 		<div class="table-upper-caption">
 			<div>
-				<span th:text="${aircraft.name}+' AD Compliance'">Aircraft AD Compliance</span>
+				<span th:text="${aircraft.aircraftNumber}+' AD Compliance'">Aircraft AD Compliance</span>
 				&nbsp;&nbsp;
 				<span><a href="flightLog.html?id=1" th:href="@{~/flightLog.html(id=${aircraft.id})}"><button type="button" class="month-button" style="font-size: 0.7em;" role="button"><span class="button-text">Log</span></button></a></span>
 				<span><a href="aircraftStatus.html?id=1" th:href="@{~/aircraftStatus.html(id=${aircraft.id})}"><button type="button" class="month-button" style="font-size: 0.7em;" role="button"><span class="button-text">Status</span></button></a></span>

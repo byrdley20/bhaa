@@ -284,7 +284,7 @@
 		</div>
 		<br/>
 		<div>
-			<span th:text="'Collective Flight Log ' + ${aircraft.name}">Flight Logs</span>
+			<span th:text="'Collective Flight Log ' + ${aircraft.aircraftNumber}">Flight Logs</span>
 			&nbsp;&nbsp;
 			<span><a href="aircraftStatus.html?id=1" th:href="@{~/aircraftStatus.html(id=${aircraft.id})}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Status</span></button></a></span>
 			<span th:if="${hasDailyAd}"><a href="adCompliance.html?id=1" th:href="@{~/adComplianceLog.html(id=${aircraft.id})}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Daily AD Compliance</span></button></a></span>

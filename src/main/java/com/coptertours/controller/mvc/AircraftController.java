@@ -26,7 +26,7 @@ public class AircraftController extends BaseController {
 
 	@RequestMapping(value = { "/admin/aircrafts.html", "/admin/aircraft.html" })
 	String aircafts(Model model, HttpServletRequest request) throws IOException {
-		List<Aircraft> allAircrafts = this.aircraftRepository.findAllByActiveTrue();
+		List<Aircraft> allAircrafts = this.aircraftRepository.findAll();
 		List<com.coptertours.domain.Model> allModels = this.modelRepository.findAllByActiveTrue(sortByNameAsc());
 		model.addAttribute("aircrafts", allAircrafts);
 		model.addAttribute("allModels", allModels);

@@ -112,7 +112,7 @@
 	    		var editedRow = $(".id"+savedRecord.id);
 	    		editedRow.find('.reportDate').html(savedRecord.reportDate);
 	    		editedRow.find('.pilot').html(savedRecord.pilot.displayName);
-	    		editedRow.find('.aircraft').html(savedRecord.aircraft.name);
+	    		editedRow.find('.aircraft').html(savedRecord.aircraft.aircraftNumber);
 	    		editedRow.find('.issueNotes').html(savedRecord.issueNotes);
 	    		editedRow.find('.repairDate').html(savedRecord.repairDate);
 	    		editedRow.find('.mechanic').html(savedRecord.mechanic.displayName);
@@ -173,7 +173,7 @@
 					</select>
 					<label for="aircraft">Aircraft</label>
 					<select id="aircraft" name="aircraft" class="ui-widget-content ui-corner-all">
-						<option th:each="aircraft : ${allAircrafts}" th:text="${aircraft.name}" th:value="${aircraft.id}">${aircraft.name}</option>
+						<option th:each="aircraft : ${allAircrafts}" th:text="${aircraft.aircraftNumber}" th:value="${aircraft.id}">${aircraft.aircraftNumber}</option>
 					</select>
 					<label for="issueNotes">Issue</label>
 					<input type="text" name="issueNotes" id="issueNotes" class="text ui-widget-content ui-corner-all"/>
@@ -209,7 +209,7 @@
 				</span>
 				<span class="reportDate dataCell" th:text="${#dates.format(s.reportDate, 'MM/dd/yyyy')}">Date Reported</span>
 				<span class="pilot dataCell" th:text="${s.pilot.displayName}">Pilot</span>
-				<span class="aircraft dataCell" th:text="${s.aircraft.name}">Aircraft</span>
+				<span class="aircraft dataCell" th:text="${s.aircraft.aircraftNumber}">Aircraft</span>
 				<span class="issueNotes dataCell" th:text="${s.issueNotes}">Issue</span>
 				<span class="repairDate dataCell" th:text="${#dates.format(s.repairDate, 'MM/dd/yyyy')}">Repair Date</span>
 				<span class="mechanic dataCell" th:text="${s.mechanic.displayName}">Mechanic</span>

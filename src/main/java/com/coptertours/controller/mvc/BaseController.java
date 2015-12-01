@@ -61,6 +61,10 @@ public class BaseController {
 		return new Sort(Sort.Direction.ASC, "name");
 	}
 
+	protected Sort sortByAircraftNumberAsc() {
+		return new Sort(Sort.Direction.ASC, "aircraftNumber");
+	}
+
 	protected Sort sortByLastNameAsc() {
 		return new Sort(Sort.Direction.ASC, "lastName");
 	}

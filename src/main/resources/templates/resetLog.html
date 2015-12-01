@@ -106,7 +106,7 @@
 			</form>
 		</div>
 		<div>
-			<span class="table-upper-caption" th:text="${aircraft.name}">ID</span>
+			<span class="table-upper-caption" th:text="${aircraft.aircraftNumber}">Aircraft Number</span>
 			&nbsp;&nbsp;
 			<span><a href="aircraftStatus.html?id=1" th:href="@{~/aircraftStatus.html(id=${aircraft.id})}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Status</span></button></a></span>
 			<span><a href="flightLog.html?id=1" th:href="@{~/flightLog.html(id=${aircraft.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a></span>

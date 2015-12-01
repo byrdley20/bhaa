@@ -48,7 +48,7 @@ public class DashboardController extends BaseController {
 	@RequestMapping({ "/", "/dashboard.html" })
 	String dashboard(Model model, HttpServletRequest request) throws IOException {
 		Map<Long, List<AdCompliance>> modelToAdCompliances = new HashMap<Long, List<AdCompliance>>();
-		List<Aircraft> aircrafts = this.aircraftRepository.findAllByActiveTrue(sortByNameAsc());
+		List<Aircraft> aircrafts = this.aircraftRepository.findAllByActiveTrue(sortByAircraftNumberAsc());
 		Date today = new Date();
 		Date todayStart = DateUtil.findDayStart(today);
 		Date todayEnd = DateUtil.findDayEnd(today);

@@ -17,7 +17,7 @@
 	<div id="main-content">
 		<div class="dashboard-grid">
 			<div class="col" th:each="a : ${aircrafts}">
-				<a href="aircraftMaintenanceLog.html?id=1" th:href="@{~/aircraftMaintenanceLog.html(id=${a.id})}" th:text="${a.name}">Aircraft Name</a>
+				<a href="aircraftMaintenanceLog.html?id=1" th:href="@{~/aircraftMaintenanceLog.html(id=${a.id})}" th:text="${a.aircraftNumber}">Aircraft Number</a>
 			</div>
 		</div>
 	</div>

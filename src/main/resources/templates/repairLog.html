@@ -137,7 +137,7 @@
 			    	"</span>" +
 			    	"<span class='reportDate dataCell'>"+savedRecord.reportDate+"</span> " +
 			    	"<span class='pilot dataCell'>"+savedRecord.pilot.displayName+"</span> " +
-			    	"<span class='aircraft dataCell'>"+savedRecord.aircraft.name+"</span> " +
+			    	"<span class='aircraft dataCell'>"+savedRecord.aircraft.aircraftNumber+"</span> " +
 			    	"<span class='issueNotes dataCell'>"+savedRecord.issueNotes+"</span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 			    	"<span class='pilotId cell hidden'>"+savedRecord.pilot.id+"</span> " +
@@ -148,7 +148,7 @@
     		var editedRow = $(".id"+savedRecord.id);
     		editedRow.find('.reportDate').html(savedRecord.reportDate);
     		editedRow.find('.pilot').html(savedRecord.pilot.displayName);
-    		editedRow.find('.aircraft').html(savedRecord.aircraft.name);
+    		editedRow.find('.aircraft').html(savedRecord.aircraft.aircraftNumber);
     		editedRow.find('.issueNotes').html(savedRecord.issueNotes);
     		editedRow.find('.id').html(savedRecord.id);
     		editedRow.find('.pilotId').html(savedRecord.pilot.id);
@@ -272,7 +272,7 @@
 					</select>
 					<label for="aircraft">Aircraft</label>
 					<select id="aircraft" name="aircraft" class="ui-widget-content ui-corner-all">
-						<option th:each="aircraft : ${allAircrafts}" th:text="${aircraft.name}" th:value="${aircraft.id}">${aircraft.name}</option>
+						<option th:each="aircraft : ${allAircrafts}" th:text="${aircraft.aircraftNumber}" th:value="${aircraft.id}">${aircraft.aircraftNumber}</option>
 					</select>
 					<label for="issueNotes">Issue</label>
 					<input type="text" name="issueNotes" id="issueNotes" class="text ui-widget-content ui-corner-all"/>
@@ -293,7 +293,7 @@
 					</select>
 					<label for="repair_aircraft">Aircraft</label>
 					<select name="repair_aircraft" id="repair_aircraft" disabled="disabled" class="disabled ui-widget-content ui-corner-all">
-						<option th:each="aircraft : ${allAircrafts}" th:text="${aircraft.name}" th:value="${aircraft.id}">${aircraft.name}</option>
+						<option th:each="aircraft : ${allAircrafts}" th:text="${aircraft.aircraftNumber}" th:value="${aircraft.id}">${aircraft.aircraftNumber}</option>
 					</select>
 					<label for="repair_issueNotes">Issue</label>
 					<input name="repair_issueNotes" id="repair_issueNotes" type="text" disabled="disabled" class="disabled text ui-widget-content ui-corner-all"/>
@@ -327,7 +327,7 @@
 				</span>
 				<span class="reportDate dataCell" th:text="${#dates.format(s.reportDate, 'MM/dd/yyyy')}">Date Reported</span>
 				<span class="pilot dataCell" th:text="${s.pilot.displayName}">Pilot</span>
-				<span class="aircraft dataCell" th:text="${s.aircraft.name}">Aircraft</span>
+				<span class="aircraft dataCell" th:text="${s.aircraft.aircraftNumber}">Aircraft</span>
 				<span class="issueNotes dataCell" th:text="${s.issueNotes}">Issue</span>
 				<span class="id cell hidden" th:text="${s.id}">Hidden PK ID</span>
 				<span class="pilotId cell hidden" th:text="${s.pilot.id}">Hidden Pilot Id</span>
