@@ -195,6 +195,7 @@
 			    <span class="headerCell dataCell">Serial Number</span>
 			    <span class="headerCell dataCell">In Service</span>
 			    <span class="headerCell dataCell">Image</span>
+			    <span class="headerCell dataCell"></span>
 			</div>
 			<div class="records-rows" th:each="a : ${aircrafts}" th:classappend="|id${a.id}">
 				<span class="dataCell">
@@ -206,7 +207,12 @@
 				<span class="model dataCell" th:text="${a.model.name}">Model</span>
 				<span class="serialNum dataCell" th:text="${a.serialNum}">Serial Number</span>
 				<span class="active dataCell"><input type="checkbox" th:value="${a.active}" th:checked="${a.active}" disabled="disabled"/></span>
-				<span class="aircraftImage"><img class="aircraft-image" src="" th:src="'data:image/jpeg;base64,'+${a.imagePath}" /></span>
+				<span class="aircraftImage dataCell"><img class="aircraft-image" src="" th:src="'data:image/jpeg;base64,'+${a.imagePath}" /></span>
+				<span class="dataCell" style="vertical-align:bottom;">
+					<a href="flightLog.html?id=1" th:href="@{~/flightLog.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a><br/><br/>
+					<a href="aircraftStatus.html?id=1" th:href="@{~/aircraftStatus.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Status</span></button></a><br/><br/>
+					<a th:if="${a.model.hasAdCompliances}" href="adComplianceLog.html?id=1" th:href="@{~/adComplianceLog.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text" th:classappend="!${a.adComplied}?'alert-button'">AD Compliance</span></button></a>
+				</span>
 				<span class="id cell hidden" th:text="${a.id}">Hidden PK ID</span>
 				<span class="modelId cell hidden" th:text="${a.model.id}">Hidden Model Id</span>
 			</div>
