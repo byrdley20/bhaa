@@ -23,6 +23,13 @@ public class AircraftStatusRestController extends BaseRestController {
 	@RequestMapping(value = "/complyWith", method = RequestMethod.POST)
 	@ResponseBody
 	MaintenanceLog complyWith(@RequestBody MaintenanceLog maintenanceLog) {
+		MaintenanceLog currentMaintenanceLog = this.maintenanceLogRepository.findOne(maintenanceLog.getId());
+		if (maintenanceLog.getComplyWithDate() == null) {
+			maintenanceLog.setComplyWithDate(currentMaintenanceLog.getComplyWithDate());
+		}
+		if (maintenanceLog.getComplyWithHobbs() == null) {
+			maintenanceLog.setComplyWithHobbs(currentMaintenanceLog.getComplyWithHobbs());
+		}
 		return this.maintenanceLogRepository.save(maintenanceLog);
 	}
 

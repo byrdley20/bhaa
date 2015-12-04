@@ -39,7 +39,7 @@
     		
     		$( "#date" ).datepicker();
     		
-    		dateValidation[dateValidation.length] = createDateValidationObject(date, "'Date'");
+    		dateValidation[dateValidation.length] = createDateValidationObject(date, "'Date'", true);
     		numberValidation[numberValidation.length] = createNumberValidationObject(hobbs, "'Reset Hobbs'");
     	});
     	function writeCreatedRecord(savedRecord){

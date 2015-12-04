@@ -25,6 +25,10 @@ public class MaintenanceLog extends BaseDomain {
 	private BigDecimal complyWithHobbs;
 	@Expose
 	private Date complyWithDate;
+	@Expose
+	private String partNumber;
+	@Expose
+	private String serialNumber;
 
 	public String getComplyWithDateDisplay() {
 		if (getComplyWithDate() == null) {
@@ -52,5 +56,29 @@ public class MaintenanceLog extends BaseDomain {
 
 	public BigDecimal getComplyWithHobbs() {
 		return complyWithHobbs;
+	}
+
+	public String getPartNumber() {
+		return partNumber;
+	}
+
+	public void setPartNumber(String partNumber) {
+		this.partNumber = partNumber;
+	}
+
+	public String getSerialNumber() {
+		return serialNumber;
+	}
+
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+
+	public void setComplyWithHobbs(BigDecimal complyWithHobbs) {
+		this.complyWithHobbs = complyWithHobbs;
+	}
+
+	public void setComplyWithDate(Date complyWithDate) {
+		this.complyWithDate = complyWithDate;
 	}
 }

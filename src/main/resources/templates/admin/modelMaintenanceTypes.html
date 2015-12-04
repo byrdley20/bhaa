@@ -43,13 +43,11 @@
         	maintenanceCategory = $( "#maintenanceCategory" ),
         	timeBeforeAction = $( "#timeBeforeAction" ),
         	manualNumber = $( "#manualNumber" ),
-        	partNumber = $( "#partNumber" ),
-        	serialNumber = $( "#serialNumber" ),
         	action = $( "#action" ),
         	showOnDashboard = $( "#showOnDashboard" ),
         	active = $( "#active" );
     		
-        	allFields = $( [] ).add( id ).add( name ).add( maintenanceCategory ).add( timeBeforeAction ).add( manualNumber ).add( partNumber ).add( serialNumber ).add( action ).add( showOnDashboard ).add( active );
+        	allFields = $( [] ).add( id ).add( name ).add( maintenanceCategory ).add( timeBeforeAction ).add( manualNumber ).add( action ).add( showOnDashboard ).add( active );
         	addUpdatePath = "/admin/maintenanceTypes";
         	deletePath = "/admin/maintenanceTypes";
     		
@@ -58,9 +56,6 @@
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(name, "'Name'", 1, 50);
     		numberValidation[numberValidation.length] = createNumberValidationObject(timeBeforeAction, "'TBO'");
     		//lengthValidation[lengthValidation.length] = createLengthValidationObject(manualNumber, "'Manual Number'", 1, 20);
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(partNumber, "'Part Number'", 1, 20);
-    		//lengthValidation[lengthValidation.length] = createLengthValidationObject(serialNumber, "'Serial Number'", 1, 20);
-   		
     	});
     	function setSelectValue(formData, element) {
 			if(element.name == 'maintenanceCategory'){
@@ -88,8 +83,6 @@
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='timeBeforeAction dataCell'>"+savedRecord.timeBeforeAction+"</span> " +
 			    	"<span class='manualNumber dataCell'>"+savedRecord.manualNumber+"</span> " +
-			    	"<span class='partNumber dataCell'>"+savedRecord.partNumber+"</span> " +
-			    	"<span class='serialNumber dataCell'>"+savedRecord.serialNumber+"</span> " +
 			    	"<span class='action dataCell'>"+actions[savedRecord.action]+"</span> " +
 			    	"<span class='showOnDashboard dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.showOnDashboard)+" disabled='disabled'/></span> " +
 			    	"<span class='active dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.active)+" disabled='disabled'/></span> " +
@@ -109,8 +102,6 @@
 	    		editedRow.find('.maintenanceCategory').html(maintenanceCategories[savedRecord.maintenanceCategory]);
 	    		editedRow.find('.timeBeforeAction').html(savedRecord.timeBeforeAction);
 	    		editedRow.find('.manualNumber').html(savedRecord.manualNumber);
-	    		editedRow.find('.partNumber').html(savedRecord.partNumber);
-	    		editedRow.find('.serialNumber').html(savedRecord.serialNumber);
 	    		editedRow.find('.action').html(actions[savedRecord.action]);
 	    		editedRow.find('.showOnDashboard input').prop('checked', savedRecord.showOnDashboard);
 	    		editedRow.find('.id').html(savedRecord.id);
@@ -130,8 +121,6 @@
     		
     		$('#addEditForm').find('#timeBeforeAction').val(editSpan.nextAll('span.timeBeforeAction').first().html());
     		$('#addEditForm').find('#manualNumber').val(editSpan.nextAll('span.manualNumber').first().html());
-    		$('#addEditForm').find('#partNumber').val(editSpan.nextAll('span.partNumber').first().html());
-    		$('#addEditForm').find('#serialNumber').val(editSpan.nextAll('span.serialNumber').first().html());
     		
     		var actionValueSpan = editSpan.nextAll('span.actionValue');
     		var actionValueStr = "select option[value='"+actionValueSpan.html()+"']";
@@ -181,10 +170,6 @@
 					<input type="text" name="timeBeforeAction" id="timeBeforeAction" class="text ui-widget-content ui-corner-all"/>
 					<label for="manualNumber">Manual Number</label>
 					<input type="text" name="manualNumber" id="manualNumber" class="text ui-widget-content ui-corner-all"/>
-					<label for="partNumber">Part Number</label>
-					<input type="text" name="partNumber" id="partNumber" class="text ui-widget-content ui-corner-all"/>
-					<label for="serialNumber">Serial Number</label>
-					<input type="text" name="serialNumber" id="serialNumber" class="text ui-widget-content ui-corner-all"/>
 					<label for="action">Action</label>
 					<select id="action" name="action" class="ui-widget-content ui-corner-all">
 					  <option th:each="action : ${T(com.coptertours.options.Action).values()}" th:value="${action}" th:text="${action.name}"></option>
@@ -208,8 +193,6 @@
 				    <span class="headerCell dataCell">Name</span>
 				    <span class="headerCell dataCell">TBO</span>
 				    <span class="headerCell dataCell">Manual Number</span>
-				    <span class="headerCell dataCell">Part Number</span>
-				    <span class="headerCell dataCell">Serial Number</span>
 				    <span class="headerCell dataCell">Action</span>
 				    <span class="headerCell dataCell">Show on Dashboard</span>
 				    <span class="headerCell dataCell">Active</span>
@@ -222,8 +205,6 @@
 					<span class="name dataCell" th:text="${m.name}">Name</span>
 					<span class="timeBeforeAction dataCell" th:text="${m.timeBeforeAction}">TBO</span>
 					<span class="manualNumber dataCell" th:text="${m.manualNumber}">Manual Number</span>
-					<span class="partNumber dataCell" th:text="${m.partNumber}">Part Number</span>
-					<span class="serialNumber dataCell" th:text="${m.serialNumber}">Serial Number</span>
 					<span class="action dataCell" th:text="${m.action.name}">Action</span>
 					<span class="showOnDashboard dataCell"><input type="checkbox" th:value="${m.showOnDashboard}" th:checked="${m.showOnDashboard}" disabled="disabled"/></span>
 					<span class="active dataCell"><input type="checkbox" th:value="${m.active}" th:checked="${m.active}" disabled="disabled"/></span>

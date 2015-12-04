@@ -61,11 +61,11 @@
     		$( "#reportDate" ).datepicker();
     		$( "#repairDate" ).datepicker();
     		
-    		dateValidation[dateValidation.length] = createDateValidationObject(reportDate, "'Date Reported'");
+    		dateValidation[dateValidation.length] = createDateValidationObject(reportDate, "'Date Reported'", true);
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(issueNotes, "'Issue Notes'", 1, 500);
     	});
     	function addRepairValidation() {
-    		dateValidation[dateValidation.length] = createDateValidationObject($('#repairDate'), "'Repair Date'");
+    		dateValidation[dateValidation.length] = createDateValidationObject($('#repairDate'), "'Repair Date'", true);
     		lengthValidation[lengthValidation.length] = createLengthValidationObject($('#repairNotes'), "'Repair Notes'", 1, 500);    		
     	}
     	function removeRepairValidation() {

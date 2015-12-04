@@ -44,7 +44,7 @@
     		
     		$( "#complyWithDate" ).datepicker();
     		
-    		dateValidation[dateValidation.length] = createDateValidationObject(complyWithDate, "'Date'");
+    		dateValidation[dateValidation.length] = createDateValidationObject(complyWithDate, "'Date'", true);
     	});
     	function setSelectValue(formData, element) {
     		if(element.name == 'pilot'){

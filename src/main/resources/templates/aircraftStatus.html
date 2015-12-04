@@ -30,9 +30,11 @@
     		adComplianceId = $( "#adComplianceId" ),
     		aircraftId = $( "#aircraftId" ),
     		complyWithHobbs = $( "#complyWithHobbs" ),
-    		complyWithDate = $( "#complyWithDate" );
+    		complyWithDate = $( "#complyWithDate" ),
+    		partNumber = $( "#partNumber" ),
+    		serialNumber = $( "#serialNumber" );
     		
-        	allFields = $( [] ).add( id ).add( complyWithHobbs ).add( complyWithDate ).add( maintenanceTypeId ).add( adComplianceId ).add( aircraftId );
+        	allFields = $( [] ).add( id ).add( complyWithHobbs ).add( complyWithDate ).add( maintenanceTypeId ).add( adComplianceId ).add( aircraftId ).add( partNumber ).add( serialNumber );
         	addUpdatePath = "/aircraftStatus/complyWith";
         	deletePath = "/aircraftStatus/complyWith";
     		
@@ -53,13 +55,19 @@
     		}
        	});
     	function addComplyWithDateValidation() {
-    		dateValidation[dateValidation.length] = createDateValidationObject($('#complyWithDate'), "'Comply With Date'");
+    		dateValidation[dateValidation.length] = createDateValidationObject($('#complyWithDate'), "'Comply With Date'", false);
     	}
     	function addComplyWithHobbsValidation() {
-    		numberValidation[numberValidation.length] = createNumberValidationObject($('#complyWithHobbs'), "'Comply With Hobbs'");
+    		numberValidation[numberValidation.length] = createNumberValidationObject($('#complyWithHobbs'), "'Comply With Aircraft Hours'", false);
     	}
     	function setExtraValues(formData){
     		//formData["aircraftId"] = aircraft;
+    		if(formData['complyWithHobbs']==""){
+    			delete formData['complyWithHobbs'];	
+    		}
+    		if(formData['complyWithDate']==""){
+    			delete formData['complyWithDate'];	
+    		}
     	}
     	function writeCreatedRecord(savedRecord){
     		writeEditRecord(savedRecord);
@@ -75,33 +83,44 @@
     		}
 	    	var tbo = editedRow.find('.tbo').html();
     		if(editedRow.find('.hobbsDue').length){
-        		editedRow.find('.complyWithHobbs').html((savedRecord.complyWithHobbs).toFixed(2));
-    			var hobbsDue = (Number(savedRecord.complyWithHobbs) + Number(tbo)).toFixed(2);
-    			editedRow.find('.hobbsDue').html(hobbsDue);
-    			var remainingHours = (Number(hobbsDue) - Number(aircraftTotalTime));
-    			editedRow.find('.remainingHours').html(remainingHours.toFixed(2));
-    			
-    			editedRow.removeClass('dueNow dueSoon');
-    			if(remainingHours < 10) {
-    				editedRow.addClass('dueNow');
-    			} else if (remainingHours < 20) {
-    				editedRow.addClass('dueSoon');
+    			var hobbsDue;
+    			if(savedRecord.complyWithHobbs != null) {
+	        		editedRow.find('.complyWithHobbs').html((savedRecord.complyWithHobbs).toFixed(2));
+	    			hobbsDue = (Number(savedRecord.complyWithHobbs) + Number(tbo)).toFixed(2);
+	    			editedRow.find('.hobbsDue').html(hobbsDue);
+	    			var remainingHours = (Number(hobbsDue) - Number(aircraftTotalTime));
+	    			editedRow.find('.remainingHours').html(remainingHours.toFixed(2));
+
+	    			editedRow.removeClass('dueNow dueSoon');
+	    			if(remainingHours < 10) {
+	    				editedRow.addClass('dueNow');
+	    			} else if (remainingHours < 20) {
+	    				editedRow.addClass('dueSoon');
+	    			}
     			}
     		} else if(editedRow.find('.dueDate').length){
            		editedRow.find('.complyWithDate').html(savedRecord.complyWithDateDisplay);
        			var complyWithDate = Date.parse(savedRecord.complyWithDateDisplay, "M/d/yyyy");
-   				var dueDate = complyWithDate.addMonths(Number(tbo));
-    			editedRow.find('.dueDate').html(dueDate.toString("M/d/yyyy"));
-    			var remainingDays = dateDiffInDays(Date.today(), dueDate);
-    			editedRow.find('.remainingDays').html(remainingDays);
-    			
     			editedRow.removeClass('dueNow dueSoon');
-    			if(remainingDays < 5) {
-    				editedRow.addClass('dueNow');
-    			} else if (remainingDays < 15) {
-    				editedRow.addClass('dueSoon');
-    			}
+       			if(complyWithDate == null) {
+       				editedRow.find('.complyWithDate').html('N/A');
+       				editedRow.find('.dueDate').html('N/A');
+       				editedRow.find('.remainingDays').html('N/A');
+       			} else {
+	   				var dueDate = complyWithDate.addMonths(Number(tbo));
+	    			editedRow.find('.dueDate').html(dueDate.toString("M/d/yyyy"));
+	    			var remainingDays = dateDiffInDays(Date.today(), dueDate);
+	    			editedRow.find('.remainingDays').html(remainingDays);
+	    			
+	    			if(remainingDays < 5) {
+	    				editedRow.addClass('dueNow');
+	    			} else if (remainingDays < 15) {
+	    				editedRow.addClass('dueSoon');
+	    			}
+       			}
     		}
+    		editedRow.find('.partNumber').html(savedRecord.partNumber);
+    		editedRow.find('.serialNumber').html(savedRecord.serialNumber);
     		editedRow.find('.maintenanceTypeId').html(savedRecord.maintenanceTypeId);
     		editedRow.find('.adComplianceId').html(savedRecord.adComplianceId);
     		editedRow.find('.aircraftId').html(savedRecord.aircraftId);
@@ -140,6 +159,8 @@
     			addComplyWithHobbsValidation();
     			$('#addEditForm').find('#complyWithHobbs').val(currentHobbs);
     		}
+    		$('#addEditForm').find('#partNumber').val(editSpan.nextAll('span.partNumber').first().html());
+    		$('#addEditForm').find('#serialNumber').val(editSpan.nextAll('span.serialNumber').first().html());
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
     		$('#addEditForm').find('#maintenanceTypeId').val(editSpan.nextAll('span.maintenanceTypeId').first().html());
     		$('#addEditForm').find('#aircraftId').val(editSpan.nextAll('span.aircraftId').first().html());
@@ -167,6 +188,10 @@
 					<input type="text" name="complyWithDate" id="complyWithDate" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
 					<label for="complyWithHobbs" class="complyWithHobbs">Comply With Aircraft Hours</label>
 					<input type="text" name="complyWithHobbs" id="complyWithHobbs" value="" class="text ui-widget-content ui-corner-all"/>
+					<label for="serialNumber" class="serialNumber">Serial Number</label>
+					<input type="text" name="serialNumber" id="serialNumber" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
+					<label for="partNumber" class="partNumber">Part Number</label>
+					<input type="text" name="partNumber" id="partNumber" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
 					<input type="text" name="id" id="id" class="hidden"/>
 					<input type="text" name="maintenanceTypeId" id="maintenanceTypeId" class="hidden"/>
 					<input type="text" name="adComplianceId" id="adComplianceId" class="hidden"/>
@@ -203,11 +228,11 @@
 			    <span class="dataCell">A/C Hrs Due</span>
 			    <span class="dataCell">Remaining Hours</span>
 			</div>
-			<div class="records-rows maint-rows-hour" th:each="maintType : ${flightHourMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingHours}!=null) ? ((${remainingHours} &lt; 10) ? 'dueNow' : ((${remainingHours} &lt; 20 ) ? 'dueSoon' : '')) : '')" th:with="complyWithHobbs=((${maintType.maintenanceLog}==null)?'0':${maintType.maintenanceLog.complyWithHobbs}),hobbsDue=(${complyWithHobbs}+${maintType.timeBeforeAction}),remainingHours=(${hobbsDue}-${aircraftTotalTime})">
+			<div class="records-rows maint-rows-hour" th:each="maintType : ${flightHourMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingHours}!=null) ? ((${remainingHours} &lt; 10) ? 'dueNow' : ((${remainingHours} &lt; 20 ) ? 'dueSoon' : '')) : '')" th:with="complyWithHobbs=((${maintType.maintenanceLog}==null)?'0':${maintType.maintenanceLog.complyWithHobbs}),hobbsDue=(${complyWithHobbs} == null?${maintType.timeBeforeAction}:${complyWithHobbs}+${maintType.timeBeforeAction}),remainingHours=(${hobbsDue}-${aircraftTotalTime}),partNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.partNumber}),serialNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.serialNumber})">
 				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" title="Comply With" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
 				<span class="dataCell" th:text="${maintType.name}">Item Name</span>
-				<span class="dataCell" th:text="${maintType.serialNumber}">Serial Num</span>
-				<span class="dataCell" th:text="${maintType.partNumber}">Part Num</span>
+				<span class="dataCell serialNumber" th:text="${serialNumber}">Serial Num</span>
+				<span class="dataCell partNumber" th:text="${partNumber}">Part Num</span>
 				<span class="dataCell" th:text="${maintType.manualNumber}">Manual Num</span>
 				<span class="dataCell" th:text="${maintType.action.name}">Action</span>
 				<span class="dataCell complyWithHobbs" th:text="${complyWithHobbs}">599.9</span>
@@ -233,14 +258,14 @@
 			    <span class="dataCell">Due Date</span>
 			    <span class="dataCell">Remaining Days</span>
 			</div>
-			<div class="records-rows maint-rows-month" th:each="maintType : ${monthMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingDays}!='N/A') ? ((${remainingDays} &lt; 5) ? 'dueNow' : ((${remainingDays} &lt; 15) ? 'dueSoon' : '')) : 'dueNow')" th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),dueDate=((${maintType.maintenanceLog}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yyyy')}),remainingDays=((${maintType.maintenanceLog} == null)?'N/A':${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)})">
+			<div class="records-rows maint-rows-month" th:each="maintType : ${monthMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingDays}!='N/A') ? ((${remainingDays} &lt; 5) ? 'dueNow' : ((${remainingDays} &lt; 15) ? 'dueSoon' : '')) : 'dueNow')" th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),dueDate=((${maintType.maintenanceLog}==null or ${complyWithDate}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yyyy')}),remainingDays=((${maintType.maintenanceLog} == null or ${dueDate == 'N/A'})?'N/A':${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)}),partNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.partNumber}),serialNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.serialNumber})">
 				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" title="Comply With" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
 				<span class="dataCell" th:text="${maintType.name}">Item Name</span>
-				<span class="dataCell" th:text="${maintType.serialNumber}">Serial Num</span>
-				<span class="dataCell" th:text="${maintType.partNumber}">Part Num</span>
+				<span class="dataCell serialNumber" th:text="${serialNumber}">Serial Num</span>
+				<span class="dataCell partNumber" th:text="${partNumber}">Part Num</span>
 				<span class="dataCell" th:text="${maintType.manualNumber}">Manual Num</span>
 				<span class="dataCell" th:text="${maintType.action.name}">Action</span>
-				<span class="dataCell complyWithDate" th:text="((${maintType.maintenanceLog} == null)?'N/A':${#dates.format(complyWithDate, 'MM/dd/yyyy')})">01/01/15</span>
+				<span class="dataCell complyWithDate" th:text="((${maintType.maintenanceLog} == null or ${complyWithDate == null})?'N/A':${#dates.format(complyWithDate, 'MM/dd/yyyy')})">01/01/15</span>
 				<span class="dataCell tbo" th:text="${#numbers.formatInteger(maintType.timeBeforeAction,1)}">24</span>
 				<span class="dataCell dueDate" th:text="${dueDate}">1/1/9999</span>
 				<span class="dataCell remainingDays" th:text="${remainingDays}">76</span>

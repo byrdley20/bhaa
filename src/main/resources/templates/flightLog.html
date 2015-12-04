@@ -67,7 +67,7 @@
     		
     		$( "#date" ).datepicker();
     		
-    		dateValidation[dateValidation.length] = createDateValidationObject(date, "'Date'");
+    		dateValidation[dateValidation.length] = createDateValidationObject(date, "'Date', true);
     		numberValidation[numberValidation.length] = createNumberValidationObject(hobbsBegin, "'Hobbs Begin'");
     		numberValidation[numberValidation.length] = createNumberValidationObject(hobbsEnd, "'Hobbs End'");
     	});

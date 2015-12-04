@@ -85,13 +85,13 @@
     	function setRegularValidation() {
     		lengthValidation = [];
     		dateValidation = [];
-    		dateValidation[dateValidation.length] = createDateValidationObject($('#reportDate'), "'Date'");
+    		dateValidation[dateValidation.length] = createDateValidationObject($('#reportDate'), "'Date'", true);
     		lengthValidation[lengthValidation.length] = createLengthValidationObject($('#issueNotes'), "'Issue Notes'", 1, 500);
     	}
     	function setRepairValidation() {
     		lengthValidation = [];
     		dateValidation = [];
-    		dateValidation[dateValidation.length] = createDateValidationObject($('#repairDate'), "'Repair Date'");
+    		dateValidation[dateValidation.length] = createDateValidationObject($('#repairDate'), "'Repair Date'", true);
     		lengthValidation[lengthValidation.length] = createLengthValidationObject($('#repairNotes'), "'Repair Notes'", 1, 500);    		
     	}
     	function createRepairDialog(){

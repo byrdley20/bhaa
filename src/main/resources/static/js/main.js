@@ -30,18 +30,20 @@ function createLengthValidationObject(fieldObj, fieldName, minimum, maximum){
 	return lengthValidationObject;
 }
 
-function createNumberValidationObject(fieldObj, fieldName){
+function createNumberValidationObject(fieldObj, fieldName, req){
 	var numberValidationObject = {
 		field: fieldObj,
-		name: fieldName
+		name: fieldName,
+		required: req
 	};
 	return numberValidationObject;
 }
 
-function createDateValidationObject(fieldObj, fieldName){
+function createDateValidationObject(fieldObj, fieldName, req){
 	var dateValidationObject = {
 		field: fieldObj,
-		name: fieldName
+		name: fieldName,
+		required: req 
 	};
 	return dateValidationObject;
 }
@@ -135,12 +137,12 @@ function validateForm() {
 	}
 	if (typeof numberValidation !== 'undefined') {
 		$.each(numberValidation, function(){
-			valid = checkNumber( this.field, this.name ) && valid;
+			valid = checkNumber( this.field, this.name, this.required ) && valid;
 		});
 	}
 	if (typeof dateValidation !== 'undefined') {
 		$.each(dateValidation, function(){
-			valid = checkDate( this.field, this.name ) && valid;
+			valid = checkDate( this.field, this.name, this.required ) && valid;
 		});
 	}
 	if (typeof passwordValidation !== 'undefined') {
@@ -222,7 +224,11 @@ function checkLength( o, n, min, max ) {
 		return true;
 	}
 }
-function checkNumber( o, n ) {
+function checkNumber( o, n, required ) {
+	var value = o.val();
+	if(value.trim() == "" && !required) {
+		return true;
+	}		
 	if ( !$.isNumeric(o.val()) ) {
 		o.addClass( "ui-state-error" );
 		updateTips( n + " must be a valid number." );
@@ -239,8 +245,11 @@ function checkPasswordsMatch( p1, p2 ) {
 	updateTips( "The passwords do not match" );
 	return false;
 }
-function checkDate( o, n ){
+function checkDate( o, n, required ){
 	var t = o.val().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+	if(t == null && !required){
+		 return true;
+	}
 	if(t!==null) {
 		var m=+t[1], d=+t[2], y=+t[3];
 		var date = new Date(y,m-1,d);

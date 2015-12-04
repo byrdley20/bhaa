@@ -39,10 +39,6 @@ public class MaintenanceType extends BaseDomain {
 	private BigDecimal timeBeforeAction;
 	@Expose
 	private String manualNumber;
-	@Expose
-	private String partNumber;
-	@Expose
-	private String serialNumber;
 
 	@Enumerated(EnumType.STRING)
 	@JoinColumn(name = "ACTION")
@@ -90,14 +86,6 @@ public class MaintenanceType extends BaseDomain {
 
 	public String getManualNumber() {
 		return manualNumber;
-	}
-
-	public String getPartNumber() {
-		return partNumber;
-	}
-
-	public String getSerialNumber() {
-		return serialNumber;
 	}
 
 	public Action getAction() {
