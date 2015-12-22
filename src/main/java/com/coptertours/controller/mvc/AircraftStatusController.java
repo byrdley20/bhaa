@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.coptertours.domain.AdCompliance;
 import com.coptertours.domain.AdComplianceLog;
 import com.coptertours.domain.Aircraft;
+import com.coptertours.domain.Component;
 import com.coptertours.domain.MaintenanceLog;
 import com.coptertours.domain.MaintenanceType;
 import com.coptertours.options.MaintenanceCategory;
@@ -22,6 +23,7 @@ import com.coptertours.options.Role;
 import com.coptertours.repository.AdComplianceLogRepository;
 import com.coptertours.repository.AdComplianceRepository;
 import com.coptertours.repository.AircraftRepository;
+import com.coptertours.repository.ComponentRepository;
 import com.coptertours.repository.MaintenanceLogRepository;
 import com.coptertours.repository.MaintenanceTypeRepository;
 
@@ -37,10 +39,12 @@ public class AircraftStatusController extends BaseController {
 	private AdComplianceRepository adComplianceRepository;
 	@Autowired
 	private AdComplianceLogRepository adComplianceLogRepository;
+	@Autowired
+	private ComponentRepository componentRepository;
 
 	@RequestMapping("/aircraftStatus.html")
 	String aircraftStatus(Model model, @RequestParam Long id) {
-		Aircraft aircraft = this.aircraftRepository.findOne(id);
+		Aircraft aircraft = this.findAircraftById(id);
 
 		List<MaintenanceLog> maintenanceLogs = this.maintenanceLogRepository.findByAircraftId(aircraft.getId());
 		Map<Long, MaintenanceLog> maintenanceTypeToLog = new HashMap<Long, MaintenanceLog>();
@@ -83,12 +87,15 @@ public class AircraftStatusController extends BaseController {
 			}
 		}
 
+		List<Component> components = this.componentRepository.findByAircraft(aircraft, sortByComponentNameAsc());
+
 		setCurrentHobbsAndOffsets(aircraft);
 
 		model.addAttribute("aircraft", aircraft);
 		model.addAttribute("flightHourMaintTypes", flightHourMaintTypes);
 		model.addAttribute("monthMaintTypes", monthMaintTypes);
 		model.addAttribute("adCompliances", adCompliances);
+		model.addAttribute("components", components);
 		model.addAttribute("allPilots", findUsersByRole(Role.PILOT));
 		model.addAttribute("today", new Date());
 		model.addAttribute("hasDailyAd", hasDailyAd);

@@ -32,9 +32,11 @@
     		complyWithHobbs = $( "#complyWithHobbs" ),
     		complyWithDate = $( "#complyWithDate" ),
     		partNumber = $( "#partNumber" ),
-    		serialNumber = $( "#serialNumber" );
+    		serialNumber = $( "#serialNumber" ),
+    		componentId = $( "#componentId" ),
+    		componentName = $( "#componentName" );
     		
-        	allFields = $( [] ).add( id ).add( complyWithHobbs ).add( complyWithDate ).add( maintenanceTypeId ).add( adComplianceId ).add( aircraftId ).add( partNumber ).add( serialNumber );
+        	allFields = $( [] ).add( id ).add( complyWithHobbs ).add( complyWithDate ).add( maintenanceTypeId ).add( adComplianceId ).add( aircraftId ).add( partNumber ).add( serialNumber ).add( componentId ).add( componentName );
         	addUpdatePath = "/aircraftStatus/complyWith";
         	deletePath = "/aircraftStatus/complyWith";
     		
@@ -61,12 +63,14 @@
     		numberValidation[numberValidation.length] = createNumberValidationObject($('#complyWithHobbs'), "'Comply With Aircraft Hours'", false);
     	}
     	function setExtraValues(formData){
-    		//formData["aircraftId"] = aircraft;
     		if(formData['complyWithHobbs']==""){
     			delete formData['complyWithHobbs'];	
     		}
     		if(formData['complyWithDate']==""){
     			delete formData['complyWithDate'];	
+    		}
+    		if(formData['componentId']!=""){
+    			formData['aircraft']=aircraft;
     		}
     	}
     	function writeCreatedRecord(savedRecord){
@@ -80,14 +84,16 @@
     		} else if(typeof savedRecord.adComplianceId != 'undefined') {
     			editedRow = $(".adComplianceId-"+savedRecord.adComplianceId);
     			adCompliance = true;
+    		} else if(typeof savedRecord.componentName != 'undefined') {
+    			editedRow = $(".componentId-"+savedRecord.id);
     		}
 	    	var tbo = editedRow.find('.tbo').html();
-    		if(editedRow.find('.hobbsDue').length){
+    		if(editedRow.find('.aircraftHoursDue').length){
     			var hobbsDue;
     			if(savedRecord.complyWithHobbs != null) {
 	        		editedRow.find('.complyWithHobbs').html((savedRecord.complyWithHobbs).toFixed(2));
 	    			hobbsDue = (Number(savedRecord.complyWithHobbs) + Number(tbo)).toFixed(2);
-	    			editedRow.find('.hobbsDue').html(hobbsDue);
+	    			editedRow.find('.aircraftHoursDue').html(hobbsDue);
 	    			var remainingHours = (Number(hobbsDue) - Number(aircraftTotalTime));
 	    			editedRow.find('.remainingHours').html(remainingHours.toFixed(2));
 
@@ -130,14 +136,37 @@
     	function populateEditForm(editLink){
     		var editSpan = $(editLink).closest('span');
     		var isAdCompliance = editSpan.parent('.maint-rows-ad').length;
+    		var isComponent = editSpan.parent('.maint-rows-component').length;
+    		
+    		$('#addEditForm').find('#partNumber').show();
+    		$('#addEditForm').find('.partNumber').show();
+    		$('#addEditForm').find('#serialNumber').show();
+    		$('#addEditForm').find('.serialNumber').show();
+
+    		var showSerialNumAndPartNum = false;
     		
     		if(isAdCompliance) {
 	    		$("#addEditForm").attr("action", contextPath + "/aircraftStatus/complyWithAd");
 	    		addUpdatePath = contextPath + "/aircraftStatus/complyWithAd";
+	    		
+	    		$('#addEditForm').find('#partNumber').hide();
+	    		$('#addEditForm').find('.partNumber').hide();
+	    		$('#addEditForm').find('#serialNumber').hide();
+	    		$('#addEditForm').find('.serialNumber').hide();
+    		} else if (isComponent) {
+    			$("#addEditForm").attr("action", contextPath + "/aircraftStatus/componentUpdate");
+    			addUpdatePath = contextPath + "/aircraftStatus/componentUpdate";
+    			showSerialNumAndPartNum = true;
     		} else {
     			$("#addEditForm").attr("action", contextPath + "/aircraftStatus/complyWith");
     			addUpdatePath = contextPath + "/aircraftStatus/complyWith";
-    		}    		
+    			showSerialNumAndPartNum = true;
+    		}
+    		
+    		if(showSerialNumAndPartNum) {
+        		$('#addEditForm').find('#partNumber').val(editSpan.nextAll('span.partNumber').first().html());
+        		$('#addEditForm').find('#serialNumber').val(editSpan.nextAll('span.serialNumber').first().html());    			
+    		}
     		
 			$('#addEditForm').find('#complyWithDate').show();
 			$('#addEditForm').find('.complyWithDate').show();
@@ -148,23 +177,31 @@
 			dateValidation = [];
 			numberValidation = [];;
 			
-    		if(editSpan.parent('.maint-rows-month').length) {
+			if(isComponent) {
     			$('#addEditForm').find('#complyWithHobbs').hide();
-    			$('#addEditForm').find('.complyWithHobbs').hide();
-    			addComplyWithDateValidation();
-    			$('#complyWithDate').datepicker("setDate", new Date() );
-    		} else if (editSpan.parent('.maint-rows-hour').length || isAdCompliance) {
+    			$('#addEditForm').find('.complyWithHobbs').hide();				
     			$('#addEditForm').find('#complyWithDate').hide();
     			$('#addEditForm').find('.complyWithDate').hide();
-    			addComplyWithHobbsValidation();
-    			$('#addEditForm').find('#complyWithHobbs').val(currentHobbs);
-    		}
-    		$('#addEditForm').find('#partNumber').val(editSpan.nextAll('span.partNumber').first().html());
-    		$('#addEditForm').find('#serialNumber').val(editSpan.nextAll('span.serialNumber').first().html());
+			} else {
+	    		if(editSpan.parent('.maint-rows-month').length) {
+	    			$('#addEditForm').find('#complyWithHobbs').hide();
+	    			$('#addEditForm').find('.complyWithHobbs').hide();
+	    			addComplyWithDateValidation();
+	    			$('#complyWithDate').datepicker("setDate", new Date() );
+	    		} else if (editSpan.parent('.maint-rows-hour').length || isAdCompliance) {
+	    			$('#addEditForm').find('#complyWithDate').hide();
+	    			$('#addEditForm').find('.complyWithDate').hide();
+	    			addComplyWithHobbsValidation();
+	    			$('#addEditForm').find('#complyWithHobbs').val(aircraftTotalTime);
+	    		}
+			}
+    		$('#addEditForm').find('#name').html(editSpan.nextAll('span.name').first().html());
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
     		$('#addEditForm').find('#maintenanceTypeId').val(editSpan.nextAll('span.maintenanceTypeId').first().html());
     		$('#addEditForm').find('#aircraftId').val(editSpan.nextAll('span.aircraftId').first().html());
     		$('#addEditForm').find('#adComplianceId').val(editSpan.nextAll('span.adComplianceId').first().html());
+    		$('#addEditForm').find('#componentId').val(editSpan.nextAll('span.componentId').first().html());
+    		$('#addEditForm').find('#componentName').val(editSpan.nextAll('span.componentName').first().html());
     	}
     	//]]>
     </script>
@@ -183,6 +220,7 @@
 		<div id="dialog-form" title="Comply With">
 			<p class="validateTips"></p>
 			<form id="addEditForm" action="/aircraftStatus/complyWith" th:action="@{~/aircraftStatus/complyWith}" method="post">
+				<div id="name"></div>
 				<fieldset>
 					<label for="complyWithDate" class="complyWithDate">Comply With Date</label>
 					<input type="text" name="complyWithDate" id="complyWithDate" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
@@ -193,9 +231,11 @@
 					<label for="partNumber" class="partNumber">Part Number</label>
 					<input type="text" name="partNumber" id="partNumber" tabindex="-1" class="text ui-widget-content ui-corner-all"/>
 					<input type="text" name="id" id="id" class="hidden"/>
+					<input type="text" name="componentName" id="componentName" class="hidden"/>
 					<input type="text" name="maintenanceTypeId" id="maintenanceTypeId" class="hidden"/>
 					<input type="text" name="adComplianceId" id="adComplianceId" class="hidden"/>
 					<input type="text" name="aircraftId" id="aircraftId" class="hidden"/>
+					<input type="text" name="componentId" id="componentId" class="hidden"/>
 					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 				</fieldset>
 			</form>
@@ -214,7 +254,7 @@
 		<div th:text="'Aircraft Total Time: ' + ${aircraftTotalTime}">Aircraft TT</div>
 
 		<br/>
-		<div class="category-type">Flight Hours</div>
+		<div class="category-type" style="width:120px;">Flight Hours</div>
 		<div class="table">
 			<div class="records-header">
 				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"></span>
@@ -230,21 +270,21 @@
 			</div>
 			<div class="records-rows maint-rows-hour" th:each="maintType : ${flightHourMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingHours}!=null) ? ((${remainingHours} &lt; 10) ? 'dueNow' : ((${remainingHours} &lt; 20 ) ? 'dueSoon' : '')) : '')" th:with="complyWithHobbs=((${maintType.maintenanceLog}==null)?'0':${maintType.maintenanceLog.complyWithHobbs}),hobbsDue=(${complyWithHobbs} == null?${maintType.timeBeforeAction}:${complyWithHobbs}+${maintType.timeBeforeAction}),remainingHours=(${hobbsDue}-${aircraftTotalTime}),partNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.partNumber}),serialNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.serialNumber})">
 				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" title="Comply With" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
-				<span class="dataCell" th:text="${maintType.name}">Item Name</span>
+				<span class="dataCell name" th:text="${maintType.name}">Item Name</span>
 				<span class="dataCell serialNumber" th:text="${serialNumber}">Serial Num</span>
 				<span class="dataCell partNumber" th:text="${partNumber}">Part Num</span>
 				<span class="dataCell" th:text="${maintType.manualNumber}">Manual Num</span>
 				<span class="dataCell" th:text="${maintType.action.name}">Action</span>
 				<span class="dataCell complyWithHobbs" th:text="${complyWithHobbs}">599.9</span>
 				<span class="dataCell tbo" th:text="${maintType.timeBeforeAction}">100.0</span>
-				<span class="dataCell hobbsDue" th:text="${hobbsDue}">699.9</span>
+				<span class="dataCell aircraftHoursDue" th:text="${hobbsDue}">699.9</span>
 				<span class="dataCell remainingHours" th:text="${remainingHours}">29.0</span>
 				<span class="id cell hidden" th:text="( (${maintType.maintenanceLog} == null)? '0' : ${maintType.maintenanceLog.id})">Hidden Maintenance Log ID</span>
 				<span class="aircraftId cell hidden" th:text="${aircraft.id}">Hidden Aircraft ID</span>
 				<span class="maintenanceTypeId cell hidden" th:text="${maintType.id}">Hidden Maintenace Type ID</span>
 			</div>
 		</div>
-		<div class="category-type">Months</div>
+		<div class="category-type" style="width:75px;">Months</div>
 		<div class="table">
 			<div class="records-header">
 				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"></span>
@@ -260,7 +300,7 @@
 			</div>
 			<div class="records-rows maint-rows-month" th:each="maintType : ${monthMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingDays}!='N/A') ? ((${remainingDays} &lt; 5) ? 'dueNow' : ((${remainingDays} &lt; 15) ? 'dueSoon' : '')) : 'dueNow')" th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),dueDate=((${maintType.maintenanceLog}==null or ${complyWithDate}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yyyy')}),remainingDays=((${maintType.maintenanceLog} == null or ${dueDate == 'N/A'})?'N/A':${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)}),partNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.partNumber}),serialNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.serialNumber})">
 				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" title="Comply With" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
-				<span class="dataCell" th:text="${maintType.name}">Item Name</span>
+				<span class="dataCell name" th:text="${maintType.name}">Item Name</span>
 				<span class="dataCell serialNumber" th:text="${serialNumber}">Serial Num</span>
 				<span class="dataCell partNumber" th:text="${partNumber}">Part Num</span>
 				<span class="dataCell" th:text="${maintType.manualNumber}">Manual Num</span>
@@ -274,7 +314,7 @@
 				<span class="maintenanceTypeId cell hidden" th:text="${maintType.id}">Hidden Maintenace Type ID</span>
 			</div>
 		</div>
-		<div class="category-type">ADs</div>
+		<div class="category-type" style="width:45px;">ADs</div>
 		<div class="table">
 			<div class="records-header">
 				<span class="dataCell complyWith adComplyWithHeader"></span>
@@ -288,7 +328,7 @@
 				<span class="dataCell complyWith" th:if="${adCompliance.daily}"><a href="#" th:href="@{~/adComplianceLog.html(id=${aircraft.id},adComplianceId=${adCompliance.id})}"><img border="0" title="Comply With" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
 				<span class="dataCell complyWith editLink" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')" th:if="!${adCompliance.daily}" ><a href="#" th:attr="data-id=${adCompliance.id}"><img border="0" title="Comply With" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
 				<span class="dataCell complyWith" th:if="!${adCompliance.daily}" sec:authorize="!hasRole('ROLE_MECHANIC') and !hasRole('ROLE_ADMIN')"></span>
-				<span class="dataCell" th:text="${adCompliance.name}">Name</span>
+				<span class="dataCell name" th:text="${adCompliance.name}">Name</span>
 				<span class="dataCell" th:classappend="${adCompliance.daily} ? 'complyWithDate' : 'complyWithHobbs'" th:text="${adCompliance.daily} ? ${complyWithDate} : ${complyWithAircraftHours}">599.9</span>
 				<span class="dataCell tbo" th:text="${adCompliance.daily} ? 'Daily' : ${adCompliance.timeBeforeAction}">100.0</span>
 				<span class="dataCell" th:classappend="${adCompliance.daily} ? 'dueDate' : 'aircraftHoursDue'" th:text="${adCompliance.daily} ? 'Daily' : ${aircraftHoursDue}">699.9</span>
@@ -296,6 +336,24 @@
 				<span class="id cell hidden" th:text="( (${adCompliance.adComplianceLog} == null)? '0' : ${adCompliance.adComplianceLog.id})">Hidden AD Compliance Log ID</span>
 				<span class="aircraftId cell hidden" th:text="${aircraft.id}">Hidden Aircraft ID</span>
 				<span class="adComplianceId cell hidden" th:text="${adCompliance.id}">Hidden AD Compliance ID</span>
+			</div>
+		</div>
+		<div class="category-type" style="width:255px;">Major Aircraft Components</div>
+		<div class="table">
+			<div class="records-header">
+				<span class="dataCell" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"></span>
+				<span class="dataCell">Name</span>
+				<span class="dataCell">Serial Num</span>
+				<span class="dataCell">Part Num</span>
+			</div>
+			<div class="records-rows maint-rows-component" th:each="component : ${components}" th:classappend="'componentId-'+${component.id}+' '+(${componentStat.odd}?'even':'')">
+				<span class="dataCell complyWith editLink" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" th:attr="data-id=${component.id}"><img border="0" title="Edit" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
+				<span class="dataCell componentName" th:text="${component.componentName}">Component Name</span>
+				<span class="dataCell serialNumber" th:text="${component.serialNumber}">Serial Num</span>
+				<span class="dataCell partNumber" th:text="${component.partNumber}">Part Num</span>
+				<span class="aircraftId cell hidden" th:text="${aircraft.id}">Hidden Aircraft ID</span>
+				<span class="componentId cell hidden" th:text="${component.id}">Hidden Component ID</span>
+				<span class="id cell hidden" th:text="${component.id}">Hidden Component ID</span>
 			</div>
 		</div>
 		<span><a href="resetLog.html?i=hobbs" th:href="@{~/resetLog.html(id=${aircraft.id}, i=hobbs)}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Hobbs Meter</span></button></a></span>

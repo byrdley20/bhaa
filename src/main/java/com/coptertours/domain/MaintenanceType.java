@@ -53,11 +53,19 @@ public class MaintenanceType extends BaseDomain {
 	@Transient
 	@Expose
 	private MaintenanceLog maintenanceLog;
-	
+
 	public void clearModel() {
 		this.model = null;
 	}
-	
+
+	public void clearAction() {
+		this.action = null;
+	}
+
+	public void clearMaintenanceCategory() {
+		this.maintenanceCategory = null;
+	}
+
 	@Override
 	public MaintenanceType clone() {
 		try {
@@ -110,5 +118,13 @@ public class MaintenanceType extends BaseDomain {
 
 	public boolean isActive() {
 		return active;
+	}
+
+	public void setAction(Action action) {
+		this.action = action;
+	}
+
+	public void setMaintenanceCategory(MaintenanceCategory maintenanceCategory) {
+		this.maintenanceCategory = maintenanceCategory;
 	}
 }

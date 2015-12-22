@@ -24,7 +24,6 @@ public class ResetLog extends BaseDomain {
 	private Long id;
 
 	@Expose
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy", timezone = "GMT-06:00")
 	private Date date;
 
 	@Enumerated(EnumType.STRING)
@@ -45,6 +44,7 @@ public class ResetLog extends BaseDomain {
 		return id;
 	}
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy", timezone = "GMT-06:00")
 	public Date getDate() {
 		return date;
 	}

@@ -10,11 +10,16 @@ import org.springframework.data.domain.Sort.Order;
 
 import com.coptertours.domain.Aircraft;
 import com.coptertours.domain.BaseDomain;
+import com.coptertours.domain.Component;
+import com.coptertours.domain.MaintenanceType;
+import com.coptertours.domain.Model;
 import com.coptertours.domain.User;
 import com.coptertours.options.ResetItem;
 import com.coptertours.options.Role;
 import com.coptertours.repository.AircraftRepository;
+import com.coptertours.repository.ComponentRepository;
 import com.coptertours.repository.FlightLogRepository;
+import com.coptertours.repository.MaintenanceTypeRepository;
 import com.coptertours.repository.UserRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,6 +32,10 @@ public class BaseController {
 	private AircraftRepository aircraftRepository;
 	@Autowired
 	private FlightLogRepository flightLogRepository;
+	@Autowired
+	private ComponentRepository componentRepository;
+	@Autowired
+	private MaintenanceTypeRepository maintenanceTypeRepository;
 
 	public String toJson(List<? extends BaseDomain> domainList) {
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -44,6 +53,36 @@ public class BaseController {
 		return clonedUsers;
 	}
 
+	protected Aircraft findAircraftById(Long id) {
+		Aircraft aircraft = this.aircraftRepository.findOne(id);
+		Aircraft clonedAircraft = aircraft.clone();
+		clonedAircraft.clearResetLogs();
+		return clonedAircraft;
+	}
+
+	protected List<Component> findComponentsByAircraft(Aircraft aircraft, Sort sort) {
+		List<Component> components = this.componentRepository.findByAircraft(aircraft, sort);
+		List<Component> clonedComponents = new ArrayList<Component>(components.size());
+		for (Component component : components) {
+			Component clonedComponent = component.clone();
+			clonedComponent.clearMaintenanceTypeEnums();
+			clonedComponents.add(clonedComponent);
+		}
+		return clonedComponents;
+	}
+
+	protected List<MaintenanceType> findMaintenanceTypesByModelAndActiveTrue(Model model, Sort sort) {
+		List<MaintenanceType> maintenanceTypes = this.maintenanceTypeRepository.findByModelAndActiveTrue(model, sort);
+		List<MaintenanceType> clonedMaintenanceTypes = new ArrayList<MaintenanceType>(maintenanceTypes.size());
+		for (MaintenanceType maintenanceType : maintenanceTypes) {
+			MaintenanceType clonedMaintenanceType = maintenanceType.clone();
+			clonedMaintenanceType.clearAction();
+			clonedMaintenanceType.clearMaintenanceCategory();
+			clonedMaintenanceTypes.add(clonedMaintenanceType);
+		}
+		return clonedMaintenanceTypes;
+	}
+
 	protected void setCurrentHobbsAndOffsets(Aircraft aircraft) {
 		BigDecimal maxHobbs = this.flightLogRepository.findMostRecentHobbsEndByAircraft(aircraft);
 		aircraft.setHobbs(maxHobbs);
@@ -59,6 +98,10 @@ public class BaseController {
 
 	protected Sort sortByNameAsc() {
 		return new Sort(Sort.Direction.ASC, "name");
+	}
+
+	protected Sort sortByComponentNameAsc() {
+		return new Sort(Sort.Direction.ASC, "componentName");
 	}
 
 	protected Sort sortByAircraftNumberAsc() {

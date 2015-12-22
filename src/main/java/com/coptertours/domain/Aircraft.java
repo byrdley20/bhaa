@@ -84,6 +84,20 @@ public class Aircraft extends BaseDomain {
 	@Expose
 	private BigDecimal yearlyHours;
 
+	@Override
+	public Aircraft clone() {
+		try {
+			// shallow copy
+			return (Aircraft) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void clearResetLogs() {
+		this.resetLogs = null;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -198,5 +212,9 @@ public class Aircraft extends BaseDomain {
 
 	public boolean isActive() {
 		return active;
+	}
+
+	public void setResetLogs(List<ResetLog> resetLogs) {
+		this.resetLogs = resetLogs;
 	}
 }

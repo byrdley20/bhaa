@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.coptertours.domain.AdComplianceLog;
+import com.coptertours.domain.Component;
 import com.coptertours.domain.MaintenanceLog;
 import com.coptertours.repository.AdComplianceLogRepository;
+import com.coptertours.repository.ComponentRepository;
 import com.coptertours.repository.MaintenanceLogRepository;
 
 @RestController
@@ -19,6 +21,8 @@ public class AircraftStatusRestController extends BaseRestController {
 	private MaintenanceLogRepository maintenanceLogRepository;
 	@Autowired
 	private AdComplianceLogRepository adComplianceLogRepository;
+	@Autowired
+	private ComponentRepository componentRepository;
 
 	@RequestMapping(value = "/complyWith", method = RequestMethod.POST)
 	@ResponseBody
@@ -38,5 +42,13 @@ public class AircraftStatusRestController extends BaseRestController {
 	AdComplianceLog complyWithAd(@RequestBody AdComplianceLog adComplianceLog) {
 		this.resetRole(adComplianceLog.getPilot());
 		return this.adComplianceLogRepository.save(adComplianceLog);
+	}
+
+	@RequestMapping(value = "/componentUpdate", method = RequestMethod.POST)
+	@ResponseBody
+	Component componentUpdate(@RequestBody Component component) {
+		// this.resetRole(adComplianceLog.getPilot());
+		this.resetResetLogs(component.getAircraft());
+		return this.componentRepository.save(component);
 	}
 }

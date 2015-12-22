@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Black Hills Aerial Adventures | Components</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<link rel="stylesheet" href="/css/jqueryui/1.11.3/jquery-ui.css" th:href="@{~/css/jqueryui/1.11.3/jquery-ui.css}"/>
+	<link rel="stylesheet" href="/css/main.css" th:href="@{~/css/main.css}"/>
+    <script type="text/javascript" src="/js/jquery/1.11.2/jquery.min.js" th:src="@{~/js/jquery/1.11.2/jquery.min.js}"></script>
+	<script type="text/javascript" src="/js/jqueryui/1.11.3/jquery-ui.min.js" th:src="@{~/js/jqueryui/1.11.3/jquery-ui.min.js}"></script>
+    <script type="text/javascript" src="/js/main.js" th:src="@{~/js/main.js}"></script>
+    <script th:inline="javascript">
+    	/*<![CDATA[*/
+    	           
+		var aircraft = /*[[${aircraft}]]*/; 
+		var maintenanceTypes = {};
+
+		function buildOptions(){
+			var allModelMaintenanceTypes = /*[[${maintenanceTypes}]]*/;
+			for(var i=0; i < allModelMaintenanceTypes.length; i++) {
+				var maintenanceType = allModelMaintenanceTypes[i];
+				maintenanceTypes[maintenanceType.id] = maintenanceType;
+			}
+		}
+		/*]]>*/
+    </script>
+    <script type="text/javascript">
+  		//<![CDATA[
+  		           
+		var lengthValidation = [];
+		var passwordValidation = [];
+		
+    	$(function() {
+    		var id = $( "#id" ),
+    		componentName = $( "#componentName" ),
+        	serialNumber = $( "#serialNumber" ),
+        	partNumber = $( "#partNumber" ),
+        	maintenanceType = $( "#maintenanceType" );
+    		
+        	allFields = $( [] ).add( id ).add( componentName ).add( serialNumber ).add( partNumber ).add( maintenanceType );
+        	addUpdatePath = "/admin/components";
+        	deletePath = "/admin/components";
+    		
+    		createDialog();
+    		
+    		lengthValidation[lengthValidation.length] = createLengthValidationObject(componentName, "'Name'", 1, 50);
+    	});
+    	function setSelectValue(formData, element) {
+    		if(element.name == 'maintenanceType'){
+				formData[element.name] = maintenanceTypes[element.value];
+			}
+    	}
+    	function setExtraValues(formData) {
+    		formData["aircraft"] = aircraft;
+    	}
+    	function writeCreatedRecord(savedRecord){
+    		var elementBefore;
+    		if($(".records-rows").length){
+    			elementBefore = $(".records-rows");
+    		} else {
+    			elementBefore = $(".records-header");
+    		}
+    		
+    		var maintenanceTypeName;
+    		var maintenanceTypeId;
+    		if(savedRecord.maintenanceType != null) {
+    			maintenanceTypeName = savedRecord.maintenanceType.name;
+    			maintenanceTypeId = savedRecord.maintenanceType.id;
+    		} else {
+    			maintenanceTypeName = "N/A";
+    			maintenanceTypeId = "-1";
+    		}
+    		
+    		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+" new-row'>" +
+	    			"<span class='dataCell'>" +
+			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='"+contextPath+"/images/edit.png'/></a></span> " +
+			    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='"+contextPath+"/images/delete.png'/></a></span> " +
+			    	"</span>" +
+			    	"<span class='componentName dataCell'>"+savedRecord.componentName+"</span> " +
+			    	"<span class='dataCell serialNumber'>"+savedRecord.serialNumber+"</span> " +
+			    	"<span class='dataCell partNumber'>"+savedRecord.partNumber+"</span> " +
+			    	"<span class='maintenanceType dataCell'>"+maintenanceTypeName+"</span> " +
+			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
+			    	"<span class='maintenanceTypeId cell hidden'>"+maintenanceTypeId+"</span> " +
+		    	"</div>" );
+    	}
+    	function writeEditRecord(savedRecord){
+    		var maintenanceTypeName;
+    		var maintenanceTypeId;
+    		if(savedRecord.maintenanceType != null) {
+    			maintenanceTypeName = savedRecord.maintenanceType.name;
+    			maintenanceTypeId = savedRecord.maintenanceType.id;
+    		} else {
+    			maintenanceTypeName = "N/A";
+    			maintenanceTypeId = "-1";
+    		}    		
+    		
+    		var editedRow = $(".id"+savedRecord.id);
+    		editedRow.find('.componentName').html(savedRecord.componentName);
+    		editedRow.find('.serialNumber').html(savedRecord.serialNumber);
+    		editedRow.find('.partNumber').html(savedRecord.partNumber);
+    		editedRow.find('.maintenanceType').html(maintenanceTypeName);
+    		editedRow.find('.id').html(savedRecord.id);
+    		editedRow.find('.maintenanceTypeId').html(maintenanceTypeId);
+    		editedRow.addClass('new-row');
+    	}
+    	function populateEditForm(editLink){
+    		var editSpan = $(editLink).closest('span.dataCell');
+    		$('#addEditForm').find('#componentName').val(editSpan.nextAll('span.componentName').first().html());
+    		$('#addEditForm').find('#serialNumber').val(editSpan.nextAll('span.serialNumber').first().html());
+    		$('#addEditForm').find('#partNumber').val(editSpan.nextAll('span.partNumber').first().html());
+    		
+    		var maintenanceTypeIdSpan = editSpan.nextAll('span.maintenanceTypeId');
+    		var maintenanceTypeOptionStr = "select option[value='"+maintenanceTypeIdSpan.html()+"']";
+    		$('#addEditForm').find(maintenanceTypeOptionStr).prop('selected','selected');
+    		
+    		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
+    	}
+    	function findDeleteName(deleteLink){
+    		return $(deleteLink).closest('span.dataCell').nextAll('span.componentName').first().html();
+    	}
+    	//]]>
+    </script>
+</head>
+<body>
+
+	<div th:replace="includes/header :: header">...</div>
+	<div id="main-content">
+		<H1>Components</H1>
+		<div id="dialog-form" title="Component">
+			<p class="validateTips"></p>
+			<form id="addEditForm" action="/components" th:action="@{~/components}" method="post">
+				<fieldset>
+					<label for="name">Name</label>
+					<input type="text" name="componentName" id="componentName" class="text ui-widget-content ui-corner-all"/>
+					<label for="name">Serial Number</label>
+					<input type="text" name="serialNumber" id="serialNumber" class="text ui-widget-content ui-corner-all"/>
+					<label for="name">Part Number</label>
+					<input type="text" name="partNumber" id="partNumber" class="text ui-widget-content ui-corner-all"/>
+					<label for="maintenanceType">Link to Maintenance Type</label>
+					<select id="maintenanceType" name="maintenanceType" class="ui-widget-content ui-corner-all">
+						<option value="-1">-- None --</option>
+						<option th:each="maintenanceType : ${maintenanceTypes}" th:text="${maintenanceType.name}" th:value="${maintenanceType.id}">${maintenanceType.name}</option>
+					</select>
+					<input type="text" name="id" id="id" class="hidden"/>
+					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+				</fieldset>
+			</form>
+		</div>
+		<div class="table-upper-caption" th:text="'Aircraft: '+${aircraft.aircraftNumber}">Aircraft Number</div>
+		<div class="table">
+			<div class="records-header">
+				<span class="edit delete icon"></span>
+			    <span class="headerCell dataCell">Name</span>
+			    <span class="headerCell dataCell">Serial Num</span>
+			    <span class="headerCell dataCell">Part Num</span>
+			    <span class="headerCell dataCell">Linked Maintenance Type</span>
+			</div>
+			<div class="records-rows" th:each="c : ${components}" th:classappend="|id${c.id}" th:with="maintenanceTypeName=((${c.maintenanceType}==null)?'N/A':${c.maintenanceType.name}), maintenanceTypeId=((${c.maintenanceType}==null)?'-1':${c.maintenanceType.id})">
+				<span class="dataCell">
+					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${c.id}"><img border="0" alt="Edit" src="/images/edit.png" th:src="@{~/images/edit.png}"/></a></span>
+					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${c.id}"><img border="0" alt="Delete" src="/images/delete.png" th:src="@{~/images/delete.png}"/></a></span>
+				</span>
+				<span class="componentName dataCell" th:text="${c.componentName}">Name</span>
+				<span class="dataCell serialNumber" th:text="${c.serialNumber}">Serial Num</span>
+				<span class="dataCell partNumber" th:text="${c.partNumber}">Part Num</span>
+				<span class="maintenanceType dataCell" th:text="${maintenanceTypeName}">Maintenance Type</span>
+				<span class="id cell hidden" th:text="${c.id}">Hidden PK ID</span>
+				<span class="maintenanceTypeId cell hidden" th:text="${maintenanceTypeId}">Hidden Maintenance Type Id</span>
+			</div>
+		</div>
+		<button id="create-record">Create New</button>
+	</div>
+</body>
+</html>

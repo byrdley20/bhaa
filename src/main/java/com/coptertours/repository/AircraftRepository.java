@@ -9,6 +9,8 @@ import com.coptertours.domain.Aircraft;
 import com.coptertours.options.ResetItem;
 
 public interface AircraftRepository extends BaseRepository<Aircraft> {
+	Aircraft findById(Long id);
+
 	List<Aircraft> findByAircraftNumber(String aircraftNumber);
 
 	@Query("select sum(rl.hobbs) from ResetLog rl where rl.aircraftId = ?1 and rl.resetItem = ?2")
