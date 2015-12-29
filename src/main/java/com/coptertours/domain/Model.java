@@ -17,6 +17,8 @@ public class Model extends BaseDomain {
 	private String name;
 	@Expose
 	private boolean showStarts;
+	@Expose
+	private boolean showMajorComponents;
 	@Transient
 	@Expose
 	private boolean hasAdCompliances;
@@ -45,5 +47,9 @@ public class Model extends BaseDomain {
 
 	public boolean isActive() {
 		return active;
+	}
+
+	public boolean getShowMajorComponents() {
+		return showMajorComponents;
 	}
 }
