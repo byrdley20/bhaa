@@ -8,4 +8,6 @@ import com.coptertours.domain.MaintenanceLog;
 
 public interface MaintenanceLogRepository extends JpaRepository<MaintenanceLog, Long> {
 	List<MaintenanceLog> findByAircraftId(Long aircraftId);
+
+	MaintenanceLog findByAircraftIdAndMaintenanceTypeId(Long aircraftId, Long maintenanceTypeId);
 }

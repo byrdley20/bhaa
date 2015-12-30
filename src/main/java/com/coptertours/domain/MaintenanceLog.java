@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.annotations.Expose;
@@ -29,6 +30,10 @@ public class MaintenanceLog extends BaseDomain {
 	private String partNumber;
 	@Expose
 	private String serialNumber;
+
+	@Transient
+	@Expose
+	private Long linkedComponentId;
 
 	public String getComplyWithDateDisplay() {
 		if (getComplyWithDate() == null) {
@@ -80,5 +85,25 @@ public class MaintenanceLog extends BaseDomain {
 
 	public void setComplyWithDate(Date complyWithDate) {
 		this.complyWithDate = complyWithDate;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setAircraftId(Long aircraftId) {
+		this.aircraftId = aircraftId;
+	}
+
+	public void setMaintenanceTypeId(Long maintenanceTypeId) {
+		this.maintenanceTypeId = maintenanceTypeId;
+	}
+
+	public Long getLinkedComponentId() {
+		return linkedComponentId;
+	}
+
+	public void setLinkedComponentId(Long linkedComponentId) {
+		this.linkedComponentId = linkedComponentId;
 	}
 }

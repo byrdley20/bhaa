@@ -1,4 +1,3 @@
-//var uploadImageUrl = "http://deviantsart.com";
 var dialog, allFields, form, tips, addUpdatePath, deletePath;
 
 function createDialog(){
@@ -346,4 +345,12 @@ $(function() {
 	});
 	$( "#open-squawks" ).button();
 	$( "#completed-squawks" ).button();
+	
+	$( "#year" ).change(function() {
+		var url = $(this).val(); // get selected value
+        if (url) { // require a URL
+            window.location = url; // redirect
+        }
+        return false;
+	});
 });

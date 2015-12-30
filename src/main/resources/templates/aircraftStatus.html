@@ -34,9 +34,10 @@
     		partNumber = $( "#partNumber" ),
     		serialNumber = $( "#serialNumber" ),
     		componentId = $( "#componentId" ),
-    		componentName = $( "#componentName" );
+    		componentName = $( "#componentName" ),
+    		linkedMaintenanceTypeId = $( "#linkedMaintenanceTypeId" );
     		
-        	allFields = $( [] ).add( id ).add( complyWithHobbs ).add( complyWithDate ).add( maintenanceTypeId ).add( adComplianceId ).add( aircraftId ).add( partNumber ).add( serialNumber ).add( componentId ).add( componentName );
+        	allFields = $( [] ).add( id ).add( complyWithHobbs ).add( complyWithDate ).add( maintenanceTypeId ).add( adComplianceId ).add( aircraftId ).add( partNumber ).add( serialNumber ).add( componentId ).add( componentName ).add( linkedMaintenanceTypeId );
         	addUpdatePath = "/aircraftStatus/complyWith";
         	deletePath = "/aircraftStatus/complyWith";
     		
@@ -78,17 +79,31 @@
     	}
     	function writeEditRecord(savedRecord){
     		var editedRow;
+    		var linkedRow;
     		var adCompliance = false;
     		if(typeof savedRecord.maintenanceTypeId != 'undefined') {
 	    		editedRow = $(".maintenanceTypeId-"+savedRecord.maintenanceTypeId);
+    			if(savedRecord.linkedComponentId != null) {
+    	    		linkedRow = $(".componentId-"+savedRecord.linkedComponentId);
+    			}
     		} else if(typeof savedRecord.adComplianceId != 'undefined') {
     			editedRow = $(".adComplianceId-"+savedRecord.adComplianceId);
     			adCompliance = true;
     		} else if(typeof savedRecord.componentName != 'undefined') {
     			editedRow = $(".componentId-"+savedRecord.id);
+    			if(savedRecord.maintenanceType != null) {
+    	    		linkedRow = $(".maintenanceTypeId-"+savedRecord.maintenanceType.id);
+    			}
     		}
-	    	var tbo = editedRow.find('.tbo').html();
-    		if(editedRow.find('.aircraftHoursDue').length){
+
+    		if(typeof linkedRow != 'undefined') {
+    			linkedRow.find('.partNumber').html(savedRecord.partNumber);
+    			linkedRow.find('.serialNumber').html(savedRecord.serialNumber);
+    			linkedRow.addClass('new-row');
+    		}
+    		
+    		var tbo = editedRow.find('.tbo').html();
+    		if(editedRow.find('.aircraftHoursDue').length){ //hourly
     			var hobbsDue;
     			if(savedRecord.complyWithHobbs != null) {
 	        		editedRow.find('.complyWithHobbs').html((savedRecord.complyWithHobbs).toFixed(2));
@@ -104,7 +119,7 @@
 	    				editedRow.addClass('dueSoon');
 	    			}
     			}
-    		} else if(editedRow.find('.dueDate').length){
+    		} else if(editedRow.find('.dueDate').length){ //monthly
            		editedRow.find('.complyWithDate').html(savedRecord.complyWithDateDisplay);
        			var complyWithDate = Date.parse(savedRecord.complyWithDateDisplay, "M/d/yyyy");
     			editedRow.removeClass('dueNow dueSoon');
@@ -202,6 +217,7 @@
     		$('#addEditForm').find('#adComplianceId').val(editSpan.nextAll('span.adComplianceId').first().html());
     		$('#addEditForm').find('#componentId').val(editSpan.nextAll('span.componentId').first().html());
     		$('#addEditForm').find('#componentName').val(editSpan.nextAll('span.componentName').first().html());
+    		$('#addEditForm').find('#linkedMaintenanceTypeId').val(editSpan.nextAll('span.linkedMaintenanceTypeId').first().html());
     	}
     	//]]>
     </script>
@@ -236,6 +252,7 @@
 					<input type="text" name="adComplianceId" id="adComplianceId" class="hidden"/>
 					<input type="text" name="aircraftId" id="aircraftId" class="hidden"/>
 					<input type="text" name="componentId" id="componentId" class="hidden"/>
+					<input type="text" name="linkedMaintenanceTypeId" id="linkedMaintenanceTypeId" class="hidden"/>
 					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 				</fieldset>
 			</form>
@@ -305,7 +322,7 @@
 				<span class="dataCell partNumber" th:text="${partNumber}">Part Num</span>
 				<span class="dataCell" th:text="${maintType.manualNumber}">Manual Num</span>
 				<span class="dataCell" th:text="${maintType.action.name}">Action</span>
-				<span class="dataCell complyWithDate" th:text="((${maintType.maintenanceLog} == null or ${complyWithDate == null})?'N/A':${#dates.format(complyWithDate, 'MM/dd/yyyy')})">01/01/15</span>
+				<span class="dataCell complyWithDate" th:text="((${maintType.maintenanceLog} == null or ${complyWithDate} == null)?'N/A':${#dates.format(complyWithDate, 'MM/dd/yyyy')})">01/01/15</span>
 				<span class="dataCell tbo" th:text="${#numbers.formatInteger(maintType.timeBeforeAction,1)}">24</span>
 				<span class="dataCell dueDate" th:text="${dueDate}">1/1/9999</span>
 				<span class="dataCell remainingDays" th:text="${remainingDays}">76</span>
@@ -338,8 +355,8 @@
 				<span class="adComplianceId cell hidden" th:text="${adCompliance.id}">Hidden AD Compliance ID</span>
 			</div>
 		</div>
-		<div class="category-type" style="width:255px;">Major Aircraft Components</div>
-		<div class="table">
+		<div class="category-type" style="width:255px;" th:if="${aircraft.model.showMajorComponents}">Major Aircraft Components</div>
+		<div class="table" th:if="${aircraft.model.showMajorComponents}">
 			<div class="records-header">
 				<span class="dataCell" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"></span>
 				<span class="dataCell">Name</span>
@@ -354,6 +371,7 @@
 				<span class="aircraftId cell hidden" th:text="${aircraft.id}">Hidden Aircraft ID</span>
 				<span class="componentId cell hidden" th:text="${component.id}">Hidden Component ID</span>
 				<span class="id cell hidden" th:text="${component.id}">Hidden Component ID</span>
+				<span class="linkedMaintenanceTypeId cell hidden" th:text="(${component.maintenanceType} == null) ? '0' : ${component.maintenanceType.id}">Hidden Component Maintenance Type Id</span>
 			</div>
 		</div>
 		<span><a href="resetLog.html?i=hobbs" th:href="@{~/resetLog.html(id=${aircraft.id}, i=hobbs)}"><button type="button" class="month-button" role="button"><span class="button-text">Reset Hobbs Meter</span></button></a></span>

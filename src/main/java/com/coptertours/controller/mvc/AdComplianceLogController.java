@@ -2,6 +2,7 @@ package com.coptertours.controller.mvc;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.coptertours.common.AppConstants;
 import com.coptertours.domain.AdCompliance;
 import com.coptertours.domain.AdComplianceLog;
 import com.coptertours.domain.Aircraft;
@@ -30,13 +32,24 @@ public class AdComplianceLogController extends BaseController {
 	private AircraftRepository aircraftRepository;
 
 	@RequestMapping("/adComplianceLog.html")
-	String adComplianceLog(Model model, @RequestParam Long id, @RequestParam(required = false) Long adComplianceId, @RequestParam(required = false) Integer month) {
+	String adComplianceLog(Model model,
+			@RequestParam Long id,
+			@RequestParam(required = false) Long adComplianceId,
+			@RequestParam(required = false) Integer month,
+			@RequestParam(required = false) Integer year) {
 		Aircraft aircraft = this.aircraftRepository.findOne(id);
 
 		List<AdCompliance> adCompliances = this.adComplianceRepository.findByModelAndDailyAndActiveTrue(aircraft.getModel(), true, sortByNameAsc());
 
-		Calendar startDateCal = DateUtil.findMonthStartDate(month);
-		Calendar endDateCal = DateUtil.findMonthEndDate(month);
+		Calendar startDateCal = DateUtil.findMonthStartDate(month, year);
+		Calendar endDateCal = DateUtil.findMonthEndDate(month, year);
+
+		Integer currentYear = endDateCal.get(Calendar.YEAR);
+
+		List<Integer> allYears = new ArrayList<Integer>();
+		for (int i = AppConstants.BEGIN_YEAR; i <= DateUtil.getYear(new Date()); i++) {
+			allYears.add(i);
+		}
 
 		AdCompliance currentAdCompliance = null;
 		List<AdComplianceLog> adComplianceLogs;
@@ -56,6 +69,8 @@ public class AdComplianceLogController extends BaseController {
 		model.addAttribute("adComplianceLogs", adComplianceLogs);
 		model.addAttribute("allPilots", findUsersByRole(Role.PILOT));
 		model.addAttribute("month", startDateCal.get(Calendar.MONTH));
+		model.addAttribute("allYears", allYears);
+		model.addAttribute("currentYear", currentYear);
 		return "adComplianceLog";
 	}
 }

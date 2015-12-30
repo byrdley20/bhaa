@@ -1,6 +1,7 @@
 package com.coptertours.controller.mvc;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.coptertours.common.AppConstants;
 import com.coptertours.domain.AdCompliance;
 import com.coptertours.domain.Aircraft;
 import com.coptertours.domain.FlightLog;
@@ -29,27 +31,37 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class FlightLogController extends BaseController {
 
 	@Autowired
-	AircraftRepository aircraftRepository;
+	private AircraftRepository aircraftRepository;
 	@Autowired
-	LocationRepository locationRepository;
+	private LocationRepository locationRepository;
 	@Autowired
-	OperationRepository operationRepository;
+	private OperationRepository operationRepository;
 	@Autowired
-	FlightLogRepository flightLogRepository;
+	private FlightLogRepository flightLogRepository;
 	@Autowired
-	AdComplianceRepository adComplianceRepository;
+	private AdComplianceRepository adComplianceRepository;
 
 	@RequestMapping("/flightLog.html")
-	String flightLog(Model model, @RequestParam Long id, @RequestParam(required = false) Integer month) throws JsonProcessingException {
+	String flightLog(Model model,
+			@RequestParam Long id,
+			@RequestParam(required = false) Integer month,
+			@RequestParam(required = false) Integer year) throws JsonProcessingException {
 		Aircraft aircraft = this.aircraftRepository.findOne(id);
 
 		List<AdCompliance> adCompliances = this.adComplianceRepository.findByModelAndDailyAndActiveTrue(aircraft.getModel(), true, sortByNameAsc());
 
-		Calendar startDateCal = DateUtil.findMonthStartDate(month);
-		Calendar endDateCal = DateUtil.findMonthEndDate(month);
+		Calendar startDateCal = DateUtil.findMonthStartDate(month, year);
+		Calendar endDateCal = DateUtil.findMonthEndDate(month, year);
 		Date today = new Date();
-		Date yearStart = DateUtil.findYearStartDate(today);
-		Date yearEnd = DateUtil.findYearEndDate(today);
+		Date yearStart = DateUtil.findYearStartDate(today, year);
+		Date yearEnd = DateUtil.findYearEndDate(today, year);
+
+		Integer currentYear = endDateCal.get(Calendar.YEAR);
+
+		List<Integer> allYears = new ArrayList<Integer>();
+		for (int i = AppConstants.BEGIN_YEAR; i <= DateUtil.getYear(today); i++) {
+			allYears.add(i);
+		}
 
 		List<FlightLog> flightLogs = this.flightLogRepository.findByAircraftAndDateBetween(aircraft, startDateCal.getTime(), endDateCal.getTime(), sortByDate());
 
@@ -72,6 +84,8 @@ public class FlightLogController extends BaseController {
 		model.addAttribute("month", startDateCal.get(Calendar.MONTH));
 		model.addAttribute("mostRecentHobbsEnd", this.flightLogRepository.findMostRecentHobbsEndByAircraft(aircraft));
 		model.addAttribute("hasDailyAd", !CollectionUtils.isEmpty(adCompliances));
+		model.addAttribute("allYears", allYears);
+		model.addAttribute("currentYear", currentYear);
 		return "flightLog";
 	}
 }

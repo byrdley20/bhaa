@@ -27,35 +27,55 @@ public class DateUtil {
 	}
 
 	public static Date findYearStartDate(Date date) {
+		return DateUtil.findYearStartDate(date, null);
+	}
+
+	public static Date findYearStartDate(Date date, Integer year) {
 		Calendar startDateCal = createCalendar(date);
 		startDateCal.set(Calendar.MONTH, startDateCal.getActualMinimum(Calendar.MONTH));
 		startDateCal.set(Calendar.DAY_OF_MONTH, 1);
+		if (year != null) {
+			startDateCal.set(Calendar.YEAR, year);
+		}
 		startDateCal.setTime(findDayStart(startDateCal.getTime()));
 		return startDateCal.getTime();
 	}
 
 	public static Date findYearEndDate(Date date) {
+		return DateUtil.findYearEndDate(date, null);
+	}
+
+	public static Date findYearEndDate(Date date, Integer year) {
 		Calendar endDateCal = createCalendar(date);
 		endDateCal.set(Calendar.MONTH, endDateCal.getActualMaximum(Calendar.MONTH));
 		endDateCal.set(Calendar.DAY_OF_MONTH, endDateCal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		if (year != null) {
+			endDateCal.set(Calendar.YEAR, year);
+		}
 		endDateCal.setTime(findDayEnd(endDateCal.getTime()));
 		return endDateCal.getTime();
 	}
 
-	public static Calendar findMonthStartDate(Integer month) {
+	public static Calendar findMonthStartDate(Integer month, Integer year) {
 		Calendar startDateCal = Calendar.getInstance();
 		startDateCal.set(Calendar.DAY_OF_MONTH, 1);
 		if (month != null) {
 			startDateCal.set(Calendar.MONTH, month - 1);
 		}
+		if (year != null) {
+			startDateCal.set(Calendar.YEAR, year);
+		}
 		startDateCal.setTime(findDayStart(startDateCal.getTime()));
 		return startDateCal;
 	}
 
-	public static Calendar findMonthEndDate(Integer month) {
+	public static Calendar findMonthEndDate(Integer month, Integer year) {
 		Calendar endDateCal = Calendar.getInstance();
 		if (month != null) {
 			endDateCal.set(Calendar.MONTH, month - 1);
+		}
+		if (year != null) {
+			endDateCal.set(Calendar.YEAR, year);
 		}
 		endDateCal.set(Calendar.DAY_OF_MONTH, endDateCal.getActualMaximum(Calendar.DAY_OF_MONTH));
 		endDateCal.setTime(findDayEnd(endDateCal.getTime()));
@@ -78,6 +98,11 @@ public class DateUtil {
 		calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND));
 		calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND));
 		return calendar.getTime();
+	}
+
+	public static int getYear(Date date) {
+		Calendar calendar = createCalendar(date);
+		return calendar.get(Calendar.YEAR);
 	}
 
 	private static Calendar createCalendar(Date date) {
