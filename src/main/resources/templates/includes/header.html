@@ -29,11 +29,19 @@
      		<div class="header-menu">
      			<a th:href="@{~/dashboard.html}" href="/"><button type="button" id="dashboard-button" class="header-button" role="button"><span class="button-text">Dashboard</span></button></a>
 				<a th:href="@{~/squawks.html}" href="/squawks.html"><button type="button" id="squawk-button" class="header-button" role="button"><span class="button-text">Squawk</span></button></a>
+				<a th:href="@{~/admin/users.html}" href="/admin/users.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="users-button" class="admin-button" role="button"><span class="button-text">Users</span></button></a>
+				<a th:href="@{~/admin/aircrafts.html}" href="/admin/aircrafts.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="aircrafts-button" class="admin-button" role="button"><span class="button-text">Aircrafts</span></button></a>
+				<a th:href="@{~/admin/models.html}" href="/admin/models.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="models-button" class="admin-button" role="button"><span class="button-text">Models</span></button></a>
+				<a th:href="@{~/admin/adComplianceChooseModel.html}" href="/admin/adComplianceChooseModel.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="adCompliance-button" class="admin-button" role="button"><span class="button-text">AD Compliances</span></button></a>
+				<a th:href="@{~/admin/locations.html}" href="/admin/locations.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="locations-button" class="admin-button" role="button"><span class="button-text">Locations</span></button></a>
+				<a th:href="@{~/admin/operations.html}" href="/admin/operations.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="operations-button" class="admin-button" role="button"><span class="button-text">Operations</span></button></a>
+				<a th:href="@{~/admin/ratings.html}" href="/admin/ratings.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="ratings-button" class="admin-button" role="button"><span class="button-text">Ratings</span></button></a>
+				<a th:href="@{~/admin/maintenanceTypes.html}" href="/admin/maintenanceTypes.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="maintenance-types-button" class="admin-button" role="button"><span class="button-text">Maintenance Types</span></button></a>
+				<a th:href="@{~/admin/components.html}" href="/admin/components.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="components-button" class="admin-button" role="button"><span class="button-text">Components</span></button></a>
      		</div>
      		<div class="help-button">
      			<a th:href="@{~/help.html}" href="/help.html"><button type="button" class="admin-button" role="button"><span class="button-text">Help</span></button></a>
      		</div>
-	      	<!--<div>Mechanic: <a href="/maintenanceLog.html">Maintenance Log</a></div>-->
 		</div>
 		<div id="dialog" style="display:none;" title="Inactivity Detected" th:if="${#authentication} ? ${#authorization.expression('isAuthenticated()')} : ${false}">
 		  <p>

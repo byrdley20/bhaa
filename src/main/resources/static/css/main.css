@@ -67,6 +67,7 @@ button.header-button {
 }
 a button.admin-button {
 	background: #e6e6e6 url("../images/menu-button.png") 50% 50% repeat-x;
+	font-size: .8em;
 }
 a button.button-off {
 	background: #e6e6e6 url("../images/menu-button.png") 50% 50% repeat-x;
