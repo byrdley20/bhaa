@@ -9,15 +9,17 @@
     <script type="text/javascript" src="/js/jquery/1.11.2/jquery.min.js" th:src="@{~/js/jquery/1.11.2/jquery.min.js}"></script>
 	<script type="text/javascript" src="/js/jqueryui/1.11.3/jquery-ui.min.js" th:src="@{~/js/jqueryui/1.11.3/jquery-ui.min.js}"></script>
     <script type="text/javascript" src="/js/main.js" th:src="@{~/js/main.js}"></script>
+    <script type="text/javascript" src="/js/multiselect.js" th:src="@{~/js/multiselect.js}"></script>
     <script th:inline="javascript">
     	/*<![CDATA[*/
 
 		var models = {};
+		dialogWidth=650;
     	           
 		function buildOptions(){
 			var allModels = /*[[${allModels}]]*/;
 			for(var i=0; i < allModels.length; i++) {
-				var model = allModels[i];
+				var model = allModels[i]; 
 				models[model.id] = model;
 			}			
 		}
@@ -38,9 +40,10 @@
         	serialNum = $( "#serialNum" ),
         	imagePath = $( "#imagePath" ),
     		ordering = $( "#ordering" ),
-    		active = $( "#active" );
+    		active = $( "#active" ),
+    		excludedAdComplianceIds = $( "#excludedAdComplianceIds" );
     		
-        	allFields = $( [] ).add( id ).add( aircraftNumber ).add( name ).add( model ).add( serialNum ).add( imagePath ).add( ordering ).add( active );
+        	allFields = $( [] ).add( id ).add( aircraftNumber ).add( name ).add( model ).add( serialNum ).add( imagePath ).add( ordering ).add( active ).add( excludedAdComplianceIds );
         	addUpdatePath = "/admin/aircrafts";
         	deletePath = "/admin/aircrafts";
     		
@@ -51,6 +54,7 @@
     			autoOpen: false
     		});
     		
+   		
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(aircraftNumber, "'Aircraft Number'", 1, 10);
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(name, "'Aircraft Name'", 1, 50);
     		lengthValidation[lengthValidation.length] = createLengthValidationObject(serialNum, "'Serial Number'", 1, 20);
@@ -59,10 +63,47 @@
         		$('#imagePath').click();
         		return false;
         	});
+        	
+        	$('#multiselect').multiselect({
+        		submitAllLeft: false,
+        		right: '#excludedAdComplianceIds'
+        	});
+        	
+        	$( "#model" ).change(function() {
+        		var selectedModelId = $(this).val(); // get selected value
+                $.ajax({
+                    url: domain+'adCompliances/model/'+selectedModelId,
+                    type:'GET',
+                    success:function(adCompliances){
+                    	var applicableAds = $( "[name=applicableAds]" );
+                    	applicableAds.empty();
+                    	$( "#excludedAdComplianceIds" ).empty();
+                    	$.each(adCompliances, function(key, adCompliance) {   
+                    		applicableAds.append($("<option/>", {
+                    	       	value: adCompliance.id,
+                    	       	text: adCompliance.name
+    	                	}));
+                    	});
+                    },
+                    error:function(response){
+                    	alert('The AD Compliances could not be retrieved for the selected model.')
+                    }
+               	});
+                return false;
+        	});
        	});
     	function setSelectValue(formData, element) {
-			if(element.name == 'model'){
+			if(element.name == 'model') {
 				formData[element.name] = models[element.value];
+			} else if (element.name == 'excludedAdComplianceIds') {
+				for(var i=0; i < element.options.length; i++) {
+					if(typeof formData[element.name] == 'undefined'){
+						formData[element.name] = element.options[i].value
+					} else {
+						formData[element.name] += ',';
+						formData[element.name] += element.options[i].value;
+					}
+				}
 			}
     	}
     	function setExtraValues(formData){
@@ -82,6 +123,19 @@
     			elementBefore = $(".records-header");
     		}
     		
+    		var applicableAdCompliancesText = "";
+    		if(savedRecord.adCompliances != null) {
+	    		$.each(savedRecord.adCompliances, function(key, adCompliance) {
+	    			applicableAdCompliancesText += "<span><span>"+adCompliance.name+"</span><br></span>";
+	    		});
+	    	}
+    		var excludedAdCompliancesText = "";
+    		if(savedRecord.excludedAdCompliances != null) {
+	    		$.each(savedRecord.excludedAdCompliances, function(key, excludedAdCompliance) {
+	    			excludedAdCompliancesText += "<span><span>"+excludedAdCompliance.adCompliance.name+"</span><br></span>";
+	    		});
+	    	}
+    		
     		elementBefore.last().after( "<div class='records-rows id"+savedRecord.id+" new-row'>" +
 	    			"<span class='dataCell'>" +
 			    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='"+contextPath+"/images/edit.png'/></a></span> " +
@@ -91,29 +145,51 @@
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='model dataCell'>"+savedRecord.model.name+"</span> " +
 			    	"<span class='serialNum dataCell'>"+savedRecord.serialNum+"</span> " +
+			    	"<span class='applicableAdCompliances dataCell' style='vertical-align:bottom;'>"+applicableAdCompliancesText+"</span> " +
+			    	"<span class='excludedAdCompliances dataCell' style='vertical-align:bottom;'>"+excludedAdCompliancesText+"</span> " +
 			    	"<span class='active dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.active)+" disabled='disabled'/></span> " +
 			    	"<span class='aircraftImage dataCell'><img class='aircraft-image' src='"+imagePrefix+imagePath+"'/></span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
 			    	"<span class='modelId cell hidden'>"+savedRecord.model.id+"</span> " +
-		    	"</div>" );    		
+			    	"<span class='adCompliancesList cell hidden'>"+savedRecord.adCompliancesString+"</span> " +
+			    	"<span class='excludedAdCompliancesList cell hidden'>"+savedRecord.excludedAdCompliancesString+"</span> " +
+		    	"</div>" );   
     	}
     	function writeEditRecord(savedRecord){
+    		var applicableAdCompliancesText = "";
+    		if(savedRecord.adCompliances != null) {
+	    		$.each(savedRecord.adCompliances, function(key, adCompliance) {
+	    			applicableAdCompliancesText += "<span><span>"+adCompliance.name+"</span><br></span>";
+	    		});
+	    	}
+    		var excludedAdCompliancesText = "";
+    		if(savedRecord.excludedAdCompliances != null) {
+	    		$.each(savedRecord.excludedAdCompliances, function(key, excludedAdCompliance) {
+	    			excludedAdCompliancesText += "<span><span>"+excludedAdCompliance.adCompliance.name+"</span><br></span>";
+	    		});
+	    	}    		
+    		
     		var editedRow = $(".id"+savedRecord.id);
     		editedRow.find('.aircraftNumber').html(savedRecord.aircraftNumber);
     		editedRow.find('.name').html(savedRecord.name);
     		editedRow.find('.model').html(savedRecord.model.name);
     		editedRow.find('.serialNum').html(savedRecord.serialNum);
+    		editedRow.find('.applicableAdCompliances').html(applicableAdCompliancesText);
+    		editedRow.find('.excludedAdCompliances').html(excludedAdCompliancesText);
     		editedRow.find('.active input').prop('checked', savedRecord.active);
     		if(savedRecord.imagePath != null){
     			editedRow.find('img.aircraft-image').attr("src", imagePrefix+savedRecord.imagePath);
     		} else {
     			editedRow.find('img.aircraft-image').attr("src", oldImagePath);
     		}
+    		editedRow.find('.adCompliancesList').html(savedRecord.adCompliancesString);
+    		editedRow.find('.excludedAdCompliancesList').html(savedRecord.excludedAdCompliancesString);
     		editedRow.find('.id').html(savedRecord.id);
     		editedRow.addClass('new-row');
     	}
     	function populateCreateForm() {
     		oldImagePath = "";
+    		$( "#model" ).change();
     	}
     	function populateEditForm(editLink){
     		$('#addEditForm').find("option:selected").removeAttr("selected");
@@ -133,6 +209,31 @@
     		if(activeValue){
         		$('#addEditForm').find('#active').prop('checked', true);	
     		}
+    		
+    		var applicableAds = $( "[name=applicableAds]" );
+    		var excludedAds = $( "#excludedAdComplianceIds" );
+    		applicableAds.empty();
+    		excludedAds.empty();
+    		var adCompliancesList = editSpan.nextAll('span.adCompliancesList').first().html().split("|");
+    		var excludedAdCompliancesList = editSpan.nextAll('span.excludedAdCompliancesList').first().html().split("|");
+    		$.each(adCompliancesList, function(key, adComplianceObj) {
+    			var adCompliance = adComplianceObj.split("^");
+    			if(adCompliance[1] && adCompliance[1].trim().length > 0){
+	    			applicableAds.append($("<option/>", {
+	        	       	value: adCompliance[0],
+	        	       	text: adCompliance[1]
+	            	}));
+    			}
+    		}); 
+    		$.each(excludedAdCompliancesList, function(key, excludedAdComplianceObj) {
+    			var excludedAdCompliance = excludedAdComplianceObj.split("^");
+    			if(excludedAdCompliance[1] && excludedAdCompliance[1].trim().length > 0){
+	    			excludedAds.append($("<option/>", {
+	        	       	value: excludedAdCompliance[0],
+	        	       	text: excludedAdCompliance[1]
+	            	}));
+    			}
+    		}); 
     		
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
     	}
@@ -181,6 +282,22 @@
 						<span class="ui-button-text">Choose Image</span>
 					</button>
 					<input type="file" name="imagePath" id="imagePath" accept="image/png, image/gif, image/jpeg, image/jpg, image/bmp, image/gif, image/jpe"/>
+					<br/>
+					<div class="row">
+						<div class="select-left">
+							<label class="multiselectHeader" for="">Applicable Ad Compliances</label>
+							<select name="applicableAds" id="multiselect" class="form-control" size="5" multiple="multiple"></select>
+						</div>						
+						<div class="select-middle">
+							<button type="button" id="multiselect_rightSelected" class="select-button" role="button"><span class="button-text">&gt;</span></button>
+							<button type="button" id="multiselect_leftSelected" class="select-button" role="button"><span class="button-text">&lt;</span></button>
+						</div>
+						<div class="select-right">
+							<label class="multiselectHeader" for="">Excluded Ad Compliances</label>
+							<select name="excludedAdComplianceIds" id="excludedAdComplianceIds" class="form-control" size="5" multiple="multiple"></select>
+						</div>
+					</div>
+
 					<input type="text" name="id" id="id" class="hidden"/>
 					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
 				</fieldset>
@@ -193,6 +310,8 @@
 			    <span class="headerCell dataCell">Name</span>
 			    <span class="headerCell dataCell">Model</span>
 			    <span class="headerCell dataCell">Serial Number</span>
+			    <span class="headerCell dataCell">Applicable AD Compliances</span>
+			    <span class="headerCell dataCell">Not Applicable AD Compliances</span>
 			    <span class="headerCell dataCell">In Service</span>
 			    <span class="headerCell dataCell">Image</span>
 			    <span class="headerCell dataCell"></span>
@@ -206,6 +325,16 @@
 				<span class="name dataCell" th:text="${a.name}">Name</span>
 				<span class="model dataCell" th:text="${a.model.name}">Model</span>
 				<span class="serialNum dataCell" th:text="${a.serialNum}">Serial Number</span>
+				<span class="applicableAdCompliances dataCell" style="vertical-align:bottom;">
+					<span th:each="adc : ${a.adCompliances}">
+						<span th:text="${adc.name}">AD Compliance Name</span><br/>
+					</span>
+				</span>
+				<span class="excludedAdCompliances dataCell" style="vertical-align:bottom;">
+					<span th:each="eadc : ${a.excludedAdCompliances}">
+						<span th:text="${eadc.adCompliance.name}">Excluded AD Compliance Name</span><br/>
+					</span>
+				</span>
 				<span class="active dataCell"><input type="checkbox" th:value="${a.active}" th:checked="${a.active}" disabled="disabled"/></span>
 				<span class="aircraftImage dataCell"><img class="aircraft-image" src="" th:src="'data:image/jpeg;base64,'+${a.imagePath}" /></span>
 				<span class="dataCell" style="vertical-align:bottom;">
@@ -215,6 +344,8 @@
 				</span>
 				<span class="id cell hidden" th:text="${a.id}">Hidden PK ID</span>
 				<span class="modelId cell hidden" th:text="${a.model.id}">Hidden Model Id</span>
+				<span class="adCompliancesList cell hidden" th:text="${a.adCompliancesString}">Hidden AD Compliances String</span>
+				<span class="excludedAdCompliancesList cell hidden" th:text="${a.excludedAdCompliancesString}">Hidden Excluded AD Compliances String</span>
 			</div>
 		</div>
 		<button id="create-record">Create New</button>

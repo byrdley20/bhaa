@@ -78,7 +78,7 @@ public class AircraftStatusController extends BaseController {
 				adComplianceToLog.put(key, adComplianceLog);
 			}
 		}
-		List<AdCompliance> adCompliancesForModel = this.adComplianceRepository.findByModelAndActiveTrue(aircraft.getModel(), sortByTimeBeforeAction());
+		List<AdCompliance> adCompliancesForModel = this.adComplianceRepository.findByModelAndAircraftAndActiveTrue(aircraft.getModel().getId(), aircraft.getId());
 		for (AdCompliance adComplianceForModel : adCompliancesForModel) {
 			adComplianceForModel.setAdComplianceLog(adComplianceToLog.get(adComplianceForModel.getId()));
 			adCompliances.add(adComplianceForModel);

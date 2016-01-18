@@ -1,4 +1,6 @@
-var dialog, allFields, form, tips, addUpdatePath, deletePath;
+var dialog, allFields, form, tips, addUpdatePath, deletePath, dialogWidth;
+
+dialogWidth=350;
 
 function createDialog(){
 	
@@ -10,7 +12,7 @@ function createDialog(){
 	
 	dialog = $( "#dialog-form" ).dialog({
     	autoOpen: false,
-    	width: 350,
+    	width: dialogWidth,
     	modal: true,
     	buttons : buttonsOpts,
 		close: function() {
@@ -263,9 +265,11 @@ function checkDate( o, n, required ){
 function checkSelects() {
 	var valid = true;
 	$('#addEditForm select').each(function(){
-		if( $(this).has('option').length == 0 ) {
-			updateTips( "You must add a '"+this.name+"' before adding this record." );
-			valid = false;
+		if( $(this).attr("multiple") == 'undefined' ) {
+			if( $(this).has('option').length == 0 ) {
+				updateTips( "You must add a '"+this.name+"' before adding this record." );
+				valid = false;
+			}
 		}
 	});
 	return valid;

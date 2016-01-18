@@ -37,6 +37,14 @@ public class Aircraft extends BaseDomain {
 	@Expose
 	private boolean active;
 
+	@OneToMany(mappedBy = "aircraftId")
+	@Expose
+	private List<ExcludedAdCompliance> excludedAdCompliances;
+
+	@Transient
+	@Expose
+	private String excludedAdComplianceIds;
+
 	@Lob
 	@Column(name = "IMAGE_PATH", columnDefinition = "clob")
 	@Expose
@@ -84,6 +92,13 @@ public class Aircraft extends BaseDomain {
 	@Expose
 	private BigDecimal yearlyHours;
 
+	@Transient
+	@Expose
+	private List<AdCompliance> adCompliances;
+
+	private static final String AD_COMPLIANCE_KEY_DELIMITER = "^";
+	private static final String AD_COMPLIANCE_LIST_DELIMITER = "|";
+
 	@Override
 	public Aircraft clone() {
 		try {
@@ -96,6 +111,30 @@ public class Aircraft extends BaseDomain {
 
 	public void clearResetLogs() {
 		this.resetLogs = null;
+	}
+
+	@Transient
+	public String getAdCompliancesString() {
+		StringBuilder sb = new StringBuilder();
+		List<AdCompliance> adCompliances = this.getAdCompliances();
+		if (adCompliances != null) {
+			for (AdCompliance adCompliance : adCompliances) {
+				sb.append(adCompliance.getId()).append(AD_COMPLIANCE_KEY_DELIMITER).append(adCompliance.getName()).append(AD_COMPLIANCE_LIST_DELIMITER);
+			}
+		}
+		return sb.toString();
+	}
+
+	@Transient
+	public String getExcludedAdCompliancesString() {
+		StringBuilder sb = new StringBuilder();
+		List<ExcludedAdCompliance> excludedAdCompliances = this.getExcludedAdCompliances();
+		if (excludedAdCompliances != null) {
+			for (ExcludedAdCompliance excludedAdCompliance : this.getExcludedAdCompliances()) {
+				sb.append(excludedAdCompliance.getAdCompliance().getId()).append(AD_COMPLIANCE_KEY_DELIMITER).append(excludedAdCompliance.getAdCompliance().getName()).append(AD_COMPLIANCE_LIST_DELIMITER);
+			}
+		}
+		return sb.toString();
 	}
 
 	public Long getId() {
@@ -216,5 +255,29 @@ public class Aircraft extends BaseDomain {
 
 	public void setResetLogs(List<ResetLog> resetLogs) {
 		this.resetLogs = resetLogs;
+	}
+
+	public List<ExcludedAdCompliance> getExcludedAdCompliances() {
+		return excludedAdCompliances;
+	}
+
+	public void setExcludedAdCompliances(List<ExcludedAdCompliance> excludedAdCompliances) {
+		this.excludedAdCompliances = excludedAdCompliances;
+	}
+
+	public List<AdCompliance> getAdCompliances() {
+		return adCompliances;
+	}
+
+	public void setAdCompliances(List<AdCompliance> adCompliances) {
+		this.adCompliances = adCompliances;
+	}
+
+	public String getExcludedAdComplianceIds() {
+		return excludedAdComplianceIds;
+	}
+
+	public void setExcludedAdComplianceIds(String excludedAdComplianceIds) {
+		this.excludedAdComplianceIds = excludedAdComplianceIds;
 	}
 }

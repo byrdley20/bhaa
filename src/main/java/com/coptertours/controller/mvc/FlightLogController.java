@@ -48,7 +48,7 @@ public class FlightLogController extends BaseController {
 			@RequestParam(required = false) Integer year) throws JsonProcessingException {
 		Aircraft aircraft = this.aircraftRepository.findOne(id);
 
-		List<AdCompliance> adCompliances = this.adComplianceRepository.findByModelAndDailyAndActiveTrue(aircraft.getModel(), true, sortByNameAsc());
+		List<AdCompliance> adCompliances = this.adComplianceRepository.findByModelAndAircraftAndDailyAndActiveTrue(aircraft.getModel().getId(), aircraft.getId(), true);
 
 		Calendar startDateCal = DateUtil.findMonthStartDate(month, year);
 		Calendar endDateCal = DateUtil.findMonthEndDate(month, year);

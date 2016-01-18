@@ -17,13 +17,13 @@ public class AdComplianceController extends BaseController {
 	ModelRepository modelRepository;
 
 	@RequestMapping("/admin/adComplianceChooseModel.html")
-	String adCompliance(Model model) {
+	public String adCompliance(Model model) {
 		model.addAttribute("models", this.modelRepository.findAllByActiveTrue(sortByNameAsc()));
 		return "admin/adComplianceChooseModel";
 	}
 
 	@RequestMapping("/admin/adCompliance.html")
-	String adCompliance(Model model, @RequestParam Long id) {
+	public String adCompliance(Model model, @RequestParam Long id) {
 		com.coptertours.domain.Model aircraftModel = this.modelRepository.findById(id);
 
 		model.addAttribute("model", aircraftModel);

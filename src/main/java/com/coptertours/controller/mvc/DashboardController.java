@@ -100,7 +100,7 @@ public class DashboardController extends BaseController {
 	private void configureAdCompliances(Map<Long, List<AdCompliance>> modelToAdCompliances, Date todayStart, Date todayEnd, Aircraft aircraft, com.coptertours.domain.Model aircraftModel) {
 		List<AdCompliance> adCompliancesForModel = modelToAdCompliances.get(aircraftModel.getId());
 		if (adCompliancesForModel == null) {
-			adCompliancesForModel = this.adComplianceRepository.findByModelAndDailyAndActiveTrue(aircraftModel, true, sortByNameAsc());
+			adCompliancesForModel = this.adComplianceRepository.findByModelAndAircraftAndDailyAndActiveTrue(aircraftModel.getId(), aircraft.getId(), true);
 			if (!CollectionUtils.isEmpty(adCompliancesForModel)) {
 				aircraftModel.setHasAdCompliances(true);
 			}
