@@ -101,4 +101,36 @@ public class FlightLog extends BaseDomain {
 	public void setUser(User user) {
 		this.user = user;
 	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setAircraft(Aircraft aircraft) {
+		this.aircraft = aircraft;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public void setStarts(int starts) {
+		this.starts = starts;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+
+	public void setHobbsBegin(BigDecimal hobbsBegin) {
+		this.hobbsBegin = hobbsBegin;
+	}
+
+	public void setHobbsEnd(BigDecimal hobbsEnd) {
+		this.hobbsEnd = hobbsEnd;
+	}
+
+	public void setOperation(Operation operation) {
+		this.operation = operation;
+	}
 }

@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,9 +25,11 @@ import com.coptertours.repository.AircraftRepository;
 import com.coptertours.repository.FlightLogRepository;
 import com.coptertours.repository.LocationRepository;
 import com.coptertours.repository.OperationRepository;
+import com.coptertours.repository.UserRepository;
 import com.coptertours.util.DateUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 @Controller
 public class FlightLogController extends BaseController {
@@ -40,12 +44,16 @@ public class FlightLogController extends BaseController {
 	private FlightLogRepository flightLogRepository;
 	@Autowired
 	private AdComplianceRepository adComplianceRepository;
+	@Autowired
+	private UserRepository userRepository;
 
 	@RequestMapping("/flightLog.html")
 	String flightLog(Model model,
 			@RequestParam Long id,
 			@RequestParam(required = false) Integer month,
-			@RequestParam(required = false) Integer year) throws JsonProcessingException {
+			@RequestParam(required = false) Integer year,
+			@RequestParam(required = false) String action,
+			@RequestParam(required = false) String printFormAutofill) throws JsonProcessingException {
 		Aircraft aircraft = this.aircraftRepository.findOne(id);
 
 		List<AdCompliance> adCompliances = this.adComplianceRepository.findByModelAndAircraftAndDailyAndActiveTrue(aircraft.getModel().getId(), aircraft.getId(), true);
@@ -65,9 +73,32 @@ public class FlightLogController extends BaseController {
 
 		List<FlightLog> flightLogs = this.flightLogRepository.findByAircraftAndDateBetween(aircraft, startDateCal.getTime(), endDateCal.getTime(), sortByDate());
 
+		Map<Date, FlightLog> dateToFlightLog = new HashMap<Date, FlightLog>();
 		BigDecimal monthlyHobbsTotal = BigDecimal.ZERO;
 		for (FlightLog flightLog : flightLogs) {
+			if (AppConstants.PRINT.equals(action) && Boolean.parseBoolean(printFormAutofill)) {
+				dateToFlightLog.put(flightLog.getDate(), flightLog);
+			}
 			monthlyHobbsTotal = monthlyHobbsTotal.add(flightLog.getHobbsEnd().subtract(flightLog.getHobbsBegin()));
+		}
+
+		if (AppConstants.PRINT.equals(action)) {
+			if (Boolean.parseBoolean(printFormAutofill)) {
+				Calendar autoFillStartDate = DateUtil.findMonthStartDate(month, year);
+				BigDecimal latestHobbs = null;
+				while (!autoFillStartDate.getTime().after(endDateCal.getTime())) {
+					Date date = autoFillStartDate.getTime();
+					FlightLog dateFlightLog = dateToFlightLog.get(date);
+					if (dateFlightLog == null) {
+						autoFillFlightLog(aircraft, date, latestHobbs);
+					} else {
+						latestHobbs = dateFlightLog.getHobbsEnd();
+					}
+					autoFillStartDate.add(Calendar.DAY_OF_MONTH, 1);
+				}
+				flightLogs = this.flightLogRepository.findByAircraftAndDateBetween(aircraft, startDateCal.getTime(), endDateCal.getTime(), sortByDate());
+			}
+			model.addAttribute("printMonth", true);
 		}
 
 		if (aircraft.getModel().getShowStarts()) {
@@ -87,5 +118,25 @@ public class FlightLogController extends BaseController {
 		model.addAttribute("allYears", allYears);
 		model.addAttribute("currentYear", currentYear);
 		return "flightLog";
+	}
+
+	private void autoFillFlightLog(Aircraft aircraft, Date date, BigDecimal latestHobbs) {
+		if (latestHobbs == null) {
+			latestHobbs = this.flightLogRepository.findMostRecentHobbsEndBeforeDateByAircraft(aircraft, date);
+			if (latestHobbs == null) {
+				latestHobbs = BigDecimal.ZERO;
+			}
+		}
+		FlightLog flightLog = new FlightLog();
+		flightLog.setAircraft(aircraft);
+		flightLog.setDate(date);
+		flightLog.setHobbsBegin(latestHobbs);
+		flightLog.setHobbsEnd(latestHobbs);
+		flightLog.setLocation(this.locationRepository.findByName(AppConstants.AUTO_LOCATION_NAME).get(0));
+		flightLog.setOperation(this.operationRepository.findByName(AppConstants.AUTO_OPERATION_NAME).get(0));
+		flightLog.setStarts(0);
+		flightLog.setUser(this.userRepository.findByUserId(AppConstants.AUTO_USER_ID).get(0));
+		System.out.println("creating:" + new Gson().toJson(flightLog));
+		this.flightLogRepository.save(flightLog);
 	}
 }

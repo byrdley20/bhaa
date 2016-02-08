@@ -20,6 +20,9 @@ public interface FlightLogRepository extends JpaRepository<FlightLog, Long> {
 	@Query("select coalesce(max(fl2.hobbsEnd),0) from FlightLog fl2 where fl2.aircraft = ?1 and fl2.date = (select max(fl.date) from FlightLog fl where fl.aircraft = ?1)")
 	BigDecimal findMostRecentHobbsEndByAircraft(Aircraft aircraft);
 
+	@Query("select coalesce(max(fl2.hobbsEnd),0) from FlightLog fl2 where fl2.aircraft = ?1 and fl2.date = (select max(fl.date) from FlightLog fl where fl.aircraft = ?1 and fl.date < ?2)")
+	BigDecimal findMostRecentHobbsEndBeforeDateByAircraft(Aircraft aircraft, Date date);
+
 	@Query("select coalesce(sum(fl.starts),0) from FlightLog fl where fl.aircraft = ?1 and fl.date between ?2 and ?3")
 	Integer findTotalStartsByAircraftAndDateBetween(Aircraft aircraft, Date dateBegin, Date dateEnd);
 

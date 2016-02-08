@@ -10,5 +10,7 @@ import com.coptertours.options.Role;
 public interface UserRepository extends BaseRepository<User> {
 	List<User> findByUsername(String username);
 
+	List<User> findByUserId(String userId);
+
 	List<User> findByRoleAndActiveTrue(Role role, Sort sort);
 }

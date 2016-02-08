@@ -39,6 +39,7 @@
 		var mostRecentHobbsEnd = /*[[${mostRecentHobbsEnd}]]*/;
 		var showStarts = /*[[${aircraft.model.showStarts}]]*/;
 		var monthlyHobbsTotal = /*[[${monthlyHobbsTotal}]]*/;
+		var printMonth = /*[[${printMonth}]]*/;
 		/*]]>*/
     </script>
     <script type="text/javascript">
@@ -75,7 +76,7 @@
     		return checkHobbsValid();
     	}
     	function checkHobbsValid() {
-    		if( Number(hobbsEnd.value) > Number(hobbsBegin.value) ) {
+    		if( Number(hobbsEnd.value) >= Number(hobbsBegin.value) ) {
     			return true;	
     		}
     		$( "#hobbsEnd" ).addClass( "ui-state-error" );
@@ -245,6 +246,38 @@
 				}
 			});
     	}
+    	function printPopup() {
+   		  $(function() {
+				$.ui.dialog.prototype._focusTabbable = function(){};
+   			    $( "#printForm" ).show();
+   			    $( "#dialog-confirm" ).dialog({
+   			      resizable: false,
+				  dialogClass: "no-close print-dialog",
+   			      height:210,
+   			      modal: true,
+   			      buttons: {
+   			        "Yes": function() {
+   			          $( this ).dialog( "close" );
+   			       	  $( "#printFormAutofill" ).val("true");
+   			       	  $( "#printForm" ).submit();
+   			        },
+   			        "No": function() {
+   			          $( this ).dialog( "close" );
+   			      	  $( "#printFormAutofill" ).val("false");
+   			      	  $( "#printForm" ).submit();
+   			        },
+   			        "Yes": function() {
+   			          $( this ).dialog( "close" );
+   			       	  $( "#printFormAutofill" ).val("true");
+   			       	  $( "#printForm" ).submit();
+   			        },
+   			        "Cancel": function() {
+   			          $( this ).dialog( "close" );
+   			        }
+   			      }
+   			    });
+   			  });
+    	}
     	//]]>
     </script>
 </head>
@@ -253,6 +286,13 @@
 	<div th:replace="includes/header :: header">...</div>
 
 	<div id="main-content">
+		<div id="dialog-confirm">
+		  <form id="printForm" action="/flightLog.html" th:action="@{~/flightLog.html(id=${aircraft.id},month=${month}+1,year=${currentYear})}" method="post">
+			  <p>Would you like to auto-fill the days without logs before printing?</p>
+			  <input type="hidden" name="action" value="print"/>
+			  <input type="hidden" name="printFormAutofill" id="printFormAutofill" value="false"/>		  
+		  </form>
+		</div>
 		<div id="dialog-form" title="Flight Log">
 			<p class="validateTips"></p>
 			<form id="addEditForm" action="/flightLogs" th:action="@{~/flightLogs}" method="post">
@@ -307,7 +347,7 @@
 			<select id="year" name="year" class="selector">
 				<option th:selected="${currentYear.equals(year)}" th:each="year : ${allYears}" th:text="${year}" th:value="@{~/flightLog.html(id=${aircraft.id},month=${month}+1,year=${year})}">${year}</option>
 			</select>
-			<a href="#"><button onClick="window.print()" type="button" class="month-button print-button" role="button"><span class="button-text">Print Month</span></button></a>
+			<a href="#"><button onClick="printPopup()" type="button" class="month-button print-button" role="button"><span class="button-text">Print Month</span></button></a>
 			<br/>
 			<br/>
 		</div>
@@ -365,5 +405,12 @@
 			<span><a href="resetLog.html?i=engine" th:href="@{~/resetLog.html(id=${aircraft.id}, i=engine)}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Reset Engine Time</span></button></a></span>
 		</div>
 	</div>
+	<script type="text/javascript">
+		//<![CDATA[
+			if(printMonth){
+				window.print();
+			}
+    	//]]>
+    </script> 
 </body>
 </html>
