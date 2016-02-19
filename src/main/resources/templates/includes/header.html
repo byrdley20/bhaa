@@ -38,7 +38,19 @@
 				<a th:href="@{~/admin/ratings.html}" href="/admin/ratings.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="ratings-button" class="admin-button" role="button"><span class="button-text">Ratings</span></button></a>
 				<a th:href="@{~/admin/maintenanceTypes.html}" href="/admin/maintenanceTypes.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="maintenance-types-button" class="admin-button" role="button"><span class="button-text">Maintenance Types</span></button></a>
 				<a th:href="@{~/admin/components.html}" href="/admin/components.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="components-button" class="admin-button" role="button"><span class="button-text">Components</span></button></a>
+				<a th:href="@{~/admin/pilotHours.html}" href="/admin/pilotHours.html" sec:authorize="hasRole('ROLE_ADMIN')"><button type="button" id="reports-button" class="admin-button" role="button"><span class="button-text">Reports</span></button></a>
      		</div>
+			<div class="admin-admin-button" th:if="${#authentication} ? ${#authorization.expression('!isAuthenticated()')} : ${true}">
+     			<a th:href="@{~/login.html}" href="/login.html"><button type="button" id="admin-button" class="admin-button" role="button"><span class="button-text">Login</span></button></a>
+     		</div>
+     		<div class="logged-in" th:if="${#authentication} ? ${#authorization.expression('isAuthenticated()')} : ${false}">
+     			Logged in as <span sec:authentication="name" style="font-weight:bold"></span>
+     		</div>
+     		<div class="admin-admin-button" th:if="${#authentication} ? ${#authorization.expression('isAuthenticated()')} : ${false}">
+				<form th:action="@{~/logout}" id="logout-form" method="post">
+				    <input type="submit" value="Logout" class="logout-button" id="logout-button"></input>
+				</form>
+      		</div>
      		<div class="help-button">
      			<a th:href="@{~/help.html}" href="/help.html"><button type="button" class="admin-button" role="button"><span class="button-text">Help</span></button></a>
      		</div>
@@ -67,9 +79,12 @@
 			        idleDialog.show();
 			    	idleDialog.dialog( "open" );
 			    	window.setTimeout(function(){
-				        window.location.href = contextPath + "/logout";
+				        $("#logout-button").click();
 				    }, 5000);
 				});
+			    $("#logout-button").click(function() {
+			    	$("#logout-form").submit();
+			    });
 			});
 		</script>
     </div>
