@@ -399,6 +399,18 @@
 			</div>
 		</div>
 		<button id="create-record">Create New</button>
+		<br/><br/>
+		<div class="category-type" style="width:145px;">Location Hours</div>
+		<div class="table">
+			<div class="records-header">
+			    <span class="headerCell dataCell">Location</span>
+			    <span class="headerCell dataCell">Hours</span>
+			</div>
+			<div class="records-rows" th:each="lh : ${locationHours}" th:classappend="(${lhStat.odd} ? ' even' : '')">
+				<span class="locationHours-location dataCell" th:text="${lh.key}">Location</span>
+				<span class="locationHours-hours dataCell" th:text="${lh.value}">Hours</span>
+			</div>
+		</div>
 		<br/><br/><br/>
 		<div>
 			<span><a href="resetLog.html?i=hobbs" th:href="@{~/resetLog.html(id=${aircraft.id}, i=hobbs)}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Reset Hobbs Meter</span></button></a></span>

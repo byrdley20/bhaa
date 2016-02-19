@@ -74,12 +74,21 @@ public class FlightLogController extends BaseController {
 		List<FlightLog> flightLogs = this.flightLogRepository.findByAircraftAndDateBetween(aircraft, startDateCal.getTime(), endDateCal.getTime(), sortByDate());
 
 		Map<Date, FlightLog> dateToFlightLog = new HashMap<Date, FlightLog>();
+		Map<String, BigDecimal> locationHoursMap = new HashMap<String, BigDecimal>();
 		BigDecimal monthlyHobbsTotal = BigDecimal.ZERO;
 		for (FlightLog flightLog : flightLogs) {
 			if (AppConstants.PRINT.equals(action) && Boolean.parseBoolean(printFormAutofill)) {
 				dateToFlightLog.put(flightLog.getDate(), flightLog);
 			}
-			monthlyHobbsTotal = monthlyHobbsTotal.add(flightLog.getHobbsEnd().subtract(flightLog.getHobbsBegin()));
+			BigDecimal flightLogTotal = flightLog.getHobbsEnd().subtract(flightLog.getHobbsBegin());
+			monthlyHobbsTotal = monthlyHobbsTotal.add(flightLogTotal);
+			String locationName = flightLog.getLocation().getName();
+			BigDecimal locationHours = locationHoursMap.get(locationName);
+			if (locationHours == null) {
+				locationHoursMap.put(locationName, flightLogTotal);
+			} else {
+				locationHoursMap.put(locationName, locationHours.add(flightLogTotal));
+			}
 		}
 
 		if (AppConstants.PRINT.equals(action)) {
@@ -117,6 +126,7 @@ public class FlightLogController extends BaseController {
 		model.addAttribute("hasDailyAd", !CollectionUtils.isEmpty(adCompliances));
 		model.addAttribute("allYears", allYears);
 		model.addAttribute("currentYear", currentYear);
+		model.addAttribute("locationHours", locationHoursMap);
 		return "flightLog";
 	}
 
