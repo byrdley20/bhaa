@@ -321,8 +321,8 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 		display: block;
 	}
 	.dataCell {
-		padding: 1px 10px;
-		font-size: .8em;
+		padding: 1px 6px;
+		font-size: .75em;
 	}
 	.location-hours {
 		margin-top: 0px;
