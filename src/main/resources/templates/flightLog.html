@@ -352,7 +352,7 @@
 			<br/>
 		</div>
 		<div class="print-only monthName" th:with="monthDate=(${#dates.create(2015,month+1,1)})">
-			 <span th:text="${#dates.monthName(monthDate)}">Month Name</span>
+			 <span th:text="${#dates.monthName(monthDate)}">Month Name</span> <span th:text="${currentYear}">Year</span>
 		</div>
 		<div class="table">
 			<div class="records-header">
@@ -399,8 +399,8 @@
 			</div>
 		</div>
 		<button id="create-record">Create New</button>
-		<br/><br/>
-		<div class="category-type" style="width:145px;">Location Hours</div>
+
+		<div class="category-type location-hours" style="width:145px;">Location Hours</div>
 		<div class="table">
 			<div class="records-header">
 			    <span class="headerCell dataCell">Location</span>
@@ -411,8 +411,8 @@
 				<span class="locationHours-hours dataCell" th:text="${lh.value}">Hours</span>
 			</div>
 		</div>
-		<br/><br/><br/>
-		<div>
+
+		<div style="margin-top:40px;">
 			<span><a href="resetLog.html?i=hobbs" th:href="@{~/resetLog.html(id=${aircraft.id}, i=hobbs)}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Reset Hobbs Meter</span></button></a></span>
 			<span><a href="resetLog.html?i=engine" th:href="@{~/resetLog.html(id=${aircraft.id}, i=engine)}"><button type="button" class="month-button no-print" role="button"><span class="button-text">Reset Engine Time</span></button></a></span>
 		</div>

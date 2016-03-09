@@ -52,7 +52,7 @@ public class FlightLog extends BaseDomain {
 	@Expose
 	private Operation operation;
 
-	private static final SimpleDateFormat FLIGHT_LOG_DATE_FORMAT = new SimpleDateFormat("EEEE, MMMM dd, yyyy");
+	private static final SimpleDateFormat FLIGHT_LOG_DATE_FORMAT = new SimpleDateFormat("EEE, MM/dd/yyyy");
 
 	public String getFlightLogDateDisplay() {
 		return FLIGHT_LOG_DATE_FORMAT.format(getDate());

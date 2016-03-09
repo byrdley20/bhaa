@@ -307,6 +307,9 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 	font-size:1.3em;
 	font-weight: bold;
 }
+.location-hours {
+	margin-top: 40px;
+}
 @media print {
 	.header-left,
 	.header-right,
@@ -316,5 +319,16 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 	}
 	.print-only {
 		display: block;
+	}
+	.dataCell {
+		padding: 1px 10px;
+		font-size: .8em;
+	}
+	.location-hours {
+		margin-top: 0px;
+	}
+	.even {
+		background-color: #e6e6e6 !important;
+    	-webkit-print-color-adjust: exact;
 	}
 }
