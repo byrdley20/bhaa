@@ -72,7 +72,7 @@
         	$( "#model" ).change(function() {
         		var selectedModelId = $(this).val(); // get selected value
                 $.ajax({
-                    url: domain+'adCompliances/model/'+selectedModelId,
+                    url: domain+'/admin/adCompliances/model/'+selectedModelId,
                     type:'GET',
                     success:function(adCompliances){
                     	var applicableAds = $( "[name=applicableAds]" );
