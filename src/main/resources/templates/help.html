@@ -36,7 +36,7 @@
 				<li><a href="#admin">Admin</a>
 					<ul>
 						<li><a href="#users">Users</a></li>
-						<li><a href="#aircrafts">Aircrafts</a></li>
+						<li><a href="#aircraft">Aircraft</a></li>
 						<li><a href="#models">Models</a></li>
 						<li><a href="#adcompliances">AD Compliances</a></li>
 						<li><a href="#locations">Locations</a></li>
@@ -53,7 +53,7 @@
 			<div class="help-text">
 				<ul>
 					<li>Navigate to the dashboard by clicking the <b>Dashboard</b> button in the header.</li>
-					<li>The dashboard shows all of the aircrafts and their current hobbs, notable maintenance statuses, number of starts (if applicable) and their yearly hours. There are also buttons to access the aircraft log, status and AD compliance.</li>
+					<li>The dashboard shows all of the aircraft and their current hobbs, notable maintenance statuses, number of starts (if applicable) and their yearly hours. There are also buttons to access the aircraft log, status and AD compliance.</li>
 					<li>
 						Maintenance tasks will show as follows:
 						<ul>
@@ -443,7 +443,7 @@
 				<li>An admin can do everything a non-logged in person and a mechanic can do, plus add/edit/delete the following:
 					<ul>
 						<li><a href="#users">Users</a></li>
-						<li><a href="#aircrafts">Aircrafts</a></li>
+						<li><a href="#aircraft">Aircraft</a></li>
 						<li><a href="#models">Models</a></li>
 						<li><a href="#adminadcompliances">AD Compliances</a></li>
 						<li><a href="#locations">Locations</a></li>
@@ -468,6 +468,7 @@
 				<li>Navigate to the users page by clicking the <b>Users</b> tab in the header</li>
 				<li>To create a new entry,
 					<ol>
+						<li>If the user is of a new rating not yet in the system, then first <a href="#ratings">create the rating</a>.</li>
 						<li>Click the <b>Create New</b> button</li>
 						<li>Populate the information</li>
 						<li>Click <b>Save</b></li>
@@ -489,13 +490,15 @@
 			</ul>
 		</div>
 		<div class="help-topic">
-			<a id="aircrafts" class="help-header">Aircrafts</a>
+			<a id="aircraft" class="help-header">Aircraft</a>
 			<ul>
-				<li>Navigate to the aircrafts page by clicking the <b>Aircrafts</b> tab in the header</li>
+				<li>Navigate to the aircraft page by clicking the <b>Aircraft</b> tab in the header</li>
 				<li>To create a new entry,
 					<ol>
+						<li>If the aircraft is of a new model not yet in the system, then first <a href="#models">create the model</a>.</li>
 						<li>Click the <b>Create New</b> button</li>
 						<li>Populate the information</li>
+						<li>If the aircraft has any AD Compliances that are no longer applicable, move them to the 'Not Applicable Ad Compliances' box.</li>
 						<li>Click <b>Save</b></li>
 					</ol>
 				</li>
