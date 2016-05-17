@@ -36,10 +36,10 @@ public class AircraftStatusRestController extends BaseRestController {
 	@ResponseBody
 	MaintenanceLog complyWith(@RequestBody MaintenanceLog maintenanceLog) {
 		MaintenanceLog currentMaintenanceLog = this.maintenanceLogRepository.findOne(maintenanceLog.getId());
-		if (maintenanceLog.getComplyWithDate() == null) {
+		if (maintenanceLog.getComplyWithDate() == null && currentMaintenanceLog != null) {
 			maintenanceLog.setComplyWithDate(currentMaintenanceLog.getComplyWithDate());
 		}
-		if (maintenanceLog.getComplyWithHobbs() == null) {
+		if (maintenanceLog.getComplyWithHobbs() == null && currentMaintenanceLog != null) {
 			maintenanceLog.setComplyWithHobbs(currentMaintenanceLog.getComplyWithHobbs());
 		}
 
