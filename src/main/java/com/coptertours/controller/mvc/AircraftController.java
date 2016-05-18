@@ -38,9 +38,9 @@ public class AircraftController extends BaseController {
 		List<Aircraft> allAircrafts = this.aircraftRepository.findAll();
 		List<com.coptertours.domain.Model> allModels = this.modelRepository.findAllByActiveTrue(sortByNameAsc());
 
-		Map<Long, List<AdCompliance>> modelToAdCompliances = new HashMap<Long, List<AdCompliance>>();
+		Map<Long, List<AdCompliance>> aircraftToAdCompliances = new HashMap<Long, List<AdCompliance>>();
 		for (Aircraft aircraft : allAircrafts) {
-			configureAdCompliances(modelToAdCompliances, aircraft);
+			configureAdCompliances(aircraftToAdCompliances, aircraft);
 		}
 
 		model.addAttribute("aircrafts", allAircrafts);
@@ -48,17 +48,17 @@ public class AircraftController extends BaseController {
 		return "admin/aircrafts";
 	}
 
-	private void configureAdCompliances(Map<Long, List<AdCompliance>> modelToAdCompliances, Aircraft aircraft) {
+	private void configureAdCompliances(Map<Long, List<AdCompliance>> aircraftToAdCompliances, Aircraft aircraft) {
 		com.coptertours.domain.Model aircraftModel = aircraft.getModel();
-		List<AdCompliance> adCompliancesForModel = modelToAdCompliances.get(aircraftModel.getId());
-		if (adCompliancesForModel == null) {
-			adCompliancesForModel = this.adComplianceRepository.findByModelAndDailyAndActiveTrue(aircraftModel, true, sortByNameAsc());
-			if (!CollectionUtils.isEmpty(adCompliancesForModel)) {
-				aircraftModel.setHasAdCompliances(true);
+		List<AdCompliance> adCompliancesForAircraft = aircraftToAdCompliances.get(aircraft.getId());
+		if (adCompliancesForAircraft == null) {
+			adCompliancesForAircraft = this.adComplianceRepository.findByModelAndAircraftAndDailyAndActiveTrue(aircraftModel.getId(), aircraft.getId(), true);
+			if (!CollectionUtils.isEmpty(adCompliancesForAircraft)) {
+				aircraft.setHasAdCompliances(true);
 			}
-			modelToAdCompliances.put(aircraftModel.getId(), adCompliancesForModel);
-		} else if (!CollectionUtils.isEmpty(adCompliancesForModel)) {
-			aircraftModel.setHasAdCompliances(true);
+			aircraftToAdCompliances.put(aircraft.getId(), adCompliancesForAircraft);
+		} else if (!CollectionUtils.isEmpty(adCompliancesForAircraft)) {
+			aircraft.setHasAdCompliances(true);
 		}
 		List<AdCompliance> allAdCompliancesForModel = this.adComplianceRepository.findByModelAndActiveTrue(aircraftModel, sortByNameAsc());
 		for (AdCompliance allAdComplianceForModel : allAdCompliancesForModel) {

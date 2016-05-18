@@ -47,7 +47,7 @@ public class DashboardController extends BaseController {
 
 	@RequestMapping({ "/", "/dashboard.html" })
 	String dashboard(Model model, HttpServletRequest request) throws IOException {
-		Map<Long, List<AdCompliance>> modelToAdCompliances = new HashMap<Long, List<AdCompliance>>();
+		Map<Long, List<AdCompliance>> aircraftToAdCompliances = new HashMap<Long, List<AdCompliance>>();
 		List<Aircraft> aircrafts = this.aircraftRepository.findAllByActiveTrue(sortByAircraftNumberAsc());
 		Date today = new Date();
 		Date todayStart = DateUtil.findDayStart(today);
@@ -90,31 +90,31 @@ public class DashboardController extends BaseController {
 
 			com.coptertours.domain.Model aircraftModel = aircraft.getModel();
 
-			configureAdCompliances(modelToAdCompliances, todayStart, todayEnd, aircraft, aircraftModel);
+			configureAdCompliances(aircraftToAdCompliances, todayStart, todayEnd, aircraft, aircraftModel);
 		}
 		model.addAttribute("aircrafts", aircrafts);
 		model.addAttribute("today", new Date());
 		return "dashboard";
 	}
 
-	private void configureAdCompliances(Map<Long, List<AdCompliance>> modelToAdCompliances, Date todayStart, Date todayEnd, Aircraft aircraft, com.coptertours.domain.Model aircraftModel) {
-		List<AdCompliance> adCompliancesForModel = modelToAdCompliances.get(aircraftModel.getId());
-		if (adCompliancesForModel == null) {
-			adCompliancesForModel = this.adComplianceRepository.findByModelAndAircraftAndDailyAndActiveTrue(aircraftModel.getId(), aircraft.getId(), true);
-			if (!CollectionUtils.isEmpty(adCompliancesForModel)) {
-				aircraftModel.setHasAdCompliances(true);
+	private void configureAdCompliances(Map<Long, List<AdCompliance>> aircraftToAdCompliances, Date todayStart, Date todayEnd, Aircraft aircraft, com.coptertours.domain.Model aircraftModel) {
+		List<AdCompliance> adCompliancesForAircraft = aircraftToAdCompliances.get(aircraft.getId());
+		if (adCompliancesForAircraft == null) {
+			adCompliancesForAircraft = this.adComplianceRepository.findByModelAndAircraftAndDailyAndActiveTrue(aircraftModel.getId(), aircraft.getId(), true);
+			if (!CollectionUtils.isEmpty(adCompliancesForAircraft)) {
+				aircraft.setHasAdCompliances(true);
 			}
-			modelToAdCompliances.put(aircraftModel.getId(), adCompliancesForModel);
-		} else if (!CollectionUtils.isEmpty(adCompliancesForModel)) {
-			aircraftModel.setHasAdCompliances(true);
+			aircraftToAdCompliances.put(aircraft.getId(), adCompliancesForAircraft);
+		} else if (!CollectionUtils.isEmpty(adCompliancesForAircraft)) {
+			aircraft.setHasAdCompliances(true);
 		}
 
 		List<AdComplianceLog> adComplianceLogsForToday = new ArrayList<AdComplianceLog>();
-		for (AdCompliance adCompliance : adCompliancesForModel) {
+		for (AdCompliance adCompliance : adCompliancesForAircraft) {
 			adComplianceLogsForToday.addAll(this.adComplianceLogRepository.findByAircraftIdAndAdComplianceIdAndComplyWithDateBetween(aircraft.getId(), adCompliance.getId(), todayStart, todayEnd, sortByComplyWithDate()));
 		}
 		// if all of the AD Compliances for this model have not been complied with today
-		if (CollectionUtils.isEmpty(adComplianceLogsForToday) || adComplianceLogsForToday.size() != adCompliancesForModel.size()) {
+		if (CollectionUtils.isEmpty(adComplianceLogsForToday) || adComplianceLogsForToday.size() != adCompliancesForAircraft.size()) {
 			aircraft.setAdComplied(false);
 		}
 	}

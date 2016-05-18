@@ -340,7 +340,7 @@
 				<span class="dataCell" style="vertical-align:bottom;">
 					<a href="flightLog.html?id=1" th:href="@{~/flightLog.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Log</span></button></a><br/><br/>
 					<a href="aircraftStatus.html?id=1" th:href="@{~/aircraftStatus.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text">Status</span></button></a><br/><br/>
-					<a th:if="${a.model.hasAdCompliances}" href="adComplianceLog.html?id=1" th:href="@{~/adComplianceLog.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text" th:classappend="!${a.adComplied}?'alert-button'">AD Compliance</span></button></a>
+					<a th:if="${a.hasAdCompliances}" href="adComplianceLog.html?id=1" th:href="@{~/adComplianceLog.html(id=${a.id})}"><button type="button" class="month-button" role="button"><span class="button-text" th:classappend="!${a.adComplied}?'alert-button'">AD Compliance</span></button></a>
 				</span>
 				<span class="id cell hidden" th:text="${a.id}">Hidden PK ID</span>
 				<span class="modelId cell hidden" th:text="${a.model.id}">Hidden Model Id</span>

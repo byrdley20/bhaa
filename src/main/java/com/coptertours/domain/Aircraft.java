@@ -96,6 +96,10 @@ public class Aircraft extends BaseDomain {
 	@Expose
 	private List<AdCompliance> adCompliances;
 
+	@Transient
+	@Expose
+	private boolean hasAdCompliances;
+
 	private static final String AD_COMPLIANCE_KEY_DELIMITER = "^";
 	private static final String AD_COMPLIANCE_LIST_DELIMITER = "|";
 
@@ -279,5 +283,13 @@ public class Aircraft extends BaseDomain {
 
 	public void setExcludedAdComplianceIds(String excludedAdComplianceIds) {
 		this.excludedAdComplianceIds = excludedAdComplianceIds;
+	}
+
+	public boolean isHasAdCompliances() {
+		return hasAdCompliances;
+	}
+
+	public void setHasAdCompliances(boolean hasAdCompliances) {
+		this.hasAdCompliances = hasAdCompliances;
 	}
 }
