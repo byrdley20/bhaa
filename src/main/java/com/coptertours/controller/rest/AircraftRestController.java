@@ -29,9 +29,13 @@ import com.coptertours.common.ImageResizer;
 import com.coptertours.domain.AdCompliance;
 import com.coptertours.domain.Aircraft;
 import com.coptertours.domain.ExcludedAdCompliance;
+import com.coptertours.domain.ExcludedMaintenanceType;
+import com.coptertours.domain.MaintenanceType;
 import com.coptertours.repository.AdComplianceRepository;
 import com.coptertours.repository.AircraftRepository;
 import com.coptertours.repository.ExcludedAdComplianceRepository;
+import com.coptertours.repository.ExcludedMaintenanceTypeRepository;
+import com.coptertours.repository.MaintenanceTypeRepository;
 
 @RestController
 public class AircraftRestController {
@@ -40,7 +44,11 @@ public class AircraftRestController {
 	@Autowired
 	private AdComplianceRepository adComplianceRepository;
 	@Autowired
+	private MaintenanceTypeRepository maintenanceTypeRepository;
+	@Autowired
 	private ExcludedAdComplianceRepository excludedAdComplianceRepository;
+	@Autowired
+	private ExcludedMaintenanceTypeRepository excludedMaintenanceTypeRepository;
 
 	@RequestMapping(value = "/admin/aircrafts", method = RequestMethod.GET)
 	Collection<Aircraft> aircrafts() {
@@ -51,9 +59,16 @@ public class AircraftRestController {
 	@ResponseBody
 	Aircraft addAircraft(@RequestBody Aircraft aircraft, final HttpServletResponse response) {
 		this.excludedAdComplianceRepository.deleteByAircraftId(aircraft.getId());
+		this.excludedMaintenanceTypeRepository.deleteByAircraftId(aircraft.getId());
 
 		Aircraft savedAircraft = this.aircraftRepository.save(aircraft);
 
+		updateAdCompliances(aircraft, savedAircraft);
+		updateMaintenanceTypes(aircraft, savedAircraft);
+		return savedAircraft;
+	}
+
+	private void updateAdCompliances(Aircraft aircraft, Aircraft savedAircraft) {
 		if (!StringUtils.isEmpty(aircraft.getExcludedAdComplianceIds())) {
 			List<Long> longIds = new ArrayList<Long>();
 			for (String id : Arrays.asList(aircraft.getExcludedAdComplianceIds().split(","))) {
@@ -85,12 +100,57 @@ public class AircraftRestController {
 			}
 		}
 		savedAircraft.setAdCompliances(adCompliances);
-		return savedAircraft;
+	}
+
+	private void updateMaintenanceTypes(Aircraft aircraft, Aircraft savedAircraft) {
+		if (!StringUtils.isEmpty(aircraft.getExcludedMaintenanceTypesIds())) {
+			List<Long> longIds = new ArrayList<Long>();
+			for (String id : Arrays.asList(aircraft.getExcludedMaintenanceTypesIds().split(","))) {
+				longIds.add(Long.parseLong(id));
+			}
+			List<ExcludedMaintenanceType> excludedMaintenanceTypes = new ArrayList<ExcludedMaintenanceType>();
+			for (MaintenanceType maintenanceType : this.maintenanceTypeRepository.findAll(longIds)) {
+				ExcludedMaintenanceType excludedMaintenanceType = new ExcludedMaintenanceType();
+				excludedMaintenanceType.setAircraftId(aircraft.getId());
+				excludedMaintenanceType.setMaintenanceType(maintenanceType);
+				excludedMaintenanceTypeRepository.save(excludedMaintenanceType);
+				excludedMaintenanceTypes.add(excludedMaintenanceType);
+			}
+			savedAircraft.setExcludedMaintenanceTypes(excludedMaintenanceTypes);
+		}
+		List<MaintenanceType> maintenanceTypes = new ArrayList<MaintenanceType>();
+		for (MaintenanceType maintenanceType : this.maintenanceTypeRepository.findByModelAndActiveTrue(aircraft.getModel(), new Sort(Sort.Direction.ASC, "name"))) {
+			boolean includedMaintenanceType = true;
+			if (savedAircraft.getExcludedMaintenanceTypes() != null) {
+				for (ExcludedMaintenanceType excludedMaintenanceType : savedAircraft.getExcludedMaintenanceTypes()) {
+					if (excludedMaintenanceType.getMaintenanceType().getId() == maintenanceType.getId()) {
+						includedMaintenanceType = false;
+						break;
+					}
+				}
+			}
+			if (includedMaintenanceType) {
+				maintenanceTypes.add(maintenanceType);
+			}
+		}
+		savedAircraft.setMaintenanceTypes(maintenanceTypes);
 	}
 
 	@RequestMapping(value = "/admin/aircrafts/{id}", method = RequestMethod.DELETE)
-	void deleteAircraft(@PathVariable Long id) {
+	void deleteAircraft(@PathVariable Long id) throws Exception {
 		Aircraft aircraft = this.aircraftRepository.findOne(id);
+		List<ExcludedAdCompliance> deletedExcludedAdCompliances = deleteExcludedAdCompliances(id, aircraft);
+		List<ExcludedMaintenanceType> deletedExcludedMaintenanceTypes = deleteExcludedMaintenanceTypes(id, aircraft);
+		try {
+			this.aircraftRepository.delete(id);
+		} catch (Exception e) {
+			excludedAdComplianceRepository.save(deletedExcludedAdCompliances);
+			excludedMaintenanceTypeRepository.save(deletedExcludedMaintenanceTypes);
+			throw e;
+		}
+	}
+
+	private List<ExcludedAdCompliance> deleteExcludedAdCompliances(Long id, Aircraft aircraft) {
 		List<ExcludedAdCompliance> deletedExcludedAdCompliances = new ArrayList<ExcludedAdCompliance>();
 		if (aircraft.getExcludedAdCompliances() != null) {
 			for (ExcludedAdCompliance excludedAdCompliance : aircraft.getExcludedAdCompliances()) {
@@ -98,12 +158,18 @@ public class AircraftRestController {
 				this.excludedAdComplianceRepository.delete(excludedAdCompliance);
 			}
 		}
-		try {
-			this.aircraftRepository.delete(id);
-		} catch (Exception e) {
-			excludedAdComplianceRepository.save(deletedExcludedAdCompliances);
-			throw e;
+		return deletedExcludedAdCompliances;
+	}
+
+	private List<ExcludedMaintenanceType> deleteExcludedMaintenanceTypes(Long id, Aircraft aircraft) {
+		List<ExcludedMaintenanceType> deletedExcludedMaintenanceTypes = new ArrayList<ExcludedMaintenanceType>();
+		if (aircraft.getExcludedAdCompliances() != null) {
+			for (ExcludedMaintenanceType excludedMaintenanceType : aircraft.getExcludedMaintenanceTypes()) {
+				deletedExcludedMaintenanceTypes.add(excludedMaintenanceType);
+				this.excludedMaintenanceTypeRepository.delete(excludedMaintenanceType);
+			}
 		}
+		return deletedExcludedMaintenanceTypes;
 	}
 
 	/**

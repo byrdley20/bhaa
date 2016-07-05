@@ -45,6 +45,14 @@ public class Aircraft extends BaseDomain {
 	@Expose
 	private String excludedAdComplianceIds;
 
+	@OneToMany(mappedBy = "aircraftId")
+	@Expose
+	private List<ExcludedMaintenanceType> excludedMaintenanceTypes;
+
+	@Transient
+	@Expose
+	private String excludedMaintenanceTypesIds;
+
 	@Lob
 	@Column(name = "IMAGE_PATH", columnDefinition = "clob")
 	@Expose
@@ -100,8 +108,8 @@ public class Aircraft extends BaseDomain {
 	@Expose
 	private boolean hasAdCompliances;
 
-	private static final String AD_COMPLIANCE_KEY_DELIMITER = "^";
-	private static final String AD_COMPLIANCE_LIST_DELIMITER = "|";
+	private static final String EXCLUDED_KEY_DELIMITER = "^";
+	private static final String EXCLUDED_LIST_DELIMITER = "|";
 
 	@Override
 	public Aircraft clone() {
@@ -123,7 +131,7 @@ public class Aircraft extends BaseDomain {
 		List<AdCompliance> adCompliances = this.getAdCompliances();
 		if (adCompliances != null) {
 			for (AdCompliance adCompliance : adCompliances) {
-				sb.append(adCompliance.getId()).append(AD_COMPLIANCE_KEY_DELIMITER).append(adCompliance.getName()).append(AD_COMPLIANCE_LIST_DELIMITER);
+				sb.append(adCompliance.getId()).append(EXCLUDED_KEY_DELIMITER).append(adCompliance.getName()).append(EXCLUDED_LIST_DELIMITER);
 			}
 		}
 		return sb.toString();
@@ -134,8 +142,32 @@ public class Aircraft extends BaseDomain {
 		StringBuilder sb = new StringBuilder();
 		List<ExcludedAdCompliance> excludedAdCompliances = this.getExcludedAdCompliances();
 		if (excludedAdCompliances != null) {
-			for (ExcludedAdCompliance excludedAdCompliance : this.getExcludedAdCompliances()) {
-				sb.append(excludedAdCompliance.getAdCompliance().getId()).append(AD_COMPLIANCE_KEY_DELIMITER).append(excludedAdCompliance.getAdCompliance().getName()).append(AD_COMPLIANCE_LIST_DELIMITER);
+			for (ExcludedAdCompliance excludedAdCompliance : excludedAdCompliances) {
+				sb.append(excludedAdCompliance.getAdCompliance().getId()).append(EXCLUDED_KEY_DELIMITER).append(excludedAdCompliance.getAdCompliance().getName()).append(EXCLUDED_LIST_DELIMITER);
+			}
+		}
+		return sb.toString();
+	}
+
+	@Transient
+	public String getMaintenanceTypesString() {
+		StringBuilder sb = new StringBuilder();
+		List<MaintenanceType> maintenanceTypes = this.getMaintenanceTypes();
+		if (maintenanceTypes != null) {
+			for (MaintenanceType maintenanceType : maintenanceTypes) {
+				sb.append(maintenanceType.getId()).append(EXCLUDED_KEY_DELIMITER).append(maintenanceType.getName()).append(EXCLUDED_LIST_DELIMITER);
+			}
+		}
+		return sb.toString();
+	}
+
+	@Transient
+	public String getExcludedMaintenanceTypesString() {
+		StringBuilder sb = new StringBuilder();
+		List<ExcludedMaintenanceType> excludedMaintenanceTypes = this.getExcludedMaintenanceTypes();
+		if (excludedMaintenanceTypes != null) {
+			for (ExcludedMaintenanceType excludedMaintenanceType : excludedMaintenanceTypes) {
+				sb.append(excludedMaintenanceType.getMaintenanceType().getId()).append(EXCLUDED_KEY_DELIMITER).append(excludedMaintenanceType.getMaintenanceType().getName()).append(EXCLUDED_LIST_DELIMITER);
 			}
 		}
 		return sb.toString();
@@ -291,5 +323,21 @@ public class Aircraft extends BaseDomain {
 
 	public void setHasAdCompliances(boolean hasAdCompliances) {
 		this.hasAdCompliances = hasAdCompliances;
+	}
+
+	public List<ExcludedMaintenanceType> getExcludedMaintenanceTypes() {
+		return excludedMaintenanceTypes;
+	}
+
+	public void setExcludedMaintenanceTypes(List<ExcludedMaintenanceType> excludedMaintenanceTypes) {
+		this.excludedMaintenanceTypes = excludedMaintenanceTypes;
+	}
+
+	public String getExcludedMaintenanceTypesIds() {
+		return excludedMaintenanceTypesIds;
+	}
+
+	public void setExcludedMaintenanceTypesIds(String excludedMaintenanceTypesIds) {
+		this.excludedMaintenanceTypesIds = excludedMaintenanceTypesIds;
 	}
 }

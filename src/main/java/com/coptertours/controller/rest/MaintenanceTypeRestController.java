@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,16 +15,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.coptertours.domain.MaintenanceType;
 import com.coptertours.repository.MaintenanceTypeRepository;
+import com.coptertours.repository.ModelRepository;
 
 @RestController
 @RequestMapping(value = "/admin/maintenanceTypes")
 public class MaintenanceTypeRestController {
 	@Autowired
-	MaintenanceTypeRepository maintenanceTypeRepository;
+	private MaintenanceTypeRepository maintenanceTypeRepository;
+	@Autowired
+	private ModelRepository modelRepository;
 
 	@RequestMapping(method = RequestMethod.GET)
 	Collection<MaintenanceType> maintenanceTypes() {
 		return this.maintenanceTypeRepository.findAll();
+	}
+
+	@RequestMapping(value = "/model/{modelId}", method = RequestMethod.GET)
+	@ResponseBody
+	public Collection<MaintenanceType> maintenanceTypesByModel(@PathVariable Long modelId) {
+		com.coptertours.domain.Model model = this.modelRepository.findOne(modelId);
+		return this.maintenanceTypeRepository.findByModelAndActiveTrue(model, new Sort(Sort.Direction.ASC, "name"));
 	}
 
 	@RequestMapping(method = RequestMethod.POST)

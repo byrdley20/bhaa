@@ -41,9 +41,10 @@
         	imagePath = $( "#imagePath" ),
     		ordering = $( "#ordering" ),
     		active = $( "#active" ),
-    		excludedAdComplianceIds = $( "#excludedAdComplianceIds" );
+    		excludedAdComplianceIds = $( "#excludedAdComplianceIds" ),
+    		excludedMaintenanceTypesIds = $( "#excludedMaintenanceTypesIds" );
     		
-        	allFields = $( [] ).add( id ).add( aircraftNumber ).add( name ).add( model ).add( serialNum ).add( imagePath ).add( ordering ).add( active ).add( excludedAdComplianceIds );
+        	allFields = $( [] ).add( id ).add( aircraftNumber ).add( name ).add( model ).add( serialNum ).add( imagePath ).add( ordering ).add( active ).add( excludedAdComplianceIds ).add( excludedMaintenanceTypesIds );
         	addUpdatePath = "/admin/aircrafts";
         	deletePath = "/admin/aircrafts";
     		
@@ -68,9 +69,14 @@
         		submitAllLeft: false,
         		right: '#excludedAdComplianceIds'
         	});
+        	$('#multiselectMt').multiselect({
+        		submitAllLeft: false,
+        		right: '#excludedMaintenanceTypesIds'
+        	});
         	
         	$( "#model" ).change(function() {
         		var selectedModelId = $(this).val(); // get selected value
+        		// refresh the AD Compliance list for the model
                 $.ajax({
                     url: domain+'/admin/adCompliances/model/'+selectedModelId,
                     type:'GET',
@@ -89,13 +95,32 @@
                     	alert('The AD Compliances could not be retrieved for the selected model.')
                     }
                	});
+        		// refresh the Maintenance Type list for the model
+                $.ajax({
+                    url: domain+'/admin/maintenanceTypes/model/'+selectedModelId,
+                    type:'GET',
+                    success:function(maintenanceTypes){
+                    	var applicableMts = $( "[name=applicableMts]" );
+                    	applicableMts.empty();
+                    	$( "#excludedMaintenanceTypesIds" ).empty();
+                    	$.each(maintenanceTypes, function(key, maintenanceType) {   
+                    		applicableMts.append($("<option/>", {
+                    	       	value: maintenanceType.id,
+                    	       	text: maintenanceType.name
+    	                	}));
+                    	});
+                    },
+                    error:function(response){
+                    	alert('The Maintenance Types could not be retrieved for the selected model.')
+                    }
+               	});
                 return false;
         	});
        	});
     	function setSelectValue(formData, element) {
 			if(element.name == 'model') {
 				formData[element.name] = models[element.value];
-			} else if (element.name == 'excludedAdComplianceIds') {
+			} else if (element.name == 'excludedAdComplianceIds' || element.name == 'excludedMaintenanceTypesIds') {
 				for(var i=0; i < element.options.length; i++) {
 					if(typeof formData[element.name] == 'undefined'){
 						formData[element.name] = element.options[i].value
@@ -123,16 +148,16 @@
     			elementBefore = $(".records-header");
     		}
     		
-    		var applicableAdCompliancesText = "";
-    		if(savedRecord.adCompliances != null) {
-	    		$.each(savedRecord.adCompliances, function(key, adCompliance) {
-	    			applicableAdCompliancesText += "<span><span>"+adCompliance.name+"</span><br></span>";
-	    		});
-	    	}
     		var excludedAdCompliancesText = "";
     		if(savedRecord.excludedAdCompliances != null) {
 	    		$.each(savedRecord.excludedAdCompliances, function(key, excludedAdCompliance) {
 	    			excludedAdCompliancesText += "<span><span>"+excludedAdCompliance.adCompliance.name+"</span><br></span>";
+	    		});
+	    	}
+    		var excludedMaintenanceTypesText = "";
+    		if(savedRecord.excludedMaintenanceTypes != null) {
+	    		$.each(savedRecord.excludedMaintenanceTypes, function(key, excludedMaintenanceType) {
+	    			excludedMaintenanceTypesText += "<span><span>"+excludedMaintenanceType.maintenanceType.name+"</span><br></span>";
 	    		});
 	    	}
     		
@@ -145,8 +170,8 @@
 			    	"<span class='name dataCell'>"+savedRecord.name+"</span> " +
 			    	"<span class='model dataCell'>"+savedRecord.model.name+"</span> " +
 			    	"<span class='serialNum dataCell'>"+savedRecord.serialNum+"</span> " +
-			    	"<span class='applicableAdCompliances dataCell' style='vertical-align:bottom;'>"+applicableAdCompliancesText+"</span> " +
 			    	"<span class='excludedAdCompliances dataCell' style='vertical-align:bottom;'>"+excludedAdCompliancesText+"</span> " +
+			    	"<span class='excludedMaintenanceTypes dataCell' style='vertical-align:bottom;'>"+excludedMaintenanceTypesText+"</span> " +
 			    	"<span class='active dataCell'><input type='checkbox' "+getNewCheckboxValue(savedRecord.active)+" disabled='disabled'/></span> " +
 			    	"<span class='aircraftImage dataCell'><img class='aircraft-image' src='"+imagePrefix+imagePath+"'/></span> " +
 			    	"<span class='id cell hidden'>"+savedRecord.id+"</span> " +
@@ -156,26 +181,26 @@
 		    	"</div>" );   
     	}
     	function writeEditRecord(savedRecord){
-    		var applicableAdCompliancesText = "";
-    		if(savedRecord.adCompliances != null) {
-	    		$.each(savedRecord.adCompliances, function(key, adCompliance) {
-	    			applicableAdCompliancesText += "<span><span>"+adCompliance.name+"</span><br></span>";
-	    		});
-	    	}
     		var excludedAdCompliancesText = "";
     		if(savedRecord.excludedAdCompliances != null) {
 	    		$.each(savedRecord.excludedAdCompliances, function(key, excludedAdCompliance) {
 	    			excludedAdCompliancesText += "<span><span>"+excludedAdCompliance.adCompliance.name+"</span><br></span>";
 	    		});
-	    	}    		
+	    	}    
+    		var excludedMaintenanceTypesText = "";
+    		if(savedRecord.excludedMaintenanceTypes != null) {
+	    		$.each(savedRecord.excludedMaintenanceTypes, function(key, excludedMaintenanceType) {
+	    			excludedMaintenanceTypesText += "<span><span>"+excludedMaintenanceType.maintenanceType.name+"</span><br></span>";
+	    		});
+	    	} 
     		
     		var editedRow = $(".id"+savedRecord.id);
     		editedRow.find('.aircraftNumber').html(savedRecord.aircraftNumber);
     		editedRow.find('.name').html(savedRecord.name);
     		editedRow.find('.model').html(savedRecord.model.name);
     		editedRow.find('.serialNum').html(savedRecord.serialNum);
-    		editedRow.find('.applicableAdCompliances').html(applicableAdCompliancesText);
     		editedRow.find('.excludedAdCompliances').html(excludedAdCompliancesText);
+    		editedRow.find('.excludedMaintenanceTypes').html(excludedMaintenanceTypesText);
     		editedRow.find('.active input').prop('checked', savedRecord.active);
     		if(savedRecord.imagePath != null){
     			editedRow.find('img.aircraft-image').attr("src", imagePrefix+savedRecord.imagePath);
@@ -184,6 +209,8 @@
     		}
     		editedRow.find('.adCompliancesList').html(savedRecord.adCompliancesString);
     		editedRow.find('.excludedAdCompliancesList').html(savedRecord.excludedAdCompliancesString);
+    		editedRow.find('.maintenanceTypesList').html(savedRecord.maintenanceTypesString);
+    		editedRow.find('.excludedMaintenanceTypesList').html(savedRecord.excludedMaintenanceTypesString);
     		editedRow.find('.id').html(savedRecord.id);
     		editedRow.addClass('new-row');
     	}
@@ -234,6 +261,31 @@
 	            	}));
     			}
     		}); 
+
+    		var applicableMts = $( "[name=applicableMts]" );
+    		var excludedMts = $( "#excludedMaintenanceTypesIds" );
+    		applicableMts.empty();
+    		excludedMts.empty();
+    		var maintenanceTypesList = editSpan.nextAll('span.maintenanceTypesList').first().html().split("|");
+    		var excludedMaintenanceTypesList = editSpan.nextAll('span.excludedMaintenanceTypesList').first().html().split("|");
+    		$.each(maintenanceTypesList, function(key, maintenanceTypeObj) {
+    			var maintenanceType = maintenanceTypeObj.split("^");
+    			if(maintenanceType[1] && maintenanceType[1].trim().length > 0){
+    				applicableMts.append($("<option/>", {
+	        	       	value: maintenanceType[0],
+	        	       	text: maintenanceType[1]
+	            	}));
+    			}
+    		}); 
+    		$.each(excludedMaintenanceTypesList, function(key, excludedMaintenanceTypeObj) {
+    			var excludedMaintenanceType = excludedMaintenanceTypeObj.split("^");
+    			if(excludedMaintenanceType[1] && excludedMaintenanceType[1].trim().length > 0){
+    				excludedMts.append($("<option/>", {
+	        	       	value: excludedMaintenanceType[0],
+	        	       	text: excludedMaintenanceType[1]
+	            	}));
+    			}
+    		});
     		
     		$('#addEditForm').find('#id').val(editSpan.nextAll('span.id').first().html());
     	}
@@ -297,6 +349,21 @@
 							<select name="excludedAdComplianceIds" id="excludedAdComplianceIds" class="form-control" size="5" multiple="multiple"></select>
 						</div>
 					</div>
+					<br/>
+					<div class="row">
+						<div class="select-left">
+							<label class="multiselectHeader" for="">Applicable Maintenance</label>
+							<select name="applicableMts" id="multiselectMt" class="form-control" size="5" multiple="multiple"></select>
+						</div>						
+						<div class="select-middle">
+							<button type="button" id="multiselectMt_rightSelected" class="select-button" role="button"><span class="button-text">&gt;</span></button>
+							<button type="button" id="multiselectMt_leftSelected" class="select-button" role="button"><span class="button-text">&lt;</span></button>
+						</div>
+						<div class="select-right">
+							<label class="multiselectHeader" for="">Not Applicable Maintenance</label>
+							<select name="excludedMaintenanceTypesIds" id="excludedMaintenanceTypesIds" class="form-control" size="5" multiple="multiple"></select>
+						</div>
+					</div>
 
 					<input type="text" name="id" id="id" class="hidden"/>
 					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
@@ -310,8 +377,8 @@
 			    <span class="headerCell dataCell">Name</span>
 			    <span class="headerCell dataCell">Model</span>
 			    <span class="headerCell dataCell">Serial Number</span>
-			    <span class="headerCell dataCell">Applicable AD Compliances</span>
 			    <span class="headerCell dataCell">Not Applicable AD Compliances</span>
+			    <span class="headerCell dataCell">Not Applicable Maintenance</span>
 			    <span class="headerCell dataCell">In Service</span>
 			    <span class="headerCell dataCell">Image</span>
 			    <span class="headerCell dataCell"></span>
@@ -325,14 +392,14 @@
 				<span class="name dataCell" th:text="${a.name}">Name</span>
 				<span class="model dataCell" th:text="${a.model.name}">Model</span>
 				<span class="serialNum dataCell" th:text="${a.serialNum}">Serial Number</span>
-				<span class="applicableAdCompliances dataCell" style="vertical-align:bottom;">
-					<span th:each="adc : ${a.adCompliances}">
-						<span th:text="${adc.name}">AD Compliance Name</span><br/>
-					</span>
-				</span>
 				<span class="excludedAdCompliances dataCell" style="vertical-align:bottom;">
 					<span th:each="eadc : ${a.excludedAdCompliances}">
 						<span th:text="${eadc.adCompliance.name}">Excluded AD Compliance Name</span><br/>
+					</span>
+				</span>
+				<span class="excludedMaintenanceTypes dataCell" style="vertical-align:bottom;">
+					<span th:each="emt : ${a.excludedMaintenanceTypes}">
+						<span th:text="${emt.maintenanceType.name}">Excluded Maintenance Types</span><br/>
 					</span>
 				</span>
 				<span class="active dataCell"><input type="checkbox" th:value="${a.active}" th:checked="${a.active}" disabled="disabled"/></span>
@@ -346,6 +413,8 @@
 				<span class="modelId cell hidden" th:text="${a.model.id}">Hidden Model Id</span>
 				<span class="adCompliancesList cell hidden" th:text="${a.adCompliancesString}">Hidden AD Compliances String</span>
 				<span class="excludedAdCompliancesList cell hidden" th:text="${a.excludedAdCompliancesString}">Hidden Excluded AD Compliances String</span>
+				<span class="maintenanceTypesList cell hidden" th:text="${a.maintenanceTypesString}">Hidden Maintenance Types String</span>
+				<span class="excludedMaintenanceTypesList cell hidden" th:text="${a.excludedMaintenanceTypesString}">Hidden Excluded Maintenance Types String</span>
 			</div>
 		</div>
 		<button id="create-record">Create New</button>

@@ -52,7 +52,7 @@ public class AircraftStatusController extends BaseController {
 			maintenanceTypeToLog.put(maintenanceLog.getMaintenanceTypeId(), maintenanceLog);
 		}
 
-		List<MaintenanceType> maintenanceTypes = this.maintenanceTypeRepository.findByModelAndActiveTrue(aircraft.getModel(), sortByMaintCategoryThenName());
+		List<MaintenanceType> maintenanceTypes = this.maintenanceTypeRepository.findByModelAndAircraftAndActiveTrue(aircraft.getModel(), aircraft);
 
 		List<MaintenanceType> flightHourMaintTypes = new ArrayList<MaintenanceType>();
 		List<MaintenanceType> monthMaintTypes = new ArrayList<MaintenanceType>();

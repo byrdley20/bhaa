@@ -101,13 +101,13 @@
     		var flightLogMonth = flightLogDate.getMonth();
     		if(month == flightLogMonth){
 	    		var elementBefore;
-	    		if($(".records-rows").length){
-	    			elementBefore = $(".records-rows");
+	    		if($(".records-rows-logs").length){
+	    			elementBefore = $(".records-rows-logs");
 	    		} else {
-	    			elementBefore = $(".records-header");
+	    			elementBefore = $(".records-header-logs");
 	    		}
 	    		
-	    		var newRecord = "<div class='records-rows id"+savedRecord.id+" new-row'>" +
+	    		var newRecord = "<div class='records-rows records-rows-logs id"+savedRecord.id+" new-row'>" +
 					"<span class='dataCell'>" +
 				    	"<span class='edit icon'><a href='#' class='editLink' data-id='"+savedRecord.id+"'><img border='0' alt='Edit' src='"+contextPath+"/images/edit.png'/></a></span> " +
 				    	"<span class='delete icon'><a href='#' class='deleteLink' data-id='"+savedRecord.id+"'><img border='0' alt='Delete' src='"+contextPath+"/images/delete.png'/></a></span> " +
@@ -356,7 +356,7 @@
 			 <span th:text="${#dates.monthName(monthDate)}">Month Name</span> <span th:text="${currentYear}">Year</span>
 		</div>
 		<div class="table">
-			<div class="records-header">
+			<div class="records-header records-header-logs">
 				<span class="edit delete icon no-print"></span>
 			    <span class="headerCell dataCell">Date</span>
 			    <span class="headerCell dataCell">Pilot</span>
@@ -367,7 +367,7 @@
 			    <span class="headerCell dataCell">Hobbs Total</span>
 			    <span class="headerCell dataCell">Operation</span>
 			</div>
-			<div class="records-rows" th:each="fl : ${flightLogs}" th:classappend="'id'+${fl.id} + (${flStat.odd} ? ' even' : '')">
+			<div class="records-rows records-rows-logs" th:each="fl : ${flightLogs}" th:classappend="'id'+${fl.id} + (${flStat.odd} ? ' even' : '')">
 				<span class="dataCell no-print">
 					<span class="edit icon"><a href="#" class="editLink" th:attr="data-id=${fl.id}"><img border="0" alt="Edit" src="images/edit.png" th:src="@{~/images/edit.png}"/></a></span>
 					<span class="delete icon"><a href="#" class="deleteLink" th:attr="data-id=${fl.id}"><img border="0" alt="Delete" src="images/delete.png" th:src="@{~/images/delete.png}"/></a></span>
@@ -403,11 +403,11 @@
 
 		<div class="category-type location-hours" style="width:145px;">Location Hours</div>
 		<div class="table">
-			<div class="records-header">
+			<div class="records-header records-header-location">
 			    <span class="headerCell dataCell">Location</span>
 			    <span class="headerCell dataCell">Hours</span>
 			</div>
-			<div class="records-rows" th:each="lh : ${locationHours}" th:classappend="(${lhStat.odd} ? ' even' : '')">
+			<div class="records-rows records-rows-location" th:each="lh : ${locationHours}" th:classappend="(${lhStat.odd} ? ' even' : '')">
 				<span class="locationHours-location dataCell" th:text="${lh.key}">Location</span>
 				<span class="locationHours-hours dataCell" th:text="${lh.value}">Hours</span>
 			</div>

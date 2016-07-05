@@ -62,7 +62,7 @@ public class DashboardController extends BaseController {
 				maintenanceTypeToLog.put(maintenanceLog.getMaintenanceTypeId(), maintenanceLog);
 			}
 
-			List<MaintenanceType> maintenanceTypes = maintenanceTypeRepository.findByModelAndShowOnDashboardTrueAndActiveTrue(aircraft.getModel(), sortByMaintCategoryThenName());
+			List<MaintenanceType> maintenanceTypes = maintenanceTypeRepository.findByModelAndAircraftAndShowOnDashboardTrueAndActiveTrue(aircraft.getModel(), aircraft);
 			List<MaintenanceType> clonedMaintenanceTypes = new ArrayList<MaintenanceType>(maintenanceTypes.size());
 			for (MaintenanceType maintType : maintenanceTypes) {
 				MaintenanceLog log = maintenanceTypeToLog.get(maintType.getId());
