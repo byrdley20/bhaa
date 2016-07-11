@@ -78,7 +78,7 @@ public class FlightLogController extends BaseController {
 		BigDecimal monthlyHobbsTotal = BigDecimal.ZERO;
 		for (FlightLog flightLog : flightLogs) {
 			if (AppConstants.PRINT.equals(action) && Boolean.parseBoolean(printFormAutofill)) {
-				dateToFlightLog.put(flightLog.getDate(), flightLog);
+				dateToFlightLog.put(DateUtil.findDayStart(flightLog.getDate()), flightLog);
 			}
 			BigDecimal flightLogTotal = flightLog.getHobbsEnd().subtract(flightLog.getHobbsBegin());
 			monthlyHobbsTotal = monthlyHobbsTotal.add(flightLogTotal);
@@ -140,6 +140,7 @@ public class FlightLogController extends BaseController {
 		FlightLog flightLog = new FlightLog();
 		flightLog.setAircraft(aircraft);
 		flightLog.setDate(date);
+		flightLog.setDateToStartOfDay();
 		flightLog.setHobbsBegin(latestHobbs);
 		flightLog.setHobbsEnd(latestHobbs);
 		flightLog.setLocation(this.locationRepository.findByName(AppConstants.AUTO_LOCATION_NAME).get(0));

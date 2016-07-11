@@ -43,6 +43,7 @@ public class FlightLogRestController extends BaseRestController {
 		if (flightLog.getUser().getRole() == null) {
 			flightLog.setUser(this.userRepository.findOne(flightLog.getUser().getId()));
 		}
+		flightLog.setDateToStartOfDay();
 		return this.flightLogRepository.save(flightLog);
 	}
 

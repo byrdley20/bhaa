@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.coptertours.util.DateUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.annotations.Expose;
 
@@ -39,7 +40,6 @@ public class FlightLog extends BaseDomain {
 	private int starts;
 	@ManyToOne(targetEntity = Location.class, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
 	@JoinColumn(name = "LOCATION_ID")
-
 	@Expose
 	private Location location;
 	@Expose
@@ -56,6 +56,10 @@ public class FlightLog extends BaseDomain {
 
 	public String getFlightLogDateDisplay() {
 		return FLIGHT_LOG_DATE_FORMAT.format(getDate());
+	}
+
+	public void setDateToStartOfDay() {
+		setDate(DateUtil.findDayStart(date));
 	}
 
 	public String getDateDisplay() {
