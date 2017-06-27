@@ -286,7 +286,15 @@
 			    <span class="dataCell">A/C Hrs Due</span>
 			    <span class="dataCell">Remaining Hours</span>
 			</div>
-			<div class="records-rows maint-rows-hour" th:each="maintType : ${flightHourMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingHours}!=null) ? ((${remainingHours} &lt; 10) ? 'dueNow' : ((${remainingHours} &lt; 20 ) ? 'dueSoon' : '')) : '')" th:with="complyWithHobbs=((${maintType.maintenanceLog}==null)?'0':${maintType.maintenanceLog.complyWithHobbs}),hobbsDue=(${complyWithHobbs} == null?${maintType.timeBeforeAction}:${complyWithHobbs}+${maintType.timeBeforeAction}),remainingHours=(${hobbsDue}-${aircraftTotalTime}),partNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.partNumber}),serialNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.serialNumber})">
+			<div class="records-rows maint-rows-hour" 
+				th:each="maintType : ${flightHourMaintTypes}" 
+				th:with="complyWithHobbs=((${maintType.maintenanceLog}==null)?'0':${maintType.maintenanceLog.complyWithHobbs}),
+						 hobbsDue=(${maintType.timeBeforeAction}==null ? 'N/A' : (${complyWithHobbs} == null?${maintType.timeBeforeAction}:${complyWithHobbs}+${maintType.timeBeforeAction})),
+						 remainingHours=(${hobbsDue}=='N/A' ? 'N/A' : ${hobbsDue}-${aircraftTotalTime}),
+						 partNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.partNumber}),
+						 serialNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.serialNumber})"
+				th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingHours}!=null and ${remainingHours} != 'N/A') ? ((${remainingHours} &lt; 10) ? 'dueNow' : ((${remainingHours} &lt; 20 ) ? 'dueSoon' : '')) : '')"
+				>
 				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" title="Comply With" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
 				<span class="dataCell name" th:text="${maintType.name}">Item Name</span>
 				<span class="dataCell serialNumber" th:text="${serialNumber}">Serial Num</span>
@@ -316,7 +324,15 @@
 			    <span class="dataCell">Due Date</span>
 			    <span class="dataCell">Remaining Days</span>
 			</div>
-			<div class="records-rows maint-rows-month" th:each="maintType : ${monthMaintTypes}" th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingDays}!='N/A') ? ((${remainingDays} &lt; 5) ? 'dueNow' : ((${remainingDays} &lt; 15) ? 'dueSoon' : '')) : 'dueNow')" th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),dueDate=((${maintType.maintenanceLog}==null or ${complyWithDate}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yyyy')}),remainingDays=((${maintType.maintenanceLog} == null or ${dueDate == 'N/A'})?'N/A':${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)}),partNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.partNumber}),serialNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.serialNumber})">
+			<div class="records-rows maint-rows-month" 
+				th:each="maintType : ${monthMaintTypes}" 
+				th:classappend="'maintenanceTypeId-'+${maintType.id}+' '+(${maintTypeStat.odd}?'even':'')+' '+((${remainingDays}!='N/A') ? ((${remainingDays} &lt; 5) ? 'dueNow' : ((${remainingDays} &lt; 15) ? 'dueSoon' : '')) : 'dueNow')" 
+				th:with="complyWithDate=((${maintType.maintenanceLog}==null)?'N/A':${maintType.maintenanceLog.complyWithDate}),
+						 dueDate=((${maintType.timeBeforeAction}==null or ${maintType.maintenanceLog}==null or ${complyWithDate}==null)?'N/A':${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, maintType.timeBeforeAction), 'MM/dd/yyyy')}),
+						 remainingDays=((${maintType.maintenanceLog} == null or ${dueDate == 'N/A'})?'N/A':${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)}),
+						 partNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.partNumber}),
+						 serialNumber=((${maintType.maintenanceLog}==null)?'':${maintType.maintenanceLog.serialNumber})"
+				>
 				<span class="dataCell complyWith" sec:authorize="hasRole('ROLE_MECHANIC') or hasRole('ROLE_ADMIN')"><a href="#" class="editLink" th:attr="data-id=${maintType.id}"><img border="0" title="Comply With" src="images/repair.png" th:src="@{~/images/repair.png}"/></a></span>
 				<span class="dataCell name" th:text="${maintType.name}">Item Name</span>
 				<span class="dataCell serialNumber" th:text="${serialNumber}">Serial Num</span>

@@ -113,7 +113,16 @@
 				    		<div class="dataCell">Due</div>
 				    		<div class="dataCell">Remaining Time</div>
 				    	</div>
-						<div class="data-row" th:each="m : ${a.maintenanceTypes}" th:with="maintCategoryType=(${m.maintenanceCategory}), complyWithDate=(((${m.maintenanceLog}==null)or(${m.maintenanceLog.complyWithDate}==null))?'N/A':${m.maintenanceLog.complyWithDate}), complyWithHobbs=((${m.maintenanceLog}==null)?'0':${m.maintenanceLog.complyWithHobbs}), aircraftTimeDue=((${maintCategoryType}==${T(com.coptertours.options.MaintenanceCategory).FLIGHT_HOURS})?(${complyWithHobbs!=null}?(${complyWithHobbs}+${m.timeBeforeAction}):(${m.timeBeforeAction}))), hobbsDue=((${aircraftTimeDue}!=null)?(${aircraftTimeDue}-${aircraftTotalTime}+${currentHobbs})), dueDate=(((${maintCategoryType}==${T(com.coptertours.options.MaintenanceCategory).MONTHS}) and (${m.maintenanceLog} != null) and (${m.maintenanceLog.complyWithDate} != null))?${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, m.timeBeforeAction), 'MM/dd/yyyy')}:'N/A'), remainingHr=((${hobbsDue}!=null)?(${hobbsDue}-${currentHobbs}):null), remainingDays=(((${dueDate} == null) or (${dueDate} == 'N/A'))?null:${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)})" th:classappend="((${remainingHr}!=null)?((${remainingHr} &lt; 10) ? 'dueNow' : ((${remainingHr} &lt; 20 ) ? 'dueSoon')):((${remainingDays}!=null)?((${remainingDays} &lt; 5) ? 'dueNow' : ((${remainingDays} &lt; 15) ? 'dueSoon'))))">
+						<div class="data-row" th:each="m : ${a.maintenanceTypes}" th:with="maintCategoryType=(${m.maintenanceCategory}), 
+																							complyWithDate=(((${m.maintenanceLog}==null)or(${m.maintenanceLog.complyWithDate}==null))?'N/A':${m.maintenanceLog.complyWithDate}), 
+																							complyWithHobbs=((${m.maintenanceLog}==null)?'0':${m.maintenanceLog.complyWithHobbs}), 
+																							aircraftTimeDue=((${m.timeBeforeAction}!=null and ${maintCategoryType}==${T(com.coptertours.options.MaintenanceCategory).FLIGHT_HOURS})?(${complyWithHobbs!=null}?(${complyWithHobbs}+${m.timeBeforeAction}):(${m.timeBeforeAction}))), 
+																							hobbsDue=((${aircraftTimeDue}!=null)?(${aircraftTimeDue}-${aircraftTotalTime}+${currentHobbs})), 
+																							dueDate=(((${maintCategoryType}==${T(com.coptertours.options.MaintenanceCategory).MONTHS}) and (${m.maintenanceLog} != null) and (${m.maintenanceLog.complyWithDate} != null))?${#dates.format(T(com.coptertours.util.DateUtil).addMonths(complyWithDate, m.timeBeforeAction), 'MM/dd/yyyy')}:'N/A'), 
+																							remainingHr=((${hobbsDue}!=null)?(${hobbsDue}-${currentHobbs}):null), 
+																							remainingDays=(((${dueDate} == null) or (${dueDate} == 'N/A'))?null:${T(com.coptertours.util.DateUtil).findDaysBetweenDates(today, dueDate)})" 
+																				th:classappend="((${remainingHr}!=null)?((${remainingHr} &lt; 10) ? 'dueNow' : ((${remainingHr} &lt; 20 ) ? 'dueSoon')):((${remainingDays}!=null)?((${remainingDays} &lt; 5) ? 'dueNow' : ((${remainingDays} &lt; 15) ? 'dueSoon'))))"
+																				>
 							<div class="dataCell" th:text="${m.name}">Maint Type Name</div>
 							<div class="dataCell" th:text="((${hobbsDue}!=null)?${hobbsDue}:${dueDate})">Due</div>
 							<div class="dataCell" th:text="((${remainingHr}!=null)?(${remainingHr})+' hr':((${remainingDays}!=null)?${remainingDays} + ' days':'N/A'))">Remaining</div>
