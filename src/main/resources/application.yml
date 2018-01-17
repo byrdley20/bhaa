@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:mysql://67.225.147.215:3306/copterto_flightLog
+    username: copterto_flUser
+    password: bhaaFlightLog1
+    driverclassName: org.mysql.jdbc.Driver
+    test-on-borrow: true
+    validation-query: SELECT 1
+  jpa:
+    hibernate:
+      ddl-auto: none
+server:
+  port: 9999
+multipart:
+  maxFileSize: 10Mb
+---
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mariadb://localhost/copterto_flightLog
+    username: root
+    password: bell206
+    driverclassName: org.mariadb.jdbc.Driver

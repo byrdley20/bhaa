@@ -33,7 +33,7 @@ public class FlightLog extends BaseDomain {
 	private User user;
 
 	@Expose
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy", timezone = "GMT-06:00")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy", timezone = "US/Mountain")
 	private Date date;
 
 	@Expose
